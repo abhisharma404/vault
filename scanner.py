@@ -25,12 +25,17 @@ class Scanner:
 				print(link)
 				link = link.split('#')[0]
 
-
 			if self.target_url in link and link not in self.target_links:
 				if '.css' not in link and '.ico' not in link:
 					self.target_links.append(link)
 					print('[+] ',link)
 					self.crawl(link)
+
+	def get_payloads(self):
+		with open('xss_payloads.txt') as file:
+			for line in file.readlines():
+				line = line.strip()
+				yield line
 
 	def extract_forms(self,url):
 		response = requests.get(url)
@@ -40,34 +45,33 @@ class Scanner:
 
 	def inject_payload(self,url):
 		list_forms = self.extract_forms(url)
+		xss_payload = []
+		for payload in self.get_payloads():
+			xss_payload.append(payload)
 
 		for form in list_forms:
-			input_box = form.findAll('input')		
+			input_box = form.findAll('input')
 			post_data = {}
 
-			for box in input_box:
-				box_name = box.get('name')
-				type_box = box.get('type')
-				input_value = box.get('value')
-				if type_box == 'text':
-					input_value = '<script>alert();</script>'
-				
-				post_data[box_name]=input_value
-				#print(post_data)
+			for i in range(len(xss_payload)):
+				for box in input_box:
+					box_name = box.get('name')
+					type_box = box.get('type')
+					input_value = box.get('value')
+					if type_box == 'text':
+						input_value = xss_payload[0]
 
-			result = requests.post(url,data=post_data)
-			#print(result.text)
-			if '<script>alert();</script>' in result.text:
-				print('[!] VULNERABILITY DETECTED! \n')
-			else:
-				print("[+] OK. \n")
+					post_data[box_name]=input_value
+
+				result = requests.post(url,data=post_data)
+				#print(result.text)
+				if '<script>alert();</script>' in result.text:
+					print('[!] VULNERABILITY DETECTED! \n')
+				else:
+					print("[+] OK. \n")
 
 	def run(self):
 		print("XSS Scanner running...\n \n")
 		self.crawl()
 		for url in self.target_links:
 			self.inject_payload(url)
-
-
-scan_obj = Scanner(url='http://10.0.2.6/mutillidae/', ignore_links=None)
-scan_obj.run()
