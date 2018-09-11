@@ -66,7 +66,11 @@ class Scanner:
 				result = requests.post(url,data=post_data)
 				#print(result.text)
 				if xss_payload[i] in result.text:
-					print('[!] VULNERABILITY DETECTED! \n')
+					print('\n[!] VULNERABILITY DETECTED!--> ' + xss_payload[i])
+					print('[*] LINK IS ',url)
+					print('---FORM DATA---')
+					print(form)
+					print('\n')
 				else:
 					print("[+] OK. \n")
 

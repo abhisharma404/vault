@@ -1,2 +1,2 @@
 <script>alert();</script>
-<sCript>alert(;</scRiPt>
+<sCript>alert();</scRiPt>
