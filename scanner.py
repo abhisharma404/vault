@@ -59,13 +59,13 @@ class Scanner:
 					type_box = box.get('type')
 					input_value = box.get('value')
 					if type_box == 'text':
-						input_value = xss_payload[0]
+						input_value = xss_payload[i]
 
 					post_data[box_name]=input_value
 
 				result = requests.post(url,data=post_data)
 				#print(result.text)
-				if '<script>alert();</script>' in result.text:
+				if xss_payload[i] in result.text:
 					print('[!] VULNERABILITY DETECTED! \n')
 				else:
 					print("[+] OK. \n")
