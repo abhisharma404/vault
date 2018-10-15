@@ -22,6 +22,8 @@ class PortScanner(object):
 
         self.flags = flags
 
+        self.list_scans = ['fin','xmas']
+
     def fin_scan(self):
         key_values = {
 
@@ -126,9 +128,6 @@ class PortScanner(object):
                 print(str(ICMPLayerFound) + ' -> ' + str(port))
 
     def threading_scan(self, dict_values):
-        """
-        with ThreadPoolExecutor(max_workers=20) as executor:
-            executor.map(self.scanFile, self.file_list, mode_list * len(self.file_list))"""
 
         t1 = time.time()
 
@@ -145,6 +144,7 @@ class PortScanner(object):
         t2 = time.time()
 
         print('[+] The time taken is...', t2-t1)
+
 
 if __name__ == '__main__':
     newObj = PortScanner(url='10.0.2.6')
