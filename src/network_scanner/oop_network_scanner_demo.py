@@ -80,6 +80,7 @@ class PortScanner(object):
     def xmas_scan(self):
 
         key_values = {
+
             'scan_flag' : 'FPU',
             'noneTypeMessage' : '[+] Open',
             'TCPLayerFlags' : ['RA'],
@@ -89,7 +90,6 @@ class PortScanner(object):
         }
 
         self.threading_scan(dict_values=key_values)
-
 
     def craft_packet(self, dport, flag):
         ip_packet = IP(dst=self.url)
