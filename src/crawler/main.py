@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 
 
 links_visited = []
-to_visit = ['http://www.cuchd.in']
+to_visit = ['http://www.xyz-website123.com']
 
 def checkValidity(link):
     url = urlparse(link)
@@ -19,7 +19,7 @@ def checkValidity(link):
     except:
         pass
     try:
-        if url[1] == 'cuchd':
+        if url[1] == 'xyz-website123':
             return True
     except:
         pass
