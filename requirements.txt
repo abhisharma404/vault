@@ -1,5 +1,5 @@
 bs4==0.0.1
 BeautifulSoup==3.2.1
-requests==2.19.1
+requests==2.20.1
 scapy==2.4.0
 colorama==0.3.9
