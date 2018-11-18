@@ -1,5 +1,7 @@
 # VAULT SCANNER
 
+[![Join the chat at https://gitter.im/vault_scanner/Lobby](https://badges.gitter.im/vault_scanner/Lobby.svg)](https://gitter.im/vault_scanner/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Vault Scanner can be used for:
 
 1. Scan a website for the following - 1. XSS
