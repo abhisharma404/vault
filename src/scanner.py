@@ -7,14 +7,16 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 import time
 
+
 class Scanner:
-	def __init__(self,url,payload):
+
+	def __init__(self, url, payload):
 		self.target_url = url
 		self.payload = payload
 
 	def extract_forms(self):
 		response = requests.get(self.target_url)
-		soup_obj = BeautifulSoup(response.text,'lxml')
+		soup_obj = BeautifulSoup(response.text, 'lxml')
 		list_forms = soup_obj.findAll('form')
 		return list_forms
 

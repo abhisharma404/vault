@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 from scapy.all import *
 from concurrent.futures import ThreadPoolExecutor
 import time
@@ -32,7 +34,7 @@ class PortScanner(object):
             'noneTypeMessage' : '[+] Open',
             'TCPLayerFlags' : ['RA'],
             'TCPLayer_Found' : '[-] Closed',
-            'TCPLayerNotFound' : '[-]',
+            'TCPLayerNotFound' : None,
             'ICMPLayerFound' : '[!] Filtered'
 
         }
@@ -47,7 +49,7 @@ class PortScanner(object):
             'noneTypeMessage' : '[+] Open',
             'TCPLayerFlags' : ['R', 'RA'],
             'TCPLayer_Found' : '[-] Closed',
-            'TCPLayerNotFound' : '[-]',
+            'TCPLayerNotFound' : None,
             'ICMPLayerFound' : '[!] Filtered'
 
         }
@@ -62,7 +64,7 @@ class PortScanner(object):
             'noneTypeMessage' : '[+] Filtered',
             'TCPLayerFlags' : ['R','RA'],
             'TCPLayer_Found' : '[-] Unfiltered',
-            'TCPLayerNotFound' : '[]',
+            'TCPLayerNotFound' : None,
             'ICMPLayerFound' : '[!] Filtered'
 
         }
