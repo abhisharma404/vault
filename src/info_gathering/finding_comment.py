@@ -1,20 +1,31 @@
+#! /usr/bin/python
+
 import requests
 import re
 from bs4 import BeautifulSoup
-import sys
 
-def get_soure_code(url):
-    resp_text = requests.get(url).text
-    return resp_text
 
-def find_comment(source_code):
-    comments = re.findall('<!--(.*)-->', source_code)
-    return comments
+class FindingComments(object):
 
-URL = 'http://10.0.2.6/mutillidae'
+    def __init__(self, url):
+        self.url = url
+        self.comment_list = ['<!--(.*)-->']
+        self.found_comments = {}
 
-source_code = get_soure_code(URL)
-comment = find_comment(source_code)
+    def get_soure_code(self):
+        resp_text = requests.get(self.url).text
+        return resp_text
 
-if len(comment) > 0:
-    print('[+] Found', comment)
+    def find_comment(self):
+        source_code = self.get_soure_code()
+        for comment in self.comment_list:
+            comments = re.findall(comment, source_code)
+            self.found_comments[comment] = comments
+
+    def parse_comments(self):
+        self.find_comment()
+        if len(self.found_comments) > 0:
+            for comment_code, comment in self.found_comments.items():
+                print('[+] Found for ', comment_code, ' : ', comment)
+        else:
+            print('[-] No comment found!.')
