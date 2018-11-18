@@ -1,14 +1,15 @@
-# unofficial implemenation of SSL Labs API
+#! /usr/bin/python
 
 import requests
 import json
 import time
 
+
 API_URL = "https://api.ssllabs.com/api/v3/analyze/"
 
 analyze_payload  = {
 
-    'host' : 'www.github.com',
+    'host' : '',
     'startNew' : 'on',
     'publish' : 'off',
     'all' : 'done',
@@ -20,22 +21,28 @@ def request_api(url, payload):
     resp = requests.get(url, params=payload)
     return resp.json()
 
-def analyze():
-    print('Scanning...')
+
+def analyze(url):
+    global analyze_payload
+
+    print('[+] Scanning...')
+    analyze_payload['host'] = url
     resp = request_api(API_URL, analyze_payload)
     analyze_payload.pop('startNew')
 
-    while resp['status']!='READY' and  resp['status']!='ERROR':
+    while resp['status'] != 'READY' and  resp['status'] != 'ERROR':
         time.sleep(30)
         resp = request_api(API_URL, analyze_payload)
 
     return resp
+
 
 def vulnerability_parser(data):
 
     base_data = data['endpoints'][0]['details']
 
     vuln_dict = {
+
                     'beastAttack' : base_data['vulnBeast'],
                     'poodle' : base_data['poodle'],
                     'poodleTls' : base_data['poodleTls'],
@@ -46,14 +53,13 @@ def vulnerability_parser(data):
                     'openSSL_CCS' : base_data['openSslCcs'],
                     'openSSL_padding' : base_data['openSSLLuckyMinus20'],
                     'robot' : base_data['bleichenbacher'],
-                    #'forward_secrecy' : base_data['forwardSecrecy'],
                     'freak' : base_data['freak'],
                     'logjam' : base_data['logjam'],
                     'drown_attack' : base_data['drownVulnerable'],
-                    #'secureRenegotiation' : base_data['renegSupport']
 
                 }
     print_data(vuln_dict)
+
 
 def get_value(key, value):
 
@@ -102,17 +108,12 @@ def get_value(key, value):
                         '3' : 'vulnerable (strong oracle)',
                         '4' : 'inconsistent results'
 
-                    },
-                    'forward_secrecy' : {
-
-                    },
-                    'secureRenegotiation' : {
-
                     }
     }
 
     value = str(value)
     return main_dict[key][value]
+
 
 def print_data(dict_value):
     print('[+] Vulnerability Scan Result : \n')
@@ -123,7 +124,11 @@ def print_data(dict_value):
         else:
             print('[+] ', key, ' : ', item)
 
+
 if __name__ == '__main__':
 
-    data = analyze()
+    print('-- SSL scan using SSL Labs API --')
+    url = input('Enter the URL to scan >> ')
+
+    data = analyze(url)
     vulnerability_parser(data)

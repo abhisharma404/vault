@@ -2,6 +2,7 @@ from scapy.all import *
 from concurrent.futures import ThreadPoolExecutor
 import time
 
+
 class PortScanner(object):
 
     def __init__(self, start_port=None, end_port=None, url=None, flags=None):
@@ -11,7 +12,7 @@ class PortScanner(object):
             self.start_port = start_port
 
         if end_port is None:
-            self.end_port = 65000
+            self.end_port = 65535
         else:
             self.end_port = end_port
 
@@ -87,6 +88,7 @@ class PortScanner(object):
             'TCPLayer_Found' : '[-] Closed',
             'TCPLayerNotFound': '[-] ',
             'ICMPLayerFound' : '[!] Filtered'
+
         }
 
         self.threading_scan(dict_values=key_values)
@@ -131,7 +133,7 @@ class PortScanner(object):
 
         t1 = time.time()
 
-        port_list = [port for port in range(0,200)]
+        port_list = [port for port in range(0, 200)]
 
         dict_list = []
 
@@ -148,7 +150,7 @@ class PortScanner(object):
 
 if __name__ == '__main__':
     newObj = PortScanner(url='10.0.2.6')
-    # newObj.fin_scan()
-    # newObj.null_scan()
-    # newObj.tcp_ack_scan()
+    newObj.fin_scan()
+    newObj.null_scan()
+    newObj.tcp_ack_scan()
     newObj.xmas_scan()

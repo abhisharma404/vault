@@ -1,4 +1,4 @@
-"""This is module is responsible for the crawler, that crawls out every available link"""
+#! /usr/bin/python
 
 import re
 from urllib.parse import *

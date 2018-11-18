@@ -113,5 +113,3 @@ def jquery_check():
             #print(resp.text)
 
 jquery_check()
-
-def shellsock_check():
