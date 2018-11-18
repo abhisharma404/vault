@@ -1,59 +1,78 @@
+#! /usr/bin/python
+
 import requests
 from urllib.parse import urljoin
-import queue
 import time
 import threading
-
-discovered_url = []
-
-def generate_url(base_url, fuzz_text):
-    return urljoin(base_url, fuzz_text)
+import multiprocessing
 
 
-def readFromFile(file_path):
-    fuzz_queue = queue.Queue()
-    with open(file_path) as file:
-        for url in file.readlines():
-            fuzz_queue.put(url)
-    return fuzz_queue
+class Fuzzer(object):
 
+    """fuzzObj = Fuzzer(base_url='http://sample-site', thread_num=10, fuzz_file_path='fuzz_url.txt')"""
 
-def send_request(url):
-    resp = requests.get(url)
-    if resp.status_code == 200:
-        return True
+    def __init__(self, fuzz_file_path='fuzz_url.txt', base_url=None, thread_num=10):
+        self.m = multiprocessing.Manager()
+        self.base_url = base_url
+        self.fuzz_file_path = fuzz_file_path
+        self.thread_num = thread_num
+        self.fuzz_queue = self.m.Queue()
+        self.discovered_url = []
+        self.redirected_url = []
+        self.success_codes = [200, 201, 202, 203, 204, 205, 206]
+        self.redirection_codes = [300, 301, 302, 303, 304, 305, 306, 307]
 
+    def readFromFile(self):
+        with open(self.fuzz_file_path) as file:
+            for fuzz_text in file.readlines():
+                self.fuzz_queue.put(fuzz_text)
 
-def startEngine():
-    queue_generated = readFromFile('fuzz_url.txt')
-    while not queue_generated.empty():
-        new_url = generate_url('http://10.0.2.6/mutillidae', queue_generated.get())
-        try:
-            if send_request(new_url):
-                print('[+] ', new_url)
-                discovered_url.append(url)
-                #print(threading.current_thread())
-        except:
-            pass
+    def send_request(self, url):
+        resp = requests.get(url)
+        if resp.status_code in self.success_codes:
+            return 1
+        elif resp.status_code in self.redirection_codes:
+            print(resp.status_code)
+            return 2
+        else:
+            return 0
 
+    def generate_url(self, fuzz_text):
+        return urljoin(self.base_url, fuzz_text)
 
+    def start_engine(self):
+        while not self.fuzz_queue.empty():
+            fuzz_text = self.fuzz_queue.get()
+            fuzz_url = self.generate_url(fuzz_text)
+            self.fuzz_queue.task_done()
 
-if __name__ == '__main__':
+            try:
+                status = self.send_request(fuzz_url)
+                if status == 1:
+                    print('[+] Found -> ', fuzz_url)
+                    self.discovered_url.append(fuzz_url)
+                elif status == 2:
+                    print('[!] Redirection Detected -> ', fuzz_url)
+                    self.redirected_url.append(fuzz_url)
+            except Exception as e:
+                print(e)
 
-    t1 = time.time()
+    def initiate(self):
+        self.readFromFile()
+        t1 = time.time()
 
-    # threads = []
-    #
-    # for i in range(10):
-    #     thread = threading.Thread(target=startEngine)
-    #     thread.start()
-    #     threads.append(thread)
-    #
-    # for thread in threads:
-    #     thread.join()
+        threads = []
 
-    startEngine()
+        print('[!] URL Fuzzing started...')
 
-    t2 = time.time()
+        for _ in range(self.thread_num):
+            newThread = threading.Thread(target=self.start_engine)
+            newThread.start()
+            threads.append(newThread)
 
-    print('Completed in {}'.format(t2-t1))
+        for thread in threads:
+            thread.join()
+
+        t2 = time.time()
+
+        print('[!] Successfully completed in : {} seconds.'.format(t2-t1))
