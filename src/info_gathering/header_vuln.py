@@ -1,115 +1,112 @@
-#Various types of information gathering
+#! /usr/bin/python
+
 import requests
 import random
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import re
 
-url = 'http://10.0.2.6/mutillidae/index.php'
 
-def gather_header():
-    try:
-        r = requests.get(url)
-        headers_dict = r.headers
-        for key, value in headers_dict.items():
-            print('[+] {} : {}'.format(key, value))
-        return r
-    except:
-        print('[-] Error in network connection.')
+class HeaderVuln(object):
 
-def find_insecure_headers():
-    headers_dict = gather_header()
+    def __init__(self, url):
+        self.url = url
 
-    if headers_dict:
-        headers_dict = headers_dict.headers
-    else:
-        return
+    def get_response(self):
+        try:
+            resp = requests.get(self.url)
+            return resp
+        except:
+            print('[-] Error in network connection!')
 
-    print('\n[!] Finding vulnerablilties\n')
+    def gather_header(self):
+        try:
+            r = self.get_response()
+            headers_dict = r.headers
+            print('---[!] Header Details---\n')
+            for key, value in headers_dict.items():
+                print('[+] {} : {}'.format(key, value))
+            return headers_dict
+        except Exception as e:
+            print(e)
 
-    try:
-        xssprotect = headers_dict['X-XSS-Protection']
-        if xssprotect != '1; mode=block':
-            print('[-] X-XSS-Protection not set properly.')
-        else:
-            print('[+] X-XSS-Protection set propely.')
-    except:
-        print('[+] Escaping')
+    def find_insecure_headers(self):
+        headers_dict = self.gather_header()
 
-    try:
-        contenttype = headers_dict['X-Content-Type-Options']
-        if contenttype != 'nosniff':
-            print('[+] X-Content-Type-Options not set properly.')
-    except:
-        print('[+] Escaping')
+        if headers_dict:
+            print('\n---[!] Finding vulnerablilties---\n')
 
-    try:
-        hsts = headers_dict['Strict-Transport-Security']
-    except:
-        print('[+] HSTS not set properly.')
+            try:
+                xssprotect = headers_dict['X-XSS-Protection']
+                if xssprotect != '1; mode=block':
+                    print('[-] X-XSS-Protection not set properly.')
+                else:
+                    print('[+] X-XSS-Protection set propely.')
+            except:
+                print('[+] Escaping!...')
 
-    try:
-        csp = headers_dict['Content-Security-Policy']
-        print('[+] great with csp')
-    except:
-        print('[-] csp mising')
+            try:
+                contenttype = headers_dict['X-Content-Type-Options']
+                if contenttype != 'nosniff':
+                    print('[+] X-Content-Type-Options not set properly.')
+            except:
+                print('[+] Escaping')
 
-    try:
-        xframe = headers_dict['x-frame-options']
-        print('[+] Likely to be safe from xframe')
-    except:
-        print('[-] xframe Missing.')
+            try:
+                hsts = headers_dict['Strict-Transport-Security']
+            except:
+                print('[+] HSTS not set properly.')
 
-def insecure_cookies():
-    response = gather_header()
-    cookies =  response.cookies
+            try:
+                csp = headers_dict['Content-Security-Policy']
+                print('[+] CSP set properly.')
+            except:
+                print('[-] CSP mising')
 
-    for cookie in cookies:
-        print('[+] Name : ', cookie.name)
-        print('[+] Value : ', cookie.value)
+            try:
+                xframe = headers_dict['x-frame-options']
+                print('[+] Likely to be safe from X-Frame.')
+            except:
+                print('[-] X-Frame Missing.')
 
-        if not cookie.secure:
-            cookie.secure = 'True'
-        else:
-            cookie.secure = 'False'
+    def insecure_cookies(self):
+        response = self.get_response()
+        cookies =  response.cookies
 
-        if 'httponly' in cookie._rest.keys():
-            cookie.httponly = 'True'
-        else:
-            cookie.httponly = 'False'
+        print('\n---[!] Testing Insecure Cookies---\n')
 
-        if cookie.domain_initial_dot:
-            cookie.domain_initial_dot = 'True'
-        else:
-            cookie.domain_initial_dot = 'False'
+        for cookie in cookies:
+            print('[+] Name : ', cookie.name)
+            print('[+] Value : ', cookie.value)
 
-        print('[+] Cookie Secure :', cookie.secure)
-        print('[+] Cookie httponly :', cookie.httponly)
-        print('[+] Cookies domain iniitial dot', cookie.domain_initial_dot)
+            if not cookie.secure:
+                cookie.secure = 'True'
+            else:
+                cookie.secure = 'False'
 
-def test_http_methods():
-    modes_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'TEST']
+            if 'httponly' in cookie._rest.keys():
+                cookie.httponly = 'True'
+            else:
+                cookie.httponly = 'False'
 
-    for mode in modes_list:
-        r = requests.request(mode, url)
-        print('[+]', mode, r.status_code, r.reason)
-        if mode == 'TRACE' and 'TRACE / HTTP/1.1' in r.text:
-            print('[+] Possible cross site tracing vulnerability found.')
+            if cookie.domain_initial_dot:
+                cookie.domain_initial_dot = 'True'
+            else:
+                cookie.domain_initial_dot = 'False'
 
-def jquery_check():
-    #to find jquery:"1.3.2"
-    resp = requests.get(url)
-    script_tags = []
+            print('[+] Cookie Secure :', cookie.secure)
+            print('[+] Cookie httponly :', cookie.httponly)
+            print('[+] Cookies domain iniitial dot', cookie.domain_initial_dot)
+            print('\n')
 
-    soup_obj = BeautifulSoup(resp.text, 'lxml')
-    for line in soup_obj.find_all('script'):
-        script_tag = line.get('src')
-        script_tags.append(script_tag)
+    def test_http_methods(self):
+        modes_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'TEST']
 
-    for script in script_tags:
-        if 'jquery.min' in str(script).lower():
-            js_url = urljoin(url, script)
-            resp = requests.get(js_url)
-            #print(resp.text)
+        print('\n---[!] Testing HTTP methods---\n')
 
-jquery_check()
+        for mode in modes_list:
+            r = requests.request(mode, self.url)
+            print('[+]', mode, r.status_code, r.reason)
+            if mode == 'TRACE' and 'TRACE / HTTP/1.1' in r.text:
+                print('[!] Possible Cross Site Tracing vulnerability found.')
+                
