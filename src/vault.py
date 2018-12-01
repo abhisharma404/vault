@@ -41,32 +41,37 @@ import sys
     8. Shellsock checking
 """
 
-print('\n Welcome to VAULT Scanner...\n')
+if __name__ == '__main__':
 
-# Taking in arguments
-parser = argparse.ArgumentParser(description="VAULT Scanner")
+    print('\nWelcome to VAULT Scanner...\n')
 
-parser.add_argument('-u', '--url', help='URL for scanning')
-parser.add_argument('-p', '--port', action='store_true', help='Port for scanning')
-parser.add_argument('-sp', '--start_port', action='store_true', help='Start port for scanning')
-parser.add_argument('-ep', '--end_port', action='store_true', help='End port for scanning')
-parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
+    # Taking in arguments
+    parser = argparse.ArgumentParser(description="VAULT Scanner")
 
-# Print help message if no argumnents are supplied
-if len(sys.argv) == 1:
-    parser.print_help(sys.stderr)
-    sys.exit(1)
+    parser.add_argument('-u', '--url', help='URL for scanning')
+    parser.add_argument('-p', '--port', action='store_true', help='Port for scanning')
+    parser.add_argument('-sp', '--start_port', action='store_true', help='Start port for scanning')
+    parser.add_argument('-ep', '--end_port', action='store_true', help='End port for scanning')
+    parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
 
-args = parser.parse_args()
+    # Print help message if no argumnents are supplied
+    if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
 
-if args.ssl:
-    try:
-        from ssl_scanner import ssl_scanner
-        print('\n--SSL scan using SSL Labs API--\n')
+    args = parser.parse_args()
 
-        data = ssl_scanner.analyze(args.url)
-        ssl_scanner.vulnerability_parser(data)
-    except ImportError:
-        print('[-] Could not import.')
-    except Exception as e:
-        print(e)
+    if args.ssl:
+        if not args.url:
+            print('[-] Please enter an URL for SSL scanning')
+            sys.exit(1)
+        try:
+            from ssl_scanner import ssl_scanner
+            print('\n--SSL scan using SSL Labs API--\n')
+
+            data = ssl_scanner.analyze(args.url)
+            ssl_scanner.vulnerability_parser(data)
+        except ImportError:
+            print('[-] Could not import.')
+        except Exception as e:
+            print(e)
