@@ -123,12 +123,4 @@ def print_data(dict_value):
             print('[+] ', key, ' : ', new_item)
         else:
             print('[+] ', key, ' : ', item)
-
-
-if __name__ == '__main__':
-
-    print('-- SSL scan using SSL Labs API --')
-    url = input('Enter the URL to scan >> ')
-
-    data = analyze(url)
-    vulnerability_parser(data)
+            
