@@ -87,6 +87,8 @@ if __name__ == '__main__':
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
             infoGatherObj.gather_header()
+            infoGatherObj.insecure_cookies()
+            infoGatherObj.test_http_methods()
         except ImportError:
             print('[-] Could not import the required module.')
         except Exception as e:
