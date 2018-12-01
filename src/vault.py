@@ -73,7 +73,7 @@ if __name__ == '__main__':
             data = ssl_scanner.analyze(args.url)
             ssl_scanner.vulnerability_parser(data)
         except ImportError:
-            print('[-] Could not import.')
+            print('[-] Could not import the required module.')
         except Exception as e:
             print(e)
 
@@ -93,3 +93,7 @@ if __name__ == '__main__':
             print('[-] Could not import the required module.')
         except Exception as e:
             print(e)
+
+    if args.comment:
+        if not args.url:
+            print('[-] Please enter an URL for finding comments')
