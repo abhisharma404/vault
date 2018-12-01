@@ -54,6 +54,7 @@ if __name__ == '__main__':
     parser.add_argument('-ep', '--end_port', action='store_true', help='End port for scanning')
     parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
     parser.add_argument('-info', action='store_true', help='Gather information')
+    parser.add_argument('-comment', action='store_true', help='Finding comments')
 
     # Print help message if no argumnents are supplied
     if len(sys.argv) == 1:
@@ -97,3 +98,14 @@ if __name__ == '__main__':
     if args.comment:
         if not args.url:
             print('[-] Please enter an URL for finding comments')
+        try:
+            from info_gathering import finding_comment
+            print('[+] Performing comment gathering over : {}'.format(args.url))
+
+            findCommnentObj = finding_comment.FindingComments(args.url)
+            findCommnentObj.parse_comments()
+
+        except ImportError:
+            print('[-] Could not import the required module.')
+        except Exception as e:
+            print(e)
