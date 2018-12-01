@@ -19,7 +19,7 @@ import sys
                              4. Session fixation through a cookie injection
                              5. Spoofing Agents
                              6. Brute force login through authorization header
-                             7. Testing http methods
+                             7. Testing HTTP methods
                              8. Insecure headers
 
     3. Collecting data 1. Port scanning
@@ -55,6 +55,7 @@ if __name__ == '__main__':
     parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
     parser.add_argument('-info', action='store_true', help='Gather information')
     parser.add_argument('-comment', action='store_true', help='Finding comments')
+    parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
 
     # Print help message if no argumnents are supplied
     if len(sys.argv) == 1:
@@ -98,6 +99,7 @@ if __name__ == '__main__':
     if args.comment:
         if not args.url:
             print('[-] Please enter an URL for finding comments')
+            sys.exit(1)
         try:
             from info_gathering import finding_comment
             print('[+] Performing comment gathering over : {}'.format(args.url))
@@ -109,3 +111,18 @@ if __name__ == '__main__':
             print('[-] Could not import the required module.')
         except Exception as e:
             print(e)
+
+    if args.fuzz:
+        if not args.url:
+            print('[-] Please enter an URL for fuzzing')
+            sys.exit(1)
+        try:
+            from fuzzer import fuzzer
+            print('[+] Performing fuzzing on : {}'.format(args.url))
+            fuzzObj = fuzzer.Fuzzer(base_url=args.url)
+            fuzzObj.initiate()
+
+        except ImportError:
+            print('[-] Could not import the required module.')
+        except Exception as e:
+            print(e) 
