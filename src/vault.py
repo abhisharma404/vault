@@ -53,6 +53,7 @@ if __name__ == '__main__':
     parser.add_argument('-sp', '--start_port', action='store_true', help='Start port for scanning')
     parser.add_argument('-ep', '--end_port', action='store_true', help='End port for scanning')
     parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
+    parser.add_argument('-info', action='store_true', help='Gather information')
 
     # Print help message if no argumnents are supplied
     if len(sys.argv) == 1:
@@ -73,5 +74,20 @@ if __name__ == '__main__':
             ssl_scanner.vulnerability_parser(data)
         except ImportError:
             print('[-] Could not import.')
+        except Exception as e:
+            print(e)
+
+    if args.info:
+        if not args.url:
+            print('[-] Please enter an URl for information gathering')
+            sys.exit(1)
+        try:
+            from info_gathering import header_vuln
+            print('[+] Performing informatio gathering over : {}'.format(args.url))
+
+            infoGatherObj = header_vuln.HeaderVuln(args.url)
+            infoGatherObj.gather_header()
+        except ImportError:
+            print('[-] Could not import the required module.')
         except Exception as e:
             print(e)

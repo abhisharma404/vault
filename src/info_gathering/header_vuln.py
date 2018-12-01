@@ -108,4 +108,4 @@ class HeaderVuln(object):
             r = requests.request(mode, self.url)
             print('[+]', mode, r.status_code, r.reason)
             if mode == 'TRACE' and 'TRACE / HTTP/1.1' in r.text:
-                print('[!] Possible Cross Site Tracing vulnerability found
+                print('[!] Possible Cross Site Tracing vulnerability found')
