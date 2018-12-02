@@ -50,5 +50,5 @@ Steps to setup :
 
 Starting Vault :
 
-1. `cd vault_scanner\src`
+1. `cd vault_scanner/src`
 2. `python3 vault.py`
