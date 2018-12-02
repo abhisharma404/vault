@@ -71,4 +71,4 @@ optional arguments:
  
 Example Usage :
 
-`python3 vault.py -u 'http://url' -info -comment -ssl -fuzz
+`python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
