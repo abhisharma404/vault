@@ -71,7 +71,7 @@ class HeaderVuln(object):
 
     def insecure_cookies(self):
         response = self.get_response()
-        cookies =  response.cookies
+        cookies = response.cookies
 
         print('\n---[!] Testing Insecure Cookies---\n')
 

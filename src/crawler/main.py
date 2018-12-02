@@ -13,6 +13,7 @@ to_visit = []
 url_netloc = None
 base_url = None
 
+
 def start_crawling(url):
     global to_visit
     global url_netloc
@@ -21,6 +22,7 @@ def start_crawling(url):
 
     to_visit.append(url)
     getLinks()
+
 
 def checkValidity(link):
     global url_netloc
@@ -44,6 +46,7 @@ def checkValidity(link):
             return True
     except:
         pass
+
 
 def getLinks():
     global base_url

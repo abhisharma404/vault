@@ -4,6 +4,7 @@ import re
 from urllib.parse import *
 import requests
 
+
 class Crawl(object):
 
     def __init__(self, url):
@@ -14,9 +15,9 @@ class Crawl(object):
 
     def extract_links_from(self):
         response = self.session.get(self.url)
-        return re.findall('(?:href=")(.*?)"',response.text)
+        return re.findall('(?:href=")(.*?)"', response.text)
 
-    def crawl(self,url=None):
+    def crawl(self, url=None):
         if url == None:
             url = self.url
         href_links = self.extract_links_from()
@@ -25,14 +26,14 @@ class Crawl(object):
             link = urljoin(url, link)
 
             if '#' in link:
-            	print(link)
-            	link = link.split('#')[0]
+                print(link)
+                link = link.split('#')[0]
 
             if self.url in link and link not in self.target_links:
-            	if '.css' not in link and '.ico' not in link:
-            		self.target_links.append(link)
-            		print('[+] ',link)
-            		self.crawl(link)
+                if '.css' not in link and '.ico' not in link:
+                    self.target_links.append(link)
+                    print('[+] ', link)
+                    self.crawl(link)
 
     def getList(self):
         self.extract_links_from()
