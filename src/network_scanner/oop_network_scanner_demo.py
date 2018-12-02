@@ -25,17 +25,17 @@ class PortScanner(object):
 
         self.flags = flags
 
-        self.list_scans = ['fin','xmas']
+        self.list_scans = ['fin', 'xmas']
 
     def fin_scan(self):
         key_values = {
 
-            'scan_flag' : 'F',
-            'noneTypeMessage' : '[+] Open',
-            'TCPLayerFlags' : ['RA'],
-            'TCPLayer_Found' : '[-] Closed',
-            'TCPLayerNotFound' : None,
-            'ICMPLayerFound' : '[!] Filtered'
+            'scan_flag': 'F',
+            'noneTypeMessage': '[+] Open',
+            'TCPLayerFlags': ['RA'],
+            'TCPLayer_Found': '[-] Closed',
+            'TCPLayerNotFound': None,
+            'ICMPLayerFound': '[!] Filtered'
 
         }
 
@@ -46,11 +46,11 @@ class PortScanner(object):
         key_values = {
 
             'scan_flag': None,
-            'noneTypeMessage' : '[+] Open',
-            'TCPLayerFlags' : ['R', 'RA'],
-            'TCPLayer_Found' : '[-] Closed',
-            'TCPLayerNotFound' : None,
-            'ICMPLayerFound' : '[!] Filtered'
+            'noneTypeMessage': '[+] Open',
+            'TCPLayerFlags': ['R', 'RA'],
+            'TCPLayer_Found': '[-] Closed',
+            'TCPLayerNotFound': None,
+            'ICMPLayerFound': '[!] Filtered'
 
         }
 
@@ -60,12 +60,12 @@ class PortScanner(object):
 
         key_values = {
 
-            'scan_flag' : 'A',
-            'noneTypeMessage' : '[+] Filtered',
-            'TCPLayerFlags' : ['R','RA'],
-            'TCPLayer_Found' : '[-] Unfiltered',
-            'TCPLayerNotFound' : None,
-            'ICMPLayerFound' : '[!] Filtered'
+            'scan_flag': 'A',
+            'noneTypeMessage': '[+] Filtered',
+            'TCPLayerFlags': ['R', 'RA'],
+            'TCPLayer_Found': '[-] Unfiltered',
+            'TCPLayerNotFound': None,
+            'ICMPLayerFound': '[!] Filtered'
 
         }
 
@@ -74,22 +74,22 @@ class PortScanner(object):
     def tcp_window_scan(self):
 
         key_values = {
-            'scan_flag' : 'A',
-            'noneTypeMessage' : '[-] Filtered',
-            'TCPLayerFlags' : ['R', 'RA'],
-            'TCP' : 'x'
+            'scan_flag': 'A',
+            'noneTypeMessage': '[-] Filtered',
+            'TCPLayerFlags': ['R', 'RA'],
+            'TCP': 'x'
         }
 
     def xmas_scan(self):
 
         key_values = {
 
-            'scan_flag' : 'FPU',
-            'noneTypeMessage' : '[+] Open',
-            'TCPLayerFlags' : ['RA'],
-            'TCPLayer_Found' : '[-] Closed',
+            'scan_flag': 'FPU',
+            'noneTypeMessage': '[+] Open',
+            'TCPLayerFlags': ['RA'],
+            'TCPLayer_Found': '[-] Closed',
             'TCPLayerNotFound': '[-] ',
-            'ICMPLayerFound' : '[!] Filtered'
+            'ICMPLayerFound': '[!] Filtered'
 
         }
 
@@ -113,7 +113,7 @@ class PortScanner(object):
         ip_packet, scan_packet = self.craft_packet(dport=port, flag=scan_flag)
         packet_resp = sr1(ip_packet/scan_packet, timeout=2, verbose=False)
 
-        if (str(type(packet_resp))=="<class 'NoneType'>"):
+        if (str(type(packet_resp)) == "<class 'NoneType'>"):
             if noneTypeMessage == '[+] Open':
                 print(str(noneTypeMessage) + ' -> ' + str(port))
 
@@ -128,7 +128,7 @@ class PortScanner(object):
 
         elif (packet_resp.haslayer(ICMP)):
             icmp_layer = packet_resp.getlayer(ICMP)
-            if (int(icmp_layer.type)==3 and int(icmp_layer.code) in [1,2,3,9,10,13]):
+            if (int(icmp_layer.type) == 3 and int(icmp_layer.code) in [1, 2, 3, 9, 10, 13]):
                 print(str(ICMPLayerFound) + ' -> ' + str(port))
 
     def threading_scan(self, dict_values):

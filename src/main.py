@@ -11,9 +11,11 @@ list_of_urls = crawler.getList()
 
 task_list = []
 
+
 def startThread(url):
     xss_obj = type.XSS(url, payload_file)
     xss_obj.initiateEngine()
+
 
 t1 = time.time()
 

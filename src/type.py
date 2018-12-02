@@ -1,9 +1,10 @@
 """ This module is meant for the type of injections that can be done"""
 import scanner
 
+
 class Injection(object):
 
-    def __init__(self,url,payload_file):
+    def __init__(self, url, payload_file):
         self.url = url
         self.payload = payload_file
         self.payload_list = []
@@ -24,7 +25,7 @@ class Injection(object):
     def initiateEngine(self):
         #print("Initiating Engine...")
         self.payload_list = self.listPayloads()
-        #print(self.payload_list)
+        # print(self.payload_list)
         engine = scanner.Scanner(self.url, self.payload_list)
         engine.inject_payload()
 
@@ -38,9 +39,11 @@ class SQLi(Injection):
 
     pass
 
+
 class RFI(Injection):
 
     pass
+
 
 class LFI(Injection):
 
