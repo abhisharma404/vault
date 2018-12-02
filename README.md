@@ -52,3 +52,23 @@ Starting Vault :
 
 1. `cd vault_scanner/src`
 2. `python3 vault.py`
+
+# Usage
+
+usage: vault.py [-h] [-u URL] [-p] [-sp] [-ep] [-ssl] [-info] [-comment]
+                [-fuzz]
+
+optional arguments:
+  -h, --help         show this help message and exit
+  -u URL, --url URL  URL for scanning
+  -p, --port         Port for scanning
+  -sp, --start_port  Start port for scanning
+  -ep, --end_port    End port for scanning
+  -ssl               perform SSL scan
+  -info              Gather information
+  -comment           Finding comments
+  -fuzz              Fuzzing URL
+ 
+Example Usage :
+
+`python3 vault.py -u 'http://url' -info -comment -ssl -fuzz
