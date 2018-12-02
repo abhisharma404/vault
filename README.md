@@ -35,3 +35,20 @@ Vault Scanner can be used for:
   7. URL fuzzing
 
   8. Shellsock checking
+  
+# Getting Started
+
+Steps to setup :
+
+1. `git clone <your-fork-url>`
+2. `cd vault_scanner`
+3. `sudo apt-get install python3-pip`
+4. `sudo pip3 install virtualenv`
+5. `virtualenv venv`
+6. `source venv/bin/activate`
+7. `pip3 install -r requirements.txt`
+
+Starting Vault :
+
+1. `cd vault_scanner\src`
+2. `python3 vault.py`
