@@ -37,7 +37,7 @@ Vault Scanner can be used for:
 
 * [URL fuzzing](https://en.wikipedia.org/wiki/Fuzzing).
 
-* [Shellsock](https://en.wikipedia.org/wiki/Shellshock_(software_bug)) checking.
+* [Shellshock](https://en.wikipedia.org/wiki/Shellshock_(software_bug)) checking.
 
 # Getting Started
 
