@@ -4,38 +4,41 @@
 
 Vault Scanner can be used for:
 
-1. Scan a website for the following - 1. XSS
-                                        2. LFI
-                                        3. RFI
-                                        4. SQLi
+* Scan a website for the following:
+      - [XSS](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS))
+      - [LFI](https://en.wikipedia.org/wiki/File_inclusion_vulnerability#Local_File_Inclusion)
+      - [RFI](https://en.wikipedia.org/wiki/File_inclusion_vulnerability#Remote_File_Inclusion)
+      - [SQLi](https://en.wikipedia.org/wiki/SQL_injection)
 
-  2. Common header erros : 1. Clickjacking
-                           2. jQuery
-                           3. Insecure cookie flags
-                           4. Session fixation through a cookie injection
-                           5. Spoofing Agents
-                           6. Brute force login through authorization header
-                           7. Testing http methods
-                           8. Insecure headers
+* Common header erros:
+      - Clickjacking
+      - jQuery
+      - Insecure cookie flags
+      - Session fixation through a cookie injection
+      - Spoofing Agents
+      - Brute force login through authorization header
+      - Testing http methods
+      - Insecure headers
 
-  3. Collecting data 1. Port scanning
-                     2. Header grabbing
-                     3. Banner grabbing
-                     4. Finding comments in source code
-                     5. Smartwhois scan
-                     6. Check if error handling is done or not and extract the site data using that information
-                     7. OS scanning
+* Collecting data:
+      - Port scanning
+      - Header grabbing
+      - Banner grabbing
+      - Finding comments in source code
+      - Smartwhois scan
+      - Check if error handling is done or not and extract the site data using that information.
+      - OS scanning.
 
-  4. SSL scanner
+* SSL scanner.
 
-  5. Crawl a website and collect all the url related fields
+* Crawl a website and collect all the url related fields.
 
-  6. Scrap a website and collect all the images
+* Scrape a website and collect all the images.
 
-  7. URL fuzzing
+* [URL fuzzing](https://en.wikipedia.org/wiki/Fuzzing).
 
-  8. Shellsock checking
-  
+* [Shellsock](https://en.wikipedia.org/wiki/Shellshock_(software_bug)) checking.
+
 # Getting Started
 
 Steps to setup :
@@ -55,6 +58,7 @@ Starting Vault :
 
 # Usage
 
+```
 usage: vault.py [-h] [-u URL] [-p] [-sp] [-ep] [-ssl] [-info] [-comment]
                 [-fuzz]
 
@@ -68,7 +72,8 @@ optional arguments:
   -info              Gather information
   -comment           Finding comments
   -fuzz              Fuzzing URL
- 
+```
+
 Example Usage :
 
 `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
