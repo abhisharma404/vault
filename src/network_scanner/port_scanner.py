@@ -7,7 +7,13 @@ import time
 
 class PortScanner(object):
 
-    def __init__(self, start_port=None, end_port=None, url=None, flags=None):
+    """List of scans : 1. NULL Scan
+                       2. FIN Scan
+                       3. TCP ACK Scan
+                       4. XMAS Scan
+    """
+
+    def __init__(self, start_port=None, end_port=None, ip=None, threads=1):
         if start_port is None:
             self.start_port = 0
         else:
@@ -18,16 +24,20 @@ class PortScanner(object):
         else:
             self.end_port = end_port
 
-        if url is None:
-            print('[!] URL is empty, please specify an URL...')
+        if ip is None:
+            print('[!] IP is empty, please specify an IP address...')
         else:
-            self.url = url
+            self.ip = ip
 
-        self.flags = flags
+        self.sport = 1024
 
-        self.list_scans = ['fin', 'xmas']
+        if threads is None:
+            self.threads = 1
 
     def fin_scan(self):
+
+        print('[+] FIN Scan started...')
+
         key_values = {
 
             'scan_flag': 'F',
@@ -39,9 +49,11 @@ class PortScanner(object):
 
         }
 
-        self.baseScan(dict_values=key_values)
+        self.threading_scan(dict_values=key_values)
 
     def null_scan(self):
+
+        print('[+] NULL Scan started...')
 
         key_values = {
 
@@ -54,9 +66,11 @@ class PortScanner(object):
 
         }
 
-        self.baseScan(dict_values=key_values)
+        self.threading_scan(dict_values=key_values)
 
     def tcp_ack_scan(self):
+
+        print('[+] TCP ACK Scan started...')
 
         key_values = {
 
@@ -69,18 +83,11 @@ class PortScanner(object):
 
         }
 
-        self.baseScan(dict_values=key_values)
-
-    def tcp_window_scan(self):
-
-        key_values = {
-            'scan_flag': 'A',
-            'noneTypeMessage': '[-] Filtered',
-            'TCPLayerFlags': ['R', 'RA'],
-            'TCP': 'x'
-        }
+        self.threading_scan(dict_values=key_values)
 
     def xmas_scan(self):
+
+        print('[+] XMAS Scan started...')
 
         key_values = {
 
@@ -96,8 +103,8 @@ class PortScanner(object):
         self.threading_scan(dict_values=key_values)
 
     def craft_packet(self, dport, flag):
-        ip_packet = IP(dst=self.url)
-        tcp_packet = TCP(sport=1024, dport=dport, flags=flag)
+        ip_packet = IP(dst=self.ip)
+        tcp_packet = TCP(sport=self.sport, dport=dport, flags=flag)
 
         return ip_packet, tcp_packet
 
@@ -135,24 +142,17 @@ class PortScanner(object):
 
         t1 = time.time()
 
-        port_list = [port for port in range(0, 200)]
+        port_list = [port for port in range(self.start_port, self.end_port)]
 
         dict_list = []
 
-        for i in range(len(port_list)):
+        for _ in range(len(port_list)):
             dict_list.append(dict_values)
 
-        with ThreadPoolExecutor(max_workers=20) as executor:
+        with ThreadPoolExecutor(max_workers=self.threads) as executor:
             executor.map(self.baseScan, dict_list, port_list)
 
         t2 = time.time()
 
-        print('[+] The time taken is...', t2-t1)
-
-
-if __name__ == '__main__':
-    newObj = PortScanner(url='10.0.2.6')
-    newObj.fin_scan()
-    newObj.null_scan()
-    newObj.tcp_ack_scan()
-    newObj.xmas_scan()
+        print('[+] Completed.')
+        print('[!] The time taken is : ', t2-t1)
