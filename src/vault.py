@@ -22,13 +22,13 @@ import sys
                              7. Testing HTTP methods
                              8. Insecure headers
 
-    3. Collecting data 1. Port scanning
-                       2. Header grabbing
-                       3. Banner grabbing
-                       4. Finding comments in source code
-                       5. Smartwhois scan
-                       6. Check if error handling is done or not and extract the site data using that information
-                       7. OS Scanning
+    3. Collecting data :  1. Port scanning
+                          2. Header grabbing
+                          3. Banner grabbing
+                          4. Finding comments in source code
+                          5. Smartwhois scan*
+                          6. Check if error handling is done or not and extract the site data using that information
+                          7. OS Scanning
 
     4. SSL scanner
 
@@ -38,12 +38,19 @@ import sys
 
     7. URL fuzzing
 
-    8. Shellsock checking
+    8. Shellshock checking
 """
 
 if __name__ == '__main__':
 
-    print('\nWelcome to VAULT Scanner...\n')
+    print(""" ____   _________   ____ ___.____  ___________
+\   \ /   /  _  \ |    |   \    | \__    ___/
+ \   Y   /  /_\  \|    |   /    |   |    |
+  \     /    |    \    |  /|    |___|    |
+   \___/\____|__  /______/ |_______ \____|
+                \/                 \/         """)
+
+    print("\nWelcome to Vault Scanner\n")
 
     # Taking in arguments
     parser = argparse.ArgumentParser(description="VAULT Scanner")
@@ -56,6 +63,15 @@ if __name__ == '__main__':
     parser.add_argument('-info', action='store_true', help='Gather information')
     parser.add_argument('-comment', action='store_true', help='Finding comments')
     parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
+    parser.add_argument('-ip','--ip', help='IP address for port scanning')
+    parser.add_argument('-t', '--threads', help='Number of threads to use')
+    parser.add_argument('-source_port', help='Source port for sending packets')
+    parser.add_argument('-fin', action='store_true', help='Perform FIN Scan')
+    parser.add_argument('-null', action='store_true', help='Perform NULL Scan')
+    parser.add_argument('-ack', action='store_true', help='Perform TCP ACK Scan')
+    parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
+    parser.add_argument('-c', '--crawl', action='store_true', help='Crawl and collect all the links')
+    parser.add_argument('-xss', action='store_true', help='Scan for XSS vulnerabilities')
 
     # Print help message if no argumnents are supplied
     if len(sys.argv) == 1:
@@ -63,6 +79,15 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = parser.parse_args()
+
+    if not args.start_port:
+        start_port = None
+    if not args.end_port:
+        end_port = None
+    if not args.source_port:
+        source_port = None
+    if not args.threads:
+        threads = None
 
     if args.ssl:
         if not args.url:
@@ -124,5 +149,72 @@ if __name__ == '__main__':
 
         except ImportError:
             print('[-] Could not import the required module.')
+        except Exception as e:
+            print(e)
+
+    if args.fin:
+        if not args.ip:
+            print('[-] Please enter an IP address for scanning')
+            sys.exit(1)
+        try:
+            print('\nInitiating FIN Scan')
+
+            from network_scanner import port_scanner
+
+            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
+            portScanObj.fin_scan()
+        except ImportError:
+            print('[-] Could not import the required module')
+            sys.exit(1)
+        except Exception as e:
+            print(e)
+
+    if args.null:
+        if not args.ip:
+            print('[-] Please enter an IP address for scanning')
+            sys.exit(1)
+        try:
+            print('\nInitiating NULL Scan')
+
+            from network_scanner import port_scanner
+
+            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
+            portScanObj.null_scan()
+        except ImportError:
+            print('[-] Could not import the required module.')
+            sys.exit(1)
+        except Exception as e:
+            print(e)
+
+    if args.ack:
+        if not args.ip:
+            print('[-] Please enter an IP address for scanning')
+            sys.exit(1)
+        try:
+            print('\nInitiating TCP ACK Scan')
+
+            from network_scanner import port_scanner
+
+            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
+            portScanObj.tcp_ack_scan()
+        except ImportError:
+            print('[-] Could not import the required module.')
+        except Exception as e:
+            print(e)
+
+    if args.xmas:
+        if not args.ip:
+            print('[-] Please enter an IP address for scanning')
+            sys.exit(1)
+        try:
+            print('\nInitiating XMAS Scan')
+
+            from network_scanner import port_scanner
+
+            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
+            portScanObj.xmas_scan()
+        except ImportError:
+            print('[-] Could not import the required module.')
+            sys.exit(1)
         except Exception as e:
             print(e)
