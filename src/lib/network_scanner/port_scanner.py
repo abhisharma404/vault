@@ -7,7 +7,7 @@ import time
 
 class PortScanner(object):
 
-    """List of scans : 1. NULL Scan
+    """ List of scans : 1. NULL Scan
                        2. FIN Scan
                        3. TCP ACK Scan
                        4. XMAS Scan

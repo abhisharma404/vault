@@ -94,7 +94,7 @@ if __name__ == '__main__':
             print('[-] Please enter an URL for SSL scanning')
             sys.exit(1)
         try:
-            from ssl_scanner import ssl_scanner
+            from lib.ssl_scanner import ssl_scanner
             print('\n--SSL scan using SSL Labs API--\n')
 
             data = ssl_scanner.analyze(args.url)
@@ -109,7 +109,7 @@ if __name__ == '__main__':
             print('[-] Please enter an URl for information gathering')
             sys.exit(1)
         try:
-            from info_gathering import header_vuln
+            from lib.info_gathering import header_vuln
             print('[+] Performing informatio gathering over : {}'.format(args.url))
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
@@ -126,7 +126,7 @@ if __name__ == '__main__':
             print('[-] Please enter an URL for finding comments')
             sys.exit(1)
         try:
-            from info_gathering import finding_comment
+            from lib.info_gathering import finding_comment
             print('[+] Performing comment gathering over : {}'.format(args.url))
 
             findCommnentObj = finding_comment.FindingComments(args.url)
@@ -142,7 +142,7 @@ if __name__ == '__main__':
             print('[-] Please enter an URL for fuzzing')
             sys.exit(1)
         try:
-            from fuzzer import fuzzer
+            from lib.fuzzer import fuzzer
             print('[+] Performing fuzzing on : {}'.format(args.url))
             fuzzObj = fuzzer.Fuzzer(base_url=args.url)
             fuzzObj.initiate()
@@ -159,7 +159,7 @@ if __name__ == '__main__':
         try:
             print('\nInitiating FIN Scan')
 
-            from network_scanner import port_scanner
+            from lib.network_scanner import port_scanner
 
             portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
             portScanObj.fin_scan()
@@ -176,7 +176,7 @@ if __name__ == '__main__':
         try:
             print('\nInitiating NULL Scan')
 
-            from network_scanner import port_scanner
+            from lib.network_scanner import port_scanner
 
             portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
             portScanObj.null_scan()
@@ -193,7 +193,7 @@ if __name__ == '__main__':
         try:
             print('\nInitiating TCP ACK Scan')
 
-            from network_scanner import port_scanner
+            from lib.network_scanner import port_scanner
 
             portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
             portScanObj.tcp_ack_scan()
@@ -209,7 +209,7 @@ if __name__ == '__main__':
         try:
             print('\nInitiating XMAS Scan')
 
-            from network_scanner import port_scanner
+            from lib.network_scanner import port_scanner
 
             portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
             portScanObj.xmas_scan()

@@ -34,7 +34,7 @@ class HeaderVuln(object):
         headers_dict = self.gather_header()
 
         if headers_dict:
-            print('\n---[!] Finding vulnerablilties---\n')
+            print('\n---[!] Finding vulnerabilities---\n')
 
             try:
                 xssprotect = headers_dict['X-XSS-Protection']
@@ -43,19 +43,19 @@ class HeaderVuln(object):
                 else:
                     print('[+] X-XSS-Protection set propely.')
             except:
-                print('[+] Escaping!...')
+                print('[!] Escaping!...')
 
             try:
                 contenttype = headers_dict['X-Content-Type-Options']
                 if contenttype != 'nosniff':
-                    print('[+] X-Content-Type-Options not set properly.')
+                    print('[-] X-Content-Type-Options not set properly.')
             except:
-                print('[+] Escaping')
+                print('[!] Escaping')
 
             try:
                 hsts = headers_dict['Strict-Transport-Security']
             except:
-                print('[+] HSTS not set properly.')
+                print('[-] HSTS not set properly.')
 
             try:
                 csp = headers_dict['Content-Security-Policy']
