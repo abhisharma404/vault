@@ -147,7 +147,10 @@ class PortScanner(object):
 
         t1 = time.time()
 
-        port_list = [port for port in range(self.start_port, self.end_port)]
+        if self.start_port == self.end_port:
+            port_list = [self.start_port]
+        else:
+            port_list = [port for port in range(self.start_port, self.end_port)]
 
         dict_list = []
 
