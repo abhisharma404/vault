@@ -17,7 +17,7 @@ class Fuzzer(object):
         self.m = multiprocessing.Manager()
         self.base_url = base_url
         try:
-            self.fuzz_file_path = os.getcwd() + '/payloads/fuzz_url2.txt'
+            self.fuzz_file_path = os.getcwd() + '/payloads/fuzz_url.txt'
             if not os.path.exists(self.fuzz_file_path):
                 raise Exception('Directory does not exist')
         except Exception as e:
