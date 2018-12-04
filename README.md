@@ -18,7 +18,7 @@ Vault Scanner can be used for:
       - Session fixation through a cookie injection
       - Spoofing Agents
       - Brute force login through authorization header
-      - Testing http methods
+      - Testing HTTP methods
       - Insecure headers
 
 * Collecting data:
@@ -32,7 +32,7 @@ Vault Scanner can be used for:
 
 * SSL scanner.
 
-* Crawl a website and collect all the url related fields.
+* Crawl a website and collect all the URLs.
 
 * Scrape a website and collect all the images.
 
