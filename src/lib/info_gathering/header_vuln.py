@@ -1,10 +1,8 @@
 #! /usr/bin/python
 
 import requests
-import random
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-import re
 
 
 class HeaderVuln(object):

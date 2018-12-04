@@ -12,7 +12,6 @@ class XSS(object):
         self.payload_list = []
 
     def processPayload(self):
-
         """This function process payload from file"""
 
         with open(self.payload) as file:

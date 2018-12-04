@@ -64,7 +64,7 @@ if __name__ == '__main__':
     parser.add_argument('-info', action='store_true', help='Gather information')
     parser.add_argument('-comment', action='store_true', help='Finding comments')
     parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
-    parser.add_argument('-ip','--ip', help='IP address for port scanning')
+    parser.add_argument('-ip', '--ip', help='IP address for port scanning')
     parser.add_argument('-t', '--threads', help='Number of threads to use')
     parser.add_argument('-source_port', help='Source port for sending packets')
     parser.add_argument('-fin', action='store_true', help='Perform FIN Scan')
@@ -159,8 +159,8 @@ if __name__ == '__main__':
             from lib.port_scanner import port_scanner
 
             portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
-                                                end_port=args.end_port, threads=args.threads,
-                                                source_port=args.source_port)
+                                                   end_port=args.end_port, threads=args.threads,
+                                                   source_port=args.source_port)
             portScanObj.fin_scan()
         except ImportError:
             print('[-] Could not import the required module')
@@ -178,8 +178,8 @@ if __name__ == '__main__':
             from lib.port_scanner import port_scanner
 
             portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
-                                                end_port=args.end_port, threads=args.threads,
-                                                source_port=args.source_port)
+                                                   end_port=args.end_port, threads=args.threads,
+                                                   source_port=args.source_port)
             portScanObj.null_scan()
         except ImportError:
             print('[-] Could not import the required module.')
@@ -197,8 +197,8 @@ if __name__ == '__main__':
             from lib.port_scanner import port_scanner
 
             portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
-                                                end_port=args.end_port, threads=args.threads,
-                                                source_port=args.source_port)
+                                                   end_port=args.end_port, threads=args.threads,
+                                                   source_port=args.source_port)
             portScanObj.tcp_ack_scan()
         except ImportError:
             print('[-] Could not import the required module.')
@@ -215,8 +215,8 @@ if __name__ == '__main__':
             from lib.port_scanner import port_scanner
 
             portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
-                                                end_port=args.end_port, threads=args.threads,
-                                                source_port=args.source_port)
+                                                   end_port=args.end_port, threads=args.threads,
+                                                   source_port=args.source_port)
             portScanObj.xmas_scan()
         except ImportError:
             print('[-] Could not import the required module.')
@@ -250,7 +250,7 @@ if __name__ == '__main__':
                 import xss
 
                 xssScanObj = xss.XSS(url=links,
-                                    payload_file=os.getcwd()+'/payloads/xss_payloads.txt')
+                                     payload_file=os.getcwd()+'/payloads/xss_payloads.txt')
                 xssScanObj.initiateEngine()
             except ImportError:
                 print('[-] Could not import the required module')

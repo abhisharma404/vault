@@ -1,7 +1,6 @@
 #! /usr/bin/python
 
 import requests
-import re
 from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
 import threading
@@ -36,7 +35,7 @@ class Scanner:
                     list_of_tasks.append(t)
 
                 for task in list_of_tasks:
-                	task.join()
+                    task.join()
         else:
             list_forms = self.extract_forms(self.target_url[0])
             if len(list_forms) == 0:
@@ -49,7 +48,7 @@ class Scanner:
                 list_of_tasks.append(t)
 
             for task in list_of_tasks:
-            	task.join()
+                task.join()
 
         t2 = time.time()
 
