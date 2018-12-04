@@ -50,15 +50,15 @@ if __name__ == '__main__':
    \___/\____|__  /______/ |_______ \____|
                 \/                 \/         """)
 
-    print("\nWelcome to Vault Scanner\n")
+    print("\nWelcome to Vault Scanner!\n")
 
     # Taking in arguments
     parser = argparse.ArgumentParser(description="VAULT Scanner")
 
     parser.add_argument('-u', '--url', help='URL for scanning')
-    parser.add_argument('-p', '--port', action='store_true', help='Port for scanning')
-    parser.add_argument('-sp', '--start_port', action='store_true', help='Start port for scanning')
-    parser.add_argument('-ep', '--end_port', action='store_true', help='End port for scanning')
+    parser.add_argument('-p', '--port', action='store_true', help='Single port for scanning')
+    parser.add_argument('-sp', '--start_port', help='Start port for scanning')
+    parser.add_argument('-ep', '--end_port', help='End port for scanning')
     parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
     parser.add_argument('-info', action='store_true', help='Gather information')
     parser.add_argument('-comment', action='store_true', help='Finding comments')
@@ -72,6 +72,7 @@ if __name__ == '__main__':
     parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
     parser.add_argument('-c', '--crawl', action='store_true', help='Crawl and collect all the links')
     parser.add_argument('-xss', action='store_true', help='Scan for XSS vulnerabilities')
+    parser.add_argument('-this', action='store_true', help='Only scan the given URL, do not crawl')
 
     # Print help message if no argumnents are supplied
     if len(sys.argv) == 1:
@@ -79,15 +80,6 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = parser.parse_args()
-
-    if not args.start_port:
-        start_port = None
-    if not args.end_port:
-        end_port = None
-    if not args.source_port:
-        source_port = None
-    if not args.threads:
-        threads = None
 
     if args.ssl:
         if not args.url:
@@ -144,7 +136,7 @@ if __name__ == '__main__':
         try:
             from lib.fuzzer import fuzzer
             print('[+] Performing fuzzing on : {}'.format(args.url))
-            fuzzObj = fuzzer.Fuzzer(base_url=args.url)
+            fuzzObj = fuzzer.Fuzzer(base_url=args.url, thread_num=args.threads)
             fuzzObj.initiate()
 
         except ImportError:
@@ -159,9 +151,11 @@ if __name__ == '__main__':
         try:
             print('\nInitiating FIN Scan')
 
-            from lib.network_scanner import port_scanner
+            from lib.port_scanner import port_scanner
 
-            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
+            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
+                                                end_port=args.end_port, threads=args.threads,
+                                                source_port=args.source_port)
             portScanObj.fin_scan()
         except ImportError:
             print('[-] Could not import the required module')
@@ -176,9 +170,11 @@ if __name__ == '__main__':
         try:
             print('\nInitiating NULL Scan')
 
-            from lib.network_scanner import port_scanner
+            from lib.port_scanner import port_scanner
 
-            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
+            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
+                                                end_port=args.end_port, threads=args.threads,
+                                                source_port=args.source_port)
             portScanObj.null_scan()
         except ImportError:
             print('[-] Could not import the required module.')
@@ -193,9 +189,11 @@ if __name__ == '__main__':
         try:
             print('\nInitiating TCP ACK Scan')
 
-            from lib.network_scanner import port_scanner
+            from lib.port_scanner import port_scanner
 
-            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
+            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
+                                                end_port=args.end_port, threads=args.threads,
+                                                source_port=args.source_port)
             portScanObj.tcp_ack_scan()
         except ImportError:
             print('[-] Could not import the required module.')
@@ -209,9 +207,11 @@ if __name__ == '__main__':
         try:
             print('\nInitiating XMAS Scan')
 
-            from lib.network_scanner import port_scanner
+            from lib.port_scanner import port_scanner
 
-            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=start_port, end_port=end_port, threads=threads)
+            portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
+                                                end_port=args.end_port, threads=args.threads,
+                                                source_port=args.source_port)
             portScanObj.xmas_scan()
         except ImportError:
             print('[-] Could not import the required module.')
