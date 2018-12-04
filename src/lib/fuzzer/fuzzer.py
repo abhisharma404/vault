@@ -5,17 +5,26 @@ from urllib.parse import urljoin
 import time
 import threading
 import multiprocessing
+import os
+import sys
 
 
 class Fuzzer(object):
 
     """fuzzObj = Fuzzer(base_url='http://sample-site', thread_num=10, fuzz_file_path='fuzz_url.txt')"""
 
-    def __init__(self, fuzz_file_path='fuzz_url.txt', base_url=None, thread_num=10):
+    def __init__(self, base_url=None, thread_num=None):
         self.m = multiprocessing.Manager()
         self.base_url = base_url
-        self.fuzz_file_path = fuzz_file_path
-        self.thread_num = thread_num
+        try:
+            self.fuzz_file_path = os.getcwd() + '/payloads/fuzz_url.txt'
+        except:
+            print('[-] Directory does not exist.')
+            sys.exit(1)
+        if thread_num is None:
+            self.thread_num = 1
+        else:
+            self.thread_num = int(thread_num)
         self.fuzz_queue = self.m.Queue()
         self.discovered_url = []
         self.redirected_url = []
