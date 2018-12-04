@@ -31,12 +31,3 @@ class XSS(object):
         self.payload_list = self.listPayloads()
         engine = scanner.Scanner(self.url, self.payload_list)
         engine.inject_payload()
-
-
-if __name__  == '__main__':
-    newObj = Crawl(url='http://10.0.2.6/mutillidae')
-    links = []
-    links.append('http://10.0.2.6/mutillidae')
-
-    ScanObj = XSS(url=links, payload_file='xss_payloads.txt')
-    ScanObj.initiateEngine()
