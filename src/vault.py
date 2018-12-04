@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+import os
 
 
 """ This is the beginning point for VAULT Scanner.
@@ -222,3 +223,40 @@ if __name__ == '__main__':
             sys.exit(1)
         except Exception as e:
             print(e)
+
+    if args.xss:
+        if args.url:
+            links = []
+
+            path = os.getcwd() + '/lib/website_scanner/xss'
+            sys.path.insert(0, path)
+
+            if args.this:
+                print('[+] Performing XSS Vulnerability Scan on : {}'.format(args.url))
+                links.append(args.url)
+            else:
+                print('[+] Collecting all the links, crawling : {}'.format(args.url))
+
+                try:
+                    import crawler
+                    crawlObj = crawler.Crawl(url=args.url)
+                    links = crawlObj.getList()
+                except ImportError:
+                    print('[-] Could not import the required module.')
+                except Exception as e:
+                    print(e)
+
+            try:
+                import xss
+
+                xssScanObj = xss.XSS(url=links,
+                                    payload_file=os.getcwd()+'/payloads/xss_payloads.txt')
+                xssScanObj.initiateEngine()
+            except ImportError:
+                print('[-] Could not import the required module')
+                sys.exit(1)
+            except Exception as e:
+                print(e)
+        else:
+            print('[-] Please enter an URL for XSS Scanning')
+            sys.exit(1)
