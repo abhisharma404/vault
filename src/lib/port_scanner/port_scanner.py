@@ -8,31 +8,36 @@ import time
 class PortScanner(object):
 
     """ List of scans : 1. NULL Scan
-                       2. FIN Scan
-                       3. TCP ACK Scan
-                       4. XMAS Scan
+                        2. FIN Scan
+                        3. TCP ACK Scan
+                        4. XMAS Scan
     """
 
-    def __init__(self, start_port=None, end_port=None, ip=None, threads=1):
+    def __init__(self, start_port=None, end_port=None, ip=None, threads=1, source_port=None):
         if start_port is None:
             self.start_port = 0
         else:
-            self.start_port = start_port
+            self.start_port = int(start_port)
 
         if end_port is None:
             self.end_port = 65535
         else:
-            self.end_port = end_port
+            self.end_port = int(end_port)
 
         if ip is None:
             print('[!] IP is empty, please specify an IP address...')
         else:
             self.ip = ip
 
-        self.sport = 1024
+        if source_port is None:
+            self.sport = 1024
+        else:
+            self.sport = int(source_port)
 
         if threads is None:
             self.threads = 1
+        else:
+            self.threads = int(threads)
 
     def fin_scan(self):
 

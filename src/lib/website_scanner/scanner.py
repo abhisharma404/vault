@@ -1,4 +1,4 @@
-"""This is the main engine of the program"""
+#! /usr/bin/python
 
 import requests
 import re
@@ -14,32 +14,32 @@ class Scanner:
         self.target_url = url
         self.payload = payload
 
-    def extract_forms(self):
-        response = requests.get(self.target_url)
+    def extract_forms(self, url):
+        response = requests.get(url)
         soup_obj = BeautifulSoup(response.text, 'lxml')
         list_forms = soup_obj.findAll('form')
         return list_forms
 
     def inject_payload(self):
-        list_forms = self.extract_forms()
-        list_of_tasks = []
 
-        #t1 = time.time()
+        t1 = time.time()
+        for url in self.target_url:
+            list_forms = self.extract_forms(url)
+            list_of_tasks = []
 
-        for form in list_forms:
-            self.scanLoad(form)
-            # t = threading.Thread(target=self.scanLoad, args=(form,))
-            # t.start()
-            # list_of_tasks.append(t)
+            for form in list_forms:
+                t = threading.Thread(target=self.scanLoad, args=(form, url,))
+                t.start()
+                list_of_tasks.append(t)
 
-        # for task in list_of_tasks:
-        # 	task.join()
+            for task in list_of_tasks:
+            	task.join()
 
-        #t2 = time.time()
+        t2 = time.time()
 
-        #print('[!] Completed in {}'.format(t2-t1))
+        print('[!] Completed in {}'.format(t2-t1))
 
-    def scanLoad(self, form):
+    def scanLoad(self, form, url):
         input_box = form.findAll('input')
         post_data = {}
 
@@ -53,13 +53,13 @@ class Scanner:
 
                 post_data[box_name] = input_value
 
-            result = requests.post(self.target_url, data=post_data)
+            result = requests.post(url, data=post_data)
 
             if self.payload[i] in result.text:
                 print('\n[!] VULNERABILITY DETECTED!--> ' + self.payload[i])
-                print('[*] LINK IS ', self.target_url)
+                print('[*] LINK IS ', url)
                 print('---FORM DATA---')
                 print(form)
                 print('\n')
             else:
-                print("[+] OK. \n")
+                print("[+] OK , Payload : {} , URL : {}".format(self.payload[i], url))

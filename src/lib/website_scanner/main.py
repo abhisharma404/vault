@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 import type
 from crawler import Crawl
 import threading
