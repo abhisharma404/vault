@@ -56,7 +56,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="VAULT Scanner")
 
     parser.add_argument('-u', '--url', help='URL for scanning')
-    parser.add_argument('-p', '--port', action='store_true', help='Single port for scanning')
+    parser.add_argument('-p', '--port', help='Single port for scanning')
     parser.add_argument('-sp', '--start_port', help='Start port for scanning')
     parser.add_argument('-ep', '--end_port', help='End port for scanning')
     parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
@@ -80,6 +80,10 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = parser.parse_args()
+
+    if args.port:
+        args.start_port = args.port
+        args.end_port = args.port
 
     if args.ssl:
         if not args.url:
