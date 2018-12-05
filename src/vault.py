@@ -43,6 +43,17 @@ from colorama import *
     8. Shellshock checking
 """
 
+
+def check_URL(url: str):
+    """Check whether or not URL have a scheme
+
+        :url: URL that is to be checked
+    """
+    if not urlparse(url).scheme:
+        return 'http://' + url
+
+    return url
+
 if __name__ == '__main__':
 
     print(""" ____   _________   ____ ___.____  ___________
@@ -82,6 +93,9 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = parser.parse_args()
+
+    if args.url:
+        args.url = check_URL(args.url)
 
     if args.port:
         args.start_port = args.port
