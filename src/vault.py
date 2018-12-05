@@ -4,6 +4,7 @@ import argparse
 import sys
 import os
 from urllib.parse import urlparse
+import colors
 
 """ This is the beginning point for VAULT Scanner.
 
@@ -102,7 +103,7 @@ if __name__ == '__main__':
 
     if args.ssl:
         if not args.url:
-            print('[-] Please enter an URL for SSL scanning')
+            colors.error('Please enter an URL for SSL scanning')
             sys.exit(1)
         try:
             from lib.ssl_scanner import ssl_scanner
@@ -111,61 +112,61 @@ if __name__ == '__main__':
             data = ssl_scanner.analyze(args.url)
             ssl_scanner.vulnerability_parser(data)
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
         except Exception as e:
             print(e)
 
     if args.info:
         if not args.url:
-            print('[-] Please enter an URl for information gathering')
+            colors.error('Please enter an URl for information gathering')
             sys.exit(1)
         try:
             from lib.info_gathering import header_vuln
-            print('[+] Performing informatio gathering over : {}'.format(args.url))
+            colors.success('Performing informatio gathering over : {}'.format(args.url))
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
             infoGatherObj.gather_header()
             infoGatherObj.insecure_cookies()
             infoGatherObj.test_http_methods()
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
         except Exception as e:
             print(e)
 
     if args.comment:
         if not args.url:
-            print('[-] Please enter an URL for finding comments')
+            colors.error('Please enter an URL for finding comments')
             sys.exit(1)
         try:
             from lib.info_gathering import finding_comment
-            print('[+] Performing comment gathering over : {}'.format(args.url))
+            colors.success('Performing comment gathering over : {}'.format(args.url))
 
             findCommnentObj = finding_comment.FindingComments(args.url)
             findCommnentObj.parse_comments()
 
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
         except Exception as e:
             print(e)
 
     if args.fuzz:
         if not args.url:
-            print('[-] Please enter an URL for fuzzing')
+            colors.error('Please enter an URL for fuzzing')
             sys.exit(1)
         try:
             from lib.fuzzer import fuzzer
-            print('[+] Performing fuzzing on : {}'.format(args.url))
+            colors.success('Performing fuzzing on : {}'.format(args.url))
             fuzzObj = fuzzer.Fuzzer(base_url=args.url, thread_num=args.threads)
             fuzzObj.initiate()
 
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
         except Exception as e:
             print(e)
 
     if args.fin:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            colors.error('Please enter an IP address for scanning')
             sys.exit(1)
         try:
             print('\nInitiating FIN Scan')
@@ -177,14 +178,14 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.fin_scan()
         except ImportError:
-            print('[-] Could not import the required module')
+            colors.error('Could not import the required module')
             sys.exit(1)
         except Exception as e:
             print(e)
 
     if args.null:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            colors.error('Please enter an IP address for scanning')
             sys.exit(1)
         try:
             print('\nInitiating NULL Scan')
@@ -196,14 +197,14 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.null_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
             sys.exit(1)
         except Exception as e:
             print(e)
 
     if args.ack:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            colors.error('Please enter an IP address for scanning')
             sys.exit(1)
         try:
             print('\nInitiating TCP ACK Scan')
@@ -215,13 +216,13 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.tcp_ack_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
         except Exception as e:
             print(e)
 
     if args.xmas:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            colors.error('Please enter an IP address for scanning')
             sys.exit(1)
         try:
             print('\nInitiating XMAS Scan')
@@ -233,7 +234,7 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.xmas_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
             sys.exit(1)
         except Exception as e:
             print(e)
@@ -246,17 +247,17 @@ if __name__ == '__main__':
             sys.path.insert(0, path)
 
             if args.this:
-                print('[+] Performing XSS Vulnerability Scan on : {}'.format(args.url))
+                colors.success('Performing XSS Vulnerability Scan on : {}'.format(args.url))
                 links.append(args.url)
             else:
-                print('[+] Collecting all the links, crawling : {}'.format(args.url))
+                colors.success('Collecting all the links, crawling : {}'.format(args.url))
 
                 try:
                     import crawler
                     crawlObj = crawler.Crawl(url=args.url)
                     links = crawlObj.getList()
                 except ImportError:
-                    print('[-] Could not import the required module.')
+                    colors.error('Could not import the required module.')
                 except Exception as e:
                     print(e)
 
@@ -267,10 +268,10 @@ if __name__ == '__main__':
                                      payload_file=os.getcwd()+'/payloads/xss_payloads.txt')
                 xssScanObj.initiateEngine()
             except ImportError:
-                print('[-] Could not import the required module')
+                colors.error('Could not import the required module')
                 sys.exit(1)
             except Exception as e:
                 print(e)
         else:
-            print('[-] Please enter an URL for XSS Scanning')
+            colors.error('Please enter an URL for XSS Scanning')
             sys.exit(1)
