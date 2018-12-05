@@ -1,3 +1,4 @@
+![logo](https://i.ibb.co/ChbrZLj/vault-small.png) 
 # VAULT Scanner
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/740204dd950c4e49841c94f2c32af78a)](https://app.codacy.com/app/abhisharma404/vault_scanner?utm_source=github.com&utm_medium=referral&utm_content=abhisharma404/vault_scanner&utm_campaign=Badge_Grade_Dashboard)
