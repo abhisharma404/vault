@@ -3,6 +3,7 @@
 import re
 from urllib.parse import *
 import requests
+from colorama import *
 
 
 class Crawl(object):
@@ -35,7 +36,7 @@ class Crawl(object):
                     self.crawl(link)
 
     def getList(self):
-        print('[+] Crawling, collecting links...')
+        print(Fore.GREEN+'[+] Crawling, collecting links...'+Fore.RESET)
         self.extract_links_from()
         self.crawl()
         return self.target_links

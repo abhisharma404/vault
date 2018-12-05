@@ -3,7 +3,8 @@
 import argparse
 import sys
 import os
-
+from urllib.parse import urlparse
+from colorama import *
 
 """ This is the beginning point for VAULT Scanner.
 
@@ -51,7 +52,7 @@ if __name__ == '__main__':
    \___/\____|__  /______/ |_______ \____|
                 \/                 \/         """)
 
-    print("\nWelcome to Vault Scanner!\n")
+    print(Fore.BLUE + "\nWelcome to Vault Scanner!\n" + Fore.RESET)
 
     # Taking in arguments
     parser = argparse.ArgumentParser(description="VAULT Scanner")
@@ -88,73 +89,73 @@ if __name__ == '__main__':
 
     if args.ssl:
         if not args.url:
-            print('[-] Please enter an URL for SSL scanning')
+            print(Fore.BLUE + '[-] Please enter an URL for SSL scanning' + Fore.RESET)
             sys.exit(1)
         try:
             from lib.ssl_scanner import ssl_scanner
-            print('\n--SSL scan using SSL Labs API--\n')
+            print(Fore.GREEN+'\n--SSL scan using SSL Labs API--\n' + Fore.RESET)
 
             data = ssl_scanner.analyze(args.url)
             ssl_scanner.vulnerability_parser(data)
         except ImportError:
-            print('[-] Could not import the required module.')
+            print(Fore.RED + '[-] Could not import the required module.' +Fore.RESET)
         except Exception as e:
             print(e)
 
     if args.info:
         if not args.url:
-            print('[-] Please enter an URl for information gathering')
+            print(Fore.BLUE + '[-] Please enter an URl for information gathering'+Fore.RESET)
             sys.exit(1)
         try:
             from lib.info_gathering import header_vuln
-            print('[+] Performing informatio gathering over : {}'.format(args.url))
+            print(Fore.BLUE+'[+] Performing information gathering over : {}'.format(args.url)+Fore.RESET)
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
             infoGatherObj.gather_header()
             infoGatherObj.insecure_cookies()
             infoGatherObj.test_http_methods()
         except ImportError:
-            print('[-] Could not import the required module.')
+            print(Fore.RED + '[-] Could not import the required module.'+Fore.RESET)
         except Exception as e:
             print(e)
 
     if args.comment:
         if not args.url:
-            print('[-] Please enter an URL for finding comments')
+            print(Fore.GREEN + '[-] Please enter an URL for finding comments'+Fore.RESET)
             sys.exit(1)
         try:
             from lib.info_gathering import finding_comment
-            print('[+] Performing comment gathering over : {}'.format(args.url))
+            print(Fore.BLUE+'[+] Performing comment gathering over : {}'.format(args.url)+Fore.BLUE)
 
             findCommnentObj = finding_comment.FindingComments(args.url)
             findCommnentObj.parse_comments()
 
         except ImportError:
-            print('[-] Could not import the required module.')
+            print(Fore.RED + '[-] Could not import the required module.'+Fore.RESET)
         except Exception as e:
             print(e)
 
     if args.fuzz:
         if not args.url:
-            print('[-] Please enter an URL for fuzzing')
+            print(Fore.BLUE + '[-] Please enter an URL for fuzzing' +Fore.RESET)
             sys.exit(1)
         try:
             from lib.fuzzer import fuzzer
-            print('[+] Performing fuzzing on : {}'.format(args.url))
+            print(Fore.BLUE+'[+] Performing fuzzing on : {}'.format(args.url)+Fore.RESET)
             fuzzObj = fuzzer.Fuzzer(base_url=args.url, thread_num=args.threads)
             fuzzObj.initiate()
 
         except ImportError:
-            print('[-] Could not import the required module.')
+            print(Fore.RED + '[-] Could not import the required module.'+ Fore.RESET)
         except Exception as e:
             print(e)
 
     if args.fin:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            print(Fore.BLUE + '[-] Please enter an IP address for scanning0'+ Fore.RESET)
             sys.exit(1)
         try:
-            print('\nInitiating FIN Scan')
+            print(Fore.GREEN+'\nInitiating FIN Scan'+Fore.RESET)
 
             from lib.port_scanner import port_scanner
 
@@ -163,17 +164,17 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.fin_scan()
         except ImportError:
-            print('[-] Could not import the required module')
+            print(Fore.RED+'[-] Could not import the required module'+Fore.RESET)
             sys.exit(1)
         except Exception as e:
             print(e)
 
     if args.null:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            print(Fore.GREEN+'[-] Please enter an IP address for scanning'+Fore.RESET)
             sys.exit(1)
         try:
-            print('\nInitiating NULL Scan')
+            print(Fore.BLUE+'\nInitiating NULL Scan'+Fore.RESET)
 
             from lib.port_scanner import port_scanner
 
@@ -182,17 +183,17 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.null_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            print(Fore.RED+'[-] Could not import the required module.'+Fore.RESET)
             sys.exit(1)
         except Exception as e:
             print(e)
 
     if args.ack:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            print(Fore.GREEN+'[-] Please enter an IP address for scanning'+Fore.RESET)
             sys.exit(1)
         try:
-            print('\nInitiating TCP ACK Scan')
+            print(Fore.GREEN+'\nInitiating TCP ACK Scan'+Fore.RESET)
 
             from lib.port_scanner import port_scanner
 
@@ -201,16 +202,16 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.tcp_ack_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            print(Fore.RED+'[-] Could not import the required module.'+Fore.RESET)
         except Exception as e:
             print(e)
 
     if args.xmas:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            print(Fore.BLUE+'[-] Please enter an IP address for scanning'+Fore.RESET)
             sys.exit(1)
         try:
-            print('\nInitiating XMAS Scan')
+            print(Fore.BLUE+'\nInitiating XMAS Scan'+Fore.RESET)
 
             from lib.port_scanner import port_scanner
 
@@ -219,7 +220,7 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.xmas_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            print(Fore.RED+'[-] Could not import the required module.'+Fore.RESET)
             sys.exit(1)
         except Exception as e:
             print(e)
@@ -232,17 +233,17 @@ if __name__ == '__main__':
             sys.path.insert(0, path)
 
             if args.this:
-                print('[+] Performing XSS Vulnerability Scan on : {}'.format(args.url))
+                print(Fore.BLUE+'[+] Performing XSS Vulnerability Scan on : {}' + Fore.RESET  .format(args.url))
                 links.append(args.url)
             else:
-                print('[+] Collecting all the links, crawling : {}'.format(args.url))
+                print(Fore.BLUE+'[+] Collecting all the links, crawling : {}' + Fore.RESET  .format(args.url))
 
                 try:
                     import crawler
                     crawlObj = crawler.Crawl(url=args.url)
                     links = crawlObj.getList()
                 except ImportError:
-                    print('[-] Could not import the required module.')
+                    print(Fore.RED+'[-] Could not import the required module.'+Fore.RESET)
                 except Exception as e:
                     print(e)
 
@@ -253,10 +254,10 @@ if __name__ == '__main__':
                                      payload_file=os.getcwd()+'/payloads/xss_payloads.txt')
                 xssScanObj.initiateEngine()
             except ImportError:
-                print('[-] Could not import the required module')
+                print(Fore.GREEN+'[-] Could not import the required module'+Fore.RESET)
                 sys.exit(1)
             except Exception as e:
                 print(e)
         else:
-            print('[-] Please enter an URL for XSS Scanning')
+            print(Fore.BLUE+'[-] Please enter an URL for XSS Scanning'+Fore.RESET)
             sys.exit(1)

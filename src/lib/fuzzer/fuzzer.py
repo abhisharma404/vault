@@ -7,6 +7,7 @@ import threading
 import multiprocessing
 import os
 import sys
+from colorama import * 
 
 
 class Fuzzer(object):
@@ -21,7 +22,7 @@ class Fuzzer(object):
             if not os.path.exists(self.fuzz_file_path):
                 raise Exception('Directory does not exist')
         except Exception as e:
-            print('[-]', e)
+            print(Fore.BLUE+'[-]'+Fore.RESET, e)
             sys.exit(1)
         if thread_num is None:
             self.thread_num = 1
@@ -60,10 +61,10 @@ class Fuzzer(object):
             try:
                 status = self.send_request(fuzz_url)
                 if status == 1:
-                    print('[+] Found -> ', fuzz_url)
+                    print(Fore.BLUE+'[+] Found -> '+Fore.RESET, fuzz_url)
                     self.discovered_url.append(fuzz_url)
                 elif status == 2:
-                    print('[!] Redirection Detected -> ', fuzz_url)
+                    print(Fore.BLUE+'[!] Redirection Detected -> '+Fore.RESET, fuzz_url)
                     self.redirected_url.append(fuzz_url)
             except Exception as e:
                 print(e)
@@ -74,7 +75,7 @@ class Fuzzer(object):
 
         threads = []
 
-        print('[!] URL Fuzzing started...')
+        print(Fore.GREEN+'[!] URL Fuzzing started...'+Fore.RESET)
 
         for _ in range(self.thread_num):
             newThread = threading.Thread(target=self.start_engine)
@@ -86,4 +87,4 @@ class Fuzzer(object):
 
         t2 = time.time()
 
-        print('[!] Successfully completed in : {} seconds.'.format(t2-t1))
+        print(Fore.GREEN+'[!] Successfully completed in : {} seconds.'+Fore.RESET .format(t2-t1))

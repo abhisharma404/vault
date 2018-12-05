@@ -3,6 +3,7 @@
 import requests
 import re
 from bs4 import BeautifulSoup
+from colorama import *
 
 
 class FindingComments(object):
@@ -28,4 +29,4 @@ class FindingComments(object):
             for comment_code, comment in self.found_comments.items():
                 print('[+] Found for ', comment_code, ' : ', comment)
         else:
-            print('[-] No comment found!.')
+            print(Fore.RED+'[-] No comment found!.'+Fore.RESET)

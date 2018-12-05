@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from concurrent.futures import ThreadPoolExecutor
 import threading
 import time
+from colorama import *
 
 
 class Scanner:
@@ -71,9 +72,9 @@ class Scanner:
             result = requests.post(url, data=post_data)
 
             if self.payload[i] in result.text:
-                print('\n[!] VULNERABILITY DETECTED!--> ' + self.payload[i])
-                print('[*] LINK IS ', url)
-                print('---FORM DATA---')
+                print(Fore.RED+'\n[!] VULNERABILITY DETECTED!--> ' +Fore.RESET + self.payload[i])
+                print(Fore.GREEN+'[*] LINK IS '+Fore.RESET, url)
+                print(Fore.GREEN+'---FORM DATA---'+Fore.RESET)
                 print(form)
                 print('\n')
             else:

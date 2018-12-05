@@ -3,7 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
-
+from colorama import *
 
 class HeaderVuln(object):
 
@@ -15,13 +15,13 @@ class HeaderVuln(object):
             resp = requests.get(self.url)
             return resp
         except:
-            print('[-] Error in network connection!')
+            print(Fore.RED+'[-] Error in network connection!'+Fore.RESET)
 
     def gather_header(self):
         try:
             r = self.get_response()
             headers_dict = r.headers
-            print('---[!] Header Details---\n')
+            print(Fore.GREEN+'---[!] Header Details---\n'+Fore.RESET)
             for key, value in headers_dict.items():
                 print('[+] {} : {}'.format(key, value))
             return headers_dict
@@ -32,50 +32,50 @@ class HeaderVuln(object):
         headers_dict = self.gather_header()
 
         if headers_dict:
-            print('\n---[!] Finding vulnerabilities---\n')
+            print(Fore.GREEN+'\n---[!] Finding vulnerabilities---\n'+Fore.RESET)
 
             try:
                 xssprotect = headers_dict['X-XSS-Protection']
                 if xssprotect != '1; mode=block':
-                    print('[-] X-XSS-Protection not set properly.')
-                else:
-                    print('[+] X-XSS-Protection set propely.')
+                    print(Fore.BLUE+'[-] X-XSS-Protection not set properly.'+Fore.RESET)
+                else: 
+                    print(Fore.BLUE+'[+] X-XSS-Protection set propely.'+Fore.RESET)
             except:
-                print('[!] Escaping!...')
+                print(Fore.GREEN+'[!] Escaping!...'+Fore.RESET)
 
             try:
                 contenttype = headers_dict['X-Content-Type-Options']
                 if contenttype != 'nosniff':
-                    print('[-] X-Content-Type-Options not set properly.')
+                    print(Fore.RED+'[-] X-Content-Type-Options not set properly.'+Fore.RESET)
             except:
-                print('[!] Escaping')
+                print(Fore.BLUE+'[!] Escaping'+Fore.RESET)
 
             try:
                 hsts = headers_dict['Strict-Transport-Security']
             except:
-                print('[-] HSTS not set properly.')
+                print(Fore.BLUE+'[-] HSTS not set properly.'+Fore.RESET)
 
             try:
                 csp = headers_dict['Content-Security-Policy']
-                print('[+] CSP set properly.')
+                print(Fore.GREEN+'[+] CSP set properly.'+Fore.RESET)
             except:
-                print('[-] CSP mising')
+                print(Fore.RED+'[-] CSP mising'+Fore.RESET)
 
             try:
                 xframe = headers_dict['x-frame-options']
-                print('[+] Likely to be safe from X-Frame.')
+                print(Fore.GREEN+'[+] Likely to be safe from X-Frame.'+Fore.RESET)
             except:
-                print('[-] X-Frame Missing.')
+                print(Fore.RED+'[-] X-Frame Missing.'+Fore.RESET)
 
     def insecure_cookies(self):
         response = self.get_response()
         cookies = response.cookies
 
-        print('\n---[!] Testing Insecure Cookies---\n')
+        print(Fore.GREEN +'\n---[!] Testing Insecure Cookies---\n'+ Fore.RESET)
 
         for cookie in cookies:
-            print('[+] Name : ', cookie.name)
-            print('[+] Value : ', cookie.value)
+            print(Fore.BLUE+'[+] Name : '+Fore.RESET, cookie.name )
+            print(Fore.BLUE+'[+] Value : '+Fore.RESET, cookie.value)
 
             if not cookie.secure:
                 cookie.secure = 'True'
@@ -92,18 +92,18 @@ class HeaderVuln(object):
             else:
                 cookie.domain_initial_dot = 'False'
 
-            print('[+] Cookie Secure :', cookie.secure)
-            print('[+] Cookie httponly :', cookie.httponly)
-            print('[+] Cookies domain iniitial dot', cookie.domain_initial_dot)
+            print(Fore.BLUE+'[+] Cookie Secure :'+Fore.RESET, cookie.secure)
+            print(Fore.BLUE+'[+] Cookie httponly :'+Fore.RESET, cookie.httponly)
+            print(Fore.BLUE+'[+] Cookies domain iniitial dot'+Fore.RESET, cookie.domain_initial_dot)
             print('\n')
 
     def test_http_methods(self):
         modes_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'TEST']
 
-        print('\n---[!] Testing HTTP methods---\n')
+        print(Fore.GREEN+'\n---[!] Testing HTTP methods---\n'+Fore.RESET)
 
         for mode in modes_list:
             r = requests.request(mode, self.url)
             print('[+]', mode, r.status_code, r.reason)
             if mode == 'TRACE' and 'TRACE / HTTP/1.1' in r.text:
-                print('[!] Possible Cross Site Tracing vulnerability found')
+                print(Fore.BLUE+'[!] Possible Cross Site Tracing vulnerability found'+Fore.RESET)

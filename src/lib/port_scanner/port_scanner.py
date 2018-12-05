@@ -3,6 +3,7 @@
 from scapy.all import *
 from concurrent.futures import ThreadPoolExecutor
 import time
+from colorama import *
 
 
 class PortScanner(object):
@@ -25,7 +26,7 @@ class PortScanner(object):
             self.end_port = int(end_port)
 
         if ip is None:
-            print('[!] IP is empty, please specify an IP address...')
+            print(Fore.RED+'[!] IP is empty, please specify an IP address...'+Fore.RESET)
         else:
             self.ip = ip
 
@@ -41,7 +42,7 @@ class PortScanner(object):
 
     def fin_scan(self):
 
-        print('[+] FIN Scan started...')
+        print(Fore.BLUE+'[+] FIN Scan started...'+Fore.RESET)
 
         key_values = {
 
@@ -58,7 +59,7 @@ class PortScanner(object):
 
     def null_scan(self):
 
-        print('[+] NULL Scan started...')
+        print(Fore.GREEN+'[+] NULL Scan started...'+Fore.RESET)
 
         key_values = {
 
@@ -75,7 +76,7 @@ class PortScanner(object):
 
     def tcp_ack_scan(self):
 
-        print('[+] TCP ACK Scan started...')
+        print(Fore.GREEN'[+] TCP ACK Scan started...'+Fore.RESET)
 
         key_values = {
 
@@ -92,7 +93,7 @@ class PortScanner(object):
 
     def xmas_scan(self):
 
-        print('[+] XMAS Scan started...')
+        print(Fore.BLUE+'[+] XMAS Scan started...'+Fore.RESET)
 
         key_values = {
 
@@ -162,5 +163,5 @@ class PortScanner(object):
 
         t2 = time.time()
 
-        print('[+] Completed.')
-        print('[!] The time taken is : ', t2-t1)
+        print(Fore.BLUE+'[+] Completed.'+Fore.RESET)
+        print(Fore.GREEN+'[!] The time taken is : '+Fore.RESET, t2-t1)

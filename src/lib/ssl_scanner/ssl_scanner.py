@@ -2,7 +2,7 @@
 
 import requests
 import time
-
+from colorama import *
 
 API_URL = "https://api.ssllabs.com/api/v3/analyze/"
 
@@ -25,7 +25,7 @@ def request_api(url, payload):
 def analyze(url):
     global analyze_payload
 
-    print('[+] Scanning...')
+    print(Fore.GREEN+'[+] Scanning...'+Fore.RESET)
     analyze_payload['host'] = url
     resp = request_api(API_URL, analyze_payload)
     analyze_payload.pop('startNew')
@@ -116,10 +116,10 @@ def get_value(key, value):
 
 
 def print_data(dict_value):
-    print('[+] Vulnerability Scan Result : \n')
+    print(Fore.GREEN+'[+] Vulnerability Scan Result : \n'+Fore.RESET)
     for key, item in dict_value.items():
         if not isinstance(item, bool):
             new_item = get_value(key, item)
-            print('[+] ', key, ' : ', new_item)
+            print(Fore.BLUE+'[+] '+Fore.RESET, key, ' : ', new_item)
         else:
-            print('[+] ', key, ' : ', item)
+            print(Fore.BLUE+'[+] '+Fore.RESET, key, ' : ', item)
