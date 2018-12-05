@@ -3,7 +3,7 @@
 import argparse
 import sys
 import os
-
+from urllib.parse import urlparse
 
 """ This is the beginning point for VAULT Scanner.
 
@@ -41,6 +41,17 @@ import os
 
     8. Shellshock checking
 """
+
+
+def check_URL(url: str):
+    """Check whether or not URL have a scheme
+
+        :url: URL that is to be checked
+    """
+    if not urlparse(url).scheme:
+        return 'http://' + url
+
+    return url
 
 if __name__ == '__main__':
 
@@ -81,6 +92,9 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = parser.parse_args()
+
+    if args.url:
+        args.url = check_URL(args.url)
 
     if args.port:
         args.start_port = args.port
