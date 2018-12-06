@@ -1,16 +1,5 @@
 """
 This will help to log all sorts of messages that vault scanner emits.
-
-USAGE:
-    Initialize -
-            import logging
-            LOGGER = logging.getLogger(__name__)
-
-    Logging -
-            LOGGER.info("Any messages you want to log")
-
-There are different modes for logging like info, debug etc.
-For more details read: https://docs.python.org/3/library/logging.html
 """
 import logging
 import logging.handlers
