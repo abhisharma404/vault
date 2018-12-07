@@ -27,6 +27,7 @@ def success(message):
     message = '[+] ' + message
     print(green, message, end)
 
+
 def info(message):
     message = '[!] ' + message
     print(yellow, message, end)
