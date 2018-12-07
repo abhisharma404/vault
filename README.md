@@ -98,6 +98,6 @@ Example Usage :
 
 `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
 
-# Screenshot:
+# Screenshot
 
 ![](logo/Initial_Setup.png)
