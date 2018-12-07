@@ -1,5 +1,3 @@
-<p align="center"><img src ="logo/vault1.png" /></p>
-
 # VAULT Scanner
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/740204dd950c4e49841c94f2c32af78a)](https://app.codacy.com/app/abhisharma404/vault_scanner?utm_source=github.com&utm_medium=referral&utm_content=abhisharma404/vault_scanner&utm_campaign=Badge_Grade_Dashboard)
@@ -100,11 +98,6 @@ Example Usage :
 
 `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
 
-# Screenshot of the Help Index:
+# Screenshot:
 
 ![](logo/Initial_Setup.png)
-
-
-# Screenshot of Output after Execution:
-
-![](logo/Running_Example.png)
