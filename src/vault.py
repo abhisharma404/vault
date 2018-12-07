@@ -107,7 +107,7 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             from lib.ssl_scanner import ssl_scanner
-            print('\n--SSL scan using SSL Labs API--\n')
+            colors.info('SSL scan using SSL Labs API')
 
             data = ssl_scanner.analyze(args.url)
             ssl_scanner.vulnerability_parser(data)
@@ -122,7 +122,7 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             from lib.info_gathering import header_vuln
-            colors.success('Performing informatio gathering over : {}'.format(args.url))
+            colors.success('Performing information gathering over : {}'.format(args.url))
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
             infoGatherObj.gather_header()
@@ -169,7 +169,7 @@ if __name__ == '__main__':
             colors.error('Please enter an IP address for scanning')
             sys.exit(1)
         try:
-            print('\nInitiating FIN Scan')
+            colors.info('Initiating FIN Scan')
 
             from lib.port_scanner import port_scanner
 
@@ -188,7 +188,7 @@ if __name__ == '__main__':
             colors.error('Please enter an IP address for scanning')
             sys.exit(1)
         try:
-            print('\nInitiating NULL Scan')
+            colors.info('Initiating NULL Scan')
 
             from lib.port_scanner import port_scanner
 
@@ -207,7 +207,7 @@ if __name__ == '__main__':
             colors.error('Please enter an IP address for scanning')
             sys.exit(1)
         try:
-            print('\nInitiating TCP ACK Scan')
+            colors.info('Initiating TCP ACK Scan')
 
             from lib.port_scanner import port_scanner
 
@@ -225,7 +225,7 @@ if __name__ == '__main__':
             colors.error('Please enter an IP address for scanning')
             sys.exit(1)
         try:
-            print('\nInitiating XMAS Scan')
+            colors.info('Initiating XMAS Scan')
 
             from lib.port_scanner import port_scanner
 
