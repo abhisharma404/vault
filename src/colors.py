@@ -15,13 +15,18 @@ yellow = '\033[93m'
 lightblue = '\033[94m'
 pink = '\033[95m'
 lightcyan = '\033[96m'
+end = '\x1b[0m'
 
 
 def error(message):
     message = '[-] ' + message
-    print(red, message)
+    print(red, message, end)
 
 
 def success(message):
     message = '[+] ' + message
-    print(green, message)
+    print(green, message, end)
+
+def info(message):
+    message = '[!] ' + message
+    print(yellow, message, end)
