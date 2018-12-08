@@ -7,6 +7,7 @@ import os
 import logger
 from urllib.parse import urlparse
 import colors
+
 """ This is the beginning point for VAULT Scanner.
 
     OPTIONS ->
@@ -92,6 +93,9 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--crawl', action='store_true', help='Crawl and collect all the links')
     parser.add_argument('-xss', action='store_true', help='Scan for XSS vulnerabilities')
     parser.add_argument('-this', action='store_true', help='Only scan the given URL, do not crawl')
+    parser.add_argument('-ping_sweep', action='store_true', help='ICMP ECHO request')
+    parser.add_argument('-ip_start_range', help='Start range for scanning IP')
+    parser.add_argument('-ip_end_range', help='End range for scanning IP')
 
     colors.success("Please Check log file for information about any errors")
 
@@ -302,3 +306,23 @@ if __name__ == '__main__':
             colors.error('Please enter an URL for XSS Scanning')
             LOGGER.error('[-] Please enter an URL for XSS Scanning')
             sys.exit(1)
+
+    if args.ping_sweep:
+        if not args.ip:
+            colors.error('Please enter an IP address for scanning')
+            sys.exit(1)
+        else:
+            try:
+                colors.info('Initiating Ping Sweep Scan')
+
+                from lib.ip_scanner import ping_sweep
+
+                pingSweepObj = ping_sweep.IPScanner(ip=args.ip,
+                                                    start_ip=args.ip_start_range,
+                                                    end_ip=args.ip_end_range,
+                                                    threads=args.threads)
+                pingSweepObj.threadingScan()
+            except ImportError:
+                colors.error('Could not import the required module.')
+            except Exception as e:
+                print(e)
