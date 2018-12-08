@@ -7,6 +7,7 @@ import os
 import logger
 from urllib.parse import urlparse
 import colors
+import re
 
 """ This is the beginning point for VAULT Scanner.
 
@@ -46,7 +47,7 @@ import colors
 """
 
 
-def check_URL(url: str):
+def check_url(url: str):
     """Check whether or not URL have a scheme
 
         :url: URL that is to be checked
@@ -55,6 +56,18 @@ def check_URL(url: str):
         return 'http://' + url
 
     return url
+
+
+def check_ip(ip: str):
+    """
+    Check whether the input IP is valid or not
+    """
+    if re.match(r'^(?:(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\.(?!$)|$)){4}$', ip):
+        return ip
+    else:
+        colors.error('Please enter a valid IP address')
+        LOGGER.error('[-] Please enter a valid IP address')
+        sys.exit(1)
 
 
 if __name__ == '__main__':
@@ -99,7 +112,7 @@ if __name__ == '__main__':
 
     colors.success("Please Check log file for information about any errors")
 
-    # Print help message if no argumnents are supplied
+    # Print help message if no arguments are supplied
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
@@ -107,7 +120,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.url:
-        args.url = check_URL(args.url)
+        args.url = check_url(args.url)
+
+    if args.ip:
+        args.ip = check_ip(args.ip)
 
     if args.port:
         args.start_port = args.port
