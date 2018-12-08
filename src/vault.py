@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 import argparse
+import logging
 import sys
 import os
+import logger
 from urllib.parse import urlparse
 import colors
-
 """ This is the beginning point for VAULT Scanner.
 
     OPTIONS ->
@@ -54,6 +55,7 @@ def check_URL(url: str):
 
     return url
 
+
 if __name__ == '__main__':
 
     print(""" ____   _________   ____ ___.____  ___________
@@ -64,6 +66,10 @@ if __name__ == '__main__':
                 \/                 \/         """)
 
     print("\nWelcome to Vault Scanner!\n")
+
+    log_file_name = os.path.join(os.getcwd(), "vault-scanner.log")
+    logger.Logger.create_logger(log_file_name, __package__)
+    LOGGER = logging.getLogger(__name__)
 
     # Taking in arguments
     parser = argparse.ArgumentParser(description="VAULT Scanner")
@@ -87,6 +93,8 @@ if __name__ == '__main__':
     parser.add_argument('-xss', action='store_true', help='Scan for XSS vulnerabilities')
     parser.add_argument('-this', action='store_true', help='Only scan the given URL, do not crawl')
 
+    colors.success("Please Check log file for information about any errors")
+
     # Print help message if no argumnents are supplied
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
@@ -104,6 +112,7 @@ if __name__ == '__main__':
     if args.ssl:
         if not args.url:
             colors.error('Please enter an URL for SSL scanning')
+            LOGGER.error('[-] Please enter an URL for SSL scanning')
             sys.exit(1)
         try:
             from lib.ssl_scanner import ssl_scanner
@@ -113,12 +122,14 @@ if __name__ == '__main__':
             ssl_scanner.vulnerability_parser(data)
         except ImportError:
             colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.info:
         if not args.url:
             colors.error('Please enter an URl for information gathering')
+            LOGGER.error('[-] Please enter an URl for information gathering')
             sys.exit(1)
         try:
             from lib.info_gathering import header_vuln
@@ -130,12 +141,14 @@ if __name__ == '__main__':
             infoGatherObj.test_http_methods()
         except ImportError:
             colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.comment:
         if not args.url:
             colors.error('Please enter an URL for finding comments')
+            LOGGER.error('[-] Please enter an URL for finding comments')
             sys.exit(1)
         try:
             from lib.info_gathering import finding_comment
@@ -146,12 +159,14 @@ if __name__ == '__main__':
 
         except ImportError:
             colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.fuzz:
         if not args.url:
             colors.error('Please enter an URL for fuzzing')
+            LOGGER.error('[-] Please enter an URL for fuzzing')
             sys.exit(1)
         try:
             from lib.fuzzer import fuzzer
@@ -161,12 +176,14 @@ if __name__ == '__main__':
 
         except ImportError:
             colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.fin:
         if not args.ip:
             colors.error('Please enter an IP address for scanning')
+            LOGGER.error('[-] Please enter an IP address for scanning')
             sys.exit(1)
         try:
             colors.info('Initiating FIN Scan')
@@ -179,13 +196,15 @@ if __name__ == '__main__':
             portScanObj.fin_scan()
         except ImportError:
             colors.error('Could not import the required module')
+            LOGGER.error('[-] Could not import the required module')
             sys.exit(1)
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.null:
         if not args.ip:
             colors.error('Please enter an IP address for scanning')
+            LOGGER.error('[-] Please enter an IP address for scanning')
             sys.exit(1)
         try:
             colors.info('Initiating NULL Scan')
@@ -198,13 +217,15 @@ if __name__ == '__main__':
             portScanObj.null_scan()
         except ImportError:
             colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
             sys.exit(1)
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.ack:
         if not args.ip:
             colors.error('Please enter an IP address for scanning')
+            LOGGER.error('[-] Please enter an IP address for scanning')
             sys.exit(1)
         try:
             colors.info('Initiating TCP ACK Scan')
@@ -217,12 +238,14 @@ if __name__ == '__main__':
             portScanObj.tcp_ack_scan()
         except ImportError:
             colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.xmas:
         if not args.ip:
             colors.error('Please enter an IP address for scanning')
+            LOGGER.error('[-] Please enter an IP address for scanning')
             sys.exit(1)
         try:
             colors.info('Initiating XMAS Scan')
@@ -235,9 +258,10 @@ if __name__ == '__main__':
             portScanObj.xmas_scan()
         except ImportError:
             colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
             sys.exit(1)
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.xss:
         if args.url:
@@ -258,8 +282,9 @@ if __name__ == '__main__':
                     links = crawlObj.getList()
                 except ImportError:
                     colors.error('Could not import the required module.')
+                    LOGGER.error('[-] Could not import the required module.')
                 except Exception as e:
-                    print(e)
+                    LOGGER.error(e)
 
             try:
                 import xss
@@ -269,9 +294,11 @@ if __name__ == '__main__':
                 xssScanObj.initiateEngine()
             except ImportError:
                 colors.error('Could not import the required module')
+                LOGGER.error('[-] Could not import the required module')
                 sys.exit(1)
             except Exception as e:
-                print(e)
+                LOGGER.error(e)
         else:
             colors.error('Please enter an URL for XSS Scanning')
+            LOGGER.error('[-] Please enter an URL for XSS Scanning')
             sys.exit(1)
