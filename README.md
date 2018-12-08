@@ -25,6 +25,7 @@ Vault Scanner can be used for:
 
 * Collecting data:
       - Port scanning
+      - IP Scanning
       - Header grabbing
       - Banner grabbing
       - Finding comments in source code
@@ -91,7 +92,11 @@ optional arguments:
   -c, --crawl           Crawl and collect all the links
   -xss                  Scan for XSS vulnerabilities
   -this                 Only scan the given URL, do not crawl
-
+  -ping_sweep           ICMP ECHO request
+  -ip_start_range IP_START_RANGE
+                        Start range for scanning IP
+  -ip_end_range IP_END_RANGE
+                        End range for scanning IP
 ```
 
 Example Usage :
