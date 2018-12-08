@@ -25,6 +25,7 @@ Vault Scanner can be used for:
 
 * Collecting data:
       - Port scanning
+      - IP Scanning
       - Header grabbing
       - Banner grabbing
       - Finding comments in source code
