@@ -39,7 +39,8 @@ class IPScanner(object):
         else:
             self.threads = int(threads)
 
-    def checkOS(self):
+    @staticmethod
+    def checkOS():
         oper = platform.system()
         if (oper == 'Windows'):
             return ['ping', '-n', '1']
@@ -61,7 +62,8 @@ class IPScanner(object):
         else:
             colors.error('Closed : {}'.format(ping_ip))
 
-    def checkStatus(self, response):
+    @staticmethod
+    def checkStatus(response):
         if 'ttl' in response:
             return True
 
