@@ -39,6 +39,12 @@ class PortScanner(object):
         else:
             self.threads = int(threads)
 
+    def port_name(port):
+        with open('port_names.json','r') as f:
+            names = json.loads(f)
+
+        return names[port]
+
     def fin_scan(self):
 
         print('[+] FIN Scan started...')
@@ -127,13 +133,13 @@ class PortScanner(object):
 
         if (str(type(packet_resp)) == "<class 'NoneType'>"):
             if noneTypeMessage == '[+] Open':
-                print(str(noneTypeMessage) + ' -> ' + str(port))
+                print(str(noneTypeMessage) + ' -> ' + str(port) + port_name(port))
 
         elif (packet_resp.haslayer(TCP)):
             if (packet_resp.getlayer(TCP).flags in TCPLayerFlags):
                 # send_rst if tcp full scan
                 if TCPLayer_Found == '[+] Open':
-                    print(str(TCPLayer_Found) + ' -> ' + str(port))
+                    print(str(TCPLayer_Found) + ' -> ' + str(port) + port_name(port))
             else:
                 pass
                 # or user defined message
@@ -141,7 +147,7 @@ class PortScanner(object):
         elif (packet_resp.haslayer(ICMP)):
             icmp_layer = packet_resp.getlayer(ICMP)
             if (int(icmp_layer.type) == 3 and int(icmp_layer.code) in [1, 2, 3, 9, 10, 13]):
-                print(str(ICMPLayerFound) + ' -> ' + str(port))
+                print(str(ICMPLayerFound) + ' -> ' + str(port) + port_names(port))
 
     def threading_scan(self, dict_values):
 
