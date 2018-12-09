@@ -5,7 +5,7 @@ import logging
 import sys
 import os
 import logger
-from urllib.parse import urlparse,quote,unquote
+from urllib.parse import urlparse,unquote
 import colors
 import re
 import requests
