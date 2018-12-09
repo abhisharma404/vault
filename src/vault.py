@@ -50,7 +50,6 @@ from bs4 import BeautifulSoup
 """
 
 def modifyLINK(url):
-	n=len(url)
 	list1=[]
 	for ch in url:
 		if ch=="&":
