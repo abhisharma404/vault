@@ -29,7 +29,6 @@ class Scanner(object):
         }
 
         print("[+] Checking the URL if it is live")
-        
         try:
             response = requests.get(url, headers=headers)
             response_code = response.status_code
@@ -67,11 +66,11 @@ class Scanner(object):
 
                     for _match in _matches[_payload]:
                         if _match in res.text:
-                            colors.success("LFI Detected! : " + scan_url)
+                            colors.success("LFI Detected!: {}".format(scan_url))
                             success_count = success_count +1
                         if "syntax error" in res.text:
-                            colors.error("Syntax Parse Error:", scan_url)
-            
+                            colors.error("Syntax Parse Error: {}".format(scan_url))
+  
             #Still no success, now check with null byte
             if success_count == 0:
                 colors.info("Now creating payloads with one NULL BYTE suffix.")
@@ -83,13 +82,13 @@ class Scanner(object):
 
                         for _match in _matches[_payload]:
                             if _match in res.text:
-                                colors.success("LFI Detected! : " + scan_url)
+                                colors.success("LFI Detected! : {}".format(scan_url))
                                 success_count = success_count +1
                             if "syntax error" in res.text:
-                                colors.error("Syntax Parse Error:", scan_url)
+                                colors.error("Syntax Parse Error:{}".format(scan_url))
 
             if success_count == 0:
                 print("[-] No LFI Detected :-( ")
-            
+
         else:
             print("[-] An error occured, make sure provided URL is valid and accessible.")

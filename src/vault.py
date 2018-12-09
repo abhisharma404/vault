@@ -343,7 +343,7 @@ if __name__ == '__main__':
                 colors.error('Could not import the required module.')
             except Exception as e:
                 print(e)
-    
+
     if args.lfi:
         if not args.url:
             colors.error('Please enter an URL  for scanning')
@@ -362,4 +362,3 @@ if __name__ == '__main__':
             sys.exit(1)
         except Exception as e:
             LOGGER.error(e)
-             

@@ -4,7 +4,7 @@ from . import lfiScanner
 import json
 
 class LFI(object):
-    
+
     def __init__(self,url,payload_path):
         self.url=url
         with open(payload_path, 'r') as f:
