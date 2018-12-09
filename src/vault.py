@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 
 import argparse
+import logging
 import sys
 import os
-from urllib.parse import urlparse
+import logger
+from urllib.parse import urlparse,quote,unquote
+import colors
+import re
+import requests
+from bs4 import BeautifulSoup
+
 
 """ This is the beginning point for VAULT Scanner.
 
@@ -42,8 +49,63 @@ from urllib.parse import urlparse
     8. Shellshock checking
 """
 
+def modifyLINK(url):
+	n=len(url)
+	list1=[]
+	for ch in url:
+		if ch=="&":
+			break
+		else:
+			list1.append(ch)
+	ret=''.join(list1)
+	return ret
 
-def check_URL(url: str):
+def savetofile(URLlist):
+	response=str(input("\n\033[1;31mDo you want to save it in a file (yes/no):: \033[1;37m"))
+	if response == "yes":
+		name=str(input("\033[1;31mGive file name :: \033[1;37m"))
+		if name.endswith(".txt")==False:
+			l = name+".txt"
+		else:
+			l=name
+		f_open = open(l,"w")
+		for url in URLlist:
+			f_open.write(url + "\n")
+		f_open.close()
+		print("\033[1;32mYour file has been saved successfully")
+
+def start_dorking(search,page_count):
+    web_list=[]
+    m_search=modifyLINK(search)
+    count=0
+    page_count*=10
+    while (page_count!=count):
+        count=str(count)
+        m_search=str(m_search)
+        search_url="https://google.com/search?q="+m_search+"&start="+count
+        requested_page=requests.get(search_url).text
+        soup=BeautifulSoup(requested_page,'html.parser')
+        count=int(count)
+        if "Our systems have detected unusual traffic from your computer network" in soup.get_text():
+            colors.error("Google has detected the script. Try after some time.")
+            LOGGER.error('[-] script blocked by google. wait for some minutes')
+            break
+        h3_tags=soup.findAll("h3")
+        for h3 in h3_tags:
+            a_tag=h3.find("a")
+            link=a_tag.get("href")
+            link=link[7:]
+            if link.startswith("http"):
+                searchlink=modifyLINK(link)
+                res=unquote(searchlink)
+                web_list.append(res)
+                print("\033[1;37m--> \033[1;32m",res,end=" \n")
+        count+=10
+    savetofile(web_list)
+    sys.exit(0)
+    return web_list
+
+def check_url(url: str):
     """Check whether or not URL have a scheme
 
         :url: URL that is to be checked
@@ -52,6 +114,19 @@ def check_URL(url: str):
         return 'http://' + url
 
     return url
+
+
+def check_ip(ip: str):
+    """
+    Check whether the input IP is valid or not
+    """
+    if re.match(r'^(?:(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\.(?!$)|$)){4}$', ip):
+        return ip
+    else:
+        colors.error('Please enter a valid IP address')
+        LOGGER.error('[-] Please enter a valid IP address')
+        sys.exit(1)
+
 
 if __name__ == '__main__':
 
@@ -63,6 +138,10 @@ if __name__ == '__main__':
                 \/                 \/         """)
 
     print("\nWelcome to Vault Scanner!\n")
+
+    log_file_name = os.path.join(os.getcwd(), "vault-scanner.log")
+    logger.Logger.create_logger(log_file_name, __package__)
+    LOGGER = logging.getLogger(__name__)
 
     # Taking in arguments
     parser = argparse.ArgumentParser(description="VAULT Scanner")
@@ -85,8 +164,14 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--crawl', action='store_true', help='Crawl and collect all the links')
     parser.add_argument('-xss', action='store_true', help='Scan for XSS vulnerabilities')
     parser.add_argument('-this', action='store_true', help='Only scan the given URL, do not crawl')
+    parser.add_argument('-ping_sweep', action='store_true', help='ICMP ECHO request')
+    parser.add_argument('-ip_start_range', help='Start range for scanning IP')
+    parser.add_argument('-ip_end_range', help='End range for scanning IP')
+    parser.add_argument('-d','--dork',help='Perform google dorking')
 
-    # Print help message if no argumnents are supplied
+    colors.success("Please Check log file for information about any errors")
+
+    # Print help message if no arguments are supplied
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
@@ -94,7 +179,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.url:
-        args.url = check_URL(args.url)
+        args.url = check_url(args.url)
+
+    if args.ip:
+        args.ip = check_ip(args.ip)
 
     if args.port:
         args.start_port = args.port
@@ -102,73 +190,82 @@ if __name__ == '__main__':
 
     if args.ssl:
         if not args.url:
-            print('[-] Please enter an URL for SSL scanning')
+            colors.error('Please enter an URL for SSL scanning')
+            LOGGER.error('[-] Please enter an URL for SSL scanning')
             sys.exit(1)
         try:
             from lib.ssl_scanner import ssl_scanner
-            print('\n--SSL scan using SSL Labs API--\n')
+            colors.info('SSL scan using SSL Labs API')
 
             data = ssl_scanner.analyze(args.url)
             ssl_scanner.vulnerability_parser(data)
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.info:
         if not args.url:
-            print('[-] Please enter an URl for information gathering')
+            colors.error('Please enter an URl for information gathering')
+            LOGGER.error('[-] Please enter an URl for information gathering')
             sys.exit(1)
         try:
             from lib.info_gathering import header_vuln
-            print('[+] Performing informatio gathering over : {}'.format(args.url))
+            colors.success('Performing information gathering over : {}'.format(args.url))
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
             infoGatherObj.gather_header()
             infoGatherObj.insecure_cookies()
             infoGatherObj.test_http_methods()
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.comment:
         if not args.url:
-            print('[-] Please enter an URL for finding comments')
+            colors.error('Please enter an URL for finding comments')
+            LOGGER.error('[-] Please enter an URL for finding comments')
             sys.exit(1)
         try:
             from lib.info_gathering import finding_comment
-            print('[+] Performing comment gathering over : {}'.format(args.url))
+            colors.success('Performing comment gathering over : {}'.format(args.url))
 
             findCommnentObj = finding_comment.FindingComments(args.url)
             findCommnentObj.parse_comments()
 
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.fuzz:
         if not args.url:
-            print('[-] Please enter an URL for fuzzing')
+            colors.error('Please enter an URL for fuzzing')
+            LOGGER.error('[-] Please enter an URL for fuzzing')
             sys.exit(1)
         try:
             from lib.fuzzer import fuzzer
-            print('[+] Performing fuzzing on : {}'.format(args.url))
+            colors.success('Performing fuzzing on : {}'.format(args.url))
             fuzzObj = fuzzer.Fuzzer(base_url=args.url, thread_num=args.threads)
             fuzzObj.initiate()
 
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.fin:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            colors.error('Please enter an IP address for scanning')
+            LOGGER.error('[-] Please enter an IP address for scanning')
             sys.exit(1)
         try:
-            print('\nInitiating FIN Scan')
+            colors.info('Initiating FIN Scan')
 
             from lib.port_scanner import port_scanner
 
@@ -177,17 +274,19 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.fin_scan()
         except ImportError:
-            print('[-] Could not import the required module')
+            colors.error('Could not import the required module')
+            LOGGER.error('[-] Could not import the required module')
             sys.exit(1)
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.null:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            colors.error('Please enter an IP address for scanning')
+            LOGGER.error('[-] Please enter an IP address for scanning')
             sys.exit(1)
         try:
-            print('\nInitiating NULL Scan')
+            colors.info('Initiating NULL Scan')
 
             from lib.port_scanner import port_scanner
 
@@ -196,17 +295,19 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.null_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
             sys.exit(1)
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.ack:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            colors.error('Please enter an IP address for scanning')
+            LOGGER.error('[-] Please enter an IP address for scanning')
             sys.exit(1)
         try:
-            print('\nInitiating TCP ACK Scan')
+            colors.info('Initiating TCP ACK Scan')
 
             from lib.port_scanner import port_scanner
 
@@ -215,16 +316,18 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.tcp_ack_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.xmas:
         if not args.ip:
-            print('[-] Please enter an IP address for scanning')
+            colors.error('Please enter an IP address for scanning')
+            LOGGER.error('[-] Please enter an IP address for scanning')
             sys.exit(1)
         try:
-            print('\nInitiating XMAS Scan')
+            colors.info('Initiating XMAS Scan')
 
             from lib.port_scanner import port_scanner
 
@@ -233,10 +336,11 @@ if __name__ == '__main__':
                                                    source_port=args.source_port)
             portScanObj.xmas_scan()
         except ImportError:
-            print('[-] Could not import the required module.')
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
             sys.exit(1)
         except Exception as e:
-            print(e)
+            LOGGER.error(e)
 
     if args.xss:
         if args.url:
@@ -246,19 +350,20 @@ if __name__ == '__main__':
             sys.path.insert(0, path)
 
             if args.this:
-                print('[+] Performing XSS Vulnerability Scan on : {}'.format(args.url))
+                colors.success('Performing XSS Vulnerability Scan on : {}'.format(args.url))
                 links.append(args.url)
             else:
-                print('[+] Collecting all the links, crawling : {}'.format(args.url))
+                colors.success('Collecting all the links, crawling : {}'.format(args.url))
 
                 try:
                     import crawler
                     crawlObj = crawler.Crawl(url=args.url)
                     links = crawlObj.getList()
                 except ImportError:
-                    print('[-] Could not import the required module.')
+                    colors.error('Could not import the required module.')
+                    LOGGER.error('[-] Could not import the required module.')
                 except Exception as e:
-                    print(e)
+                    LOGGER.error(e)
 
             try:
                 import xss
@@ -267,10 +372,37 @@ if __name__ == '__main__':
                                      payload_file=os.getcwd()+'/payloads/xss_payloads.txt')
                 xssScanObj.initiateEngine()
             except ImportError:
-                print('[-] Could not import the required module')
+                colors.error('Could not import the required module')
+                LOGGER.error('[-] Could not import the required module')
                 sys.exit(1)
             except Exception as e:
-                print(e)
+                LOGGER.error(e)
         else:
-            print('[-] Please enter an URL for XSS Scanning')
+            colors.error('Please enter an URL for XSS Scanning')
+            LOGGER.error('[-] Please enter an URL for XSS Scanning')
             sys.exit(1)
+
+    if args.ping_sweep:
+        if not args.ip:
+            colors.error('Please enter an IP address for scanning')
+            sys.exit(1)
+        else:
+            try:
+                colors.info('Initiating Ping Sweep Scan')
+
+                from lib.ip_scanner import ping_sweep
+
+                pingSweepObj = ping_sweep.IPScanner(ip=args.ip,
+                                                    start_ip=args.ip_start_range,
+                                                    end_ip=args.ip_end_range,
+                                                    threads=args.threads)
+                pingSweepObj.threadingScan()
+            except ImportError:
+                colors.error('Could not import the required module.')
+            except Exception as e:
+                print(e)
+    if args.dork:
+        dorks=args.dork
+        page=int(input("\nNumber of Pages to scrap ::"))
+        print ('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
+        start_dorking(dorks,page)
