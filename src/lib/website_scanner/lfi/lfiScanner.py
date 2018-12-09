@@ -8,7 +8,7 @@ class Scanner(object):
     def __init__(self,url,payload_data):
         self.url = url
         self.payload_data = payload_data
-        self.scan_headers = False
+        self.scan_headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0',}
 
     def check_url(self, url):
         ua_list = [
