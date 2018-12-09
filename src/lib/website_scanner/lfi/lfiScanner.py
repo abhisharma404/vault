@@ -45,6 +45,7 @@ class Scanner(object):
             return False
 
     def scan(self):
+        null_byte = "%00"
         success_count = 0
         url = self.url
         ck = self.check_url(url)
@@ -70,6 +71,22 @@ class Scanner(object):
                             success_count = success_count +1
                         if "syntax error" in res.text:
                             colors.error("Syntax Parse Error:", scan_url)
+            
+            #Still no success, now check with null byte
+            if success_count == 0:
+                colors.info("Now creating payloads with one NULL BYTE suffix.")
+                for _url in urls:
+                    for _payload in _payloads:
+                        scan_url = _url+_payload+null_byte
+                        res = requests.get(scan_url, headers=self.scan_headers)
+                        # colors.info("GET [{}] {}".format(res.status_code, scan_url))
+
+                        for _match in _matches[_payload]:
+                            if _match in res.text:
+                                colors.success("LFI Detected! : " + scan_url)
+                                success_count = success_count +1
+                            if "syntax error" in res.text:
+                                colors.error("Syntax Parse Error:", scan_url)
 
             if success_count == 0:
                 print("[-] No LFI Detected :-( ")
