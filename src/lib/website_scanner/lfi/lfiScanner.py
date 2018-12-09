@@ -2,6 +2,7 @@
 
 import random
 import requests
+import colors
 
 class Scanner(object):
 
@@ -61,14 +62,14 @@ class Scanner(object):
                 for _payload in _payloads:
                     scan_url = _url+_payload
                     res = requests.get(scan_url, headers=self.scan_headers)
-                    print("[i] GET [{}] {}".format(res.status_code, scan_url))
+                    colors.info("GET [{}] {}".format(res.status_code, scan_url))
 
                     for _match in _matches[_payload]:
                         if _match in res.text:
-                            print("[+] LFI Detected! : " + scan_url)
+                            colors.success("LFI Detected! : " + scan_url)
                             success_count = success_count +1
                         if "syntax error" in res.text:
-                            print("Syntax Parse Error:", scan_url)
+                            colors.error("Syntax Parse Error:", scan_url)
 
             if success_count == 0:
                 print("[-] No LFI Detected :-( ")
