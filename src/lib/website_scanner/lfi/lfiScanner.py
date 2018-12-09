@@ -70,7 +70,7 @@ class Scanner(object):
                             success_count = success_count +1
                         if "syntax error" in res.text:
                             colors.error("Syntax Parse Error: {}".format(scan_url))
-  
+
             #Still no success, now check with null byte
             if success_count == 0:
                 colors.info("Now creating payloads with one NULL BYTE suffix.")
