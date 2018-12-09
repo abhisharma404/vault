@@ -96,6 +96,7 @@ if __name__ == '__main__':
     parser.add_argument('-ping_sweep', action='store_true', help='ICMP ECHO request')
     parser.add_argument('-ip_start_range', help='Start range for scanning IP')
     parser.add_argument('-ip_end_range', help='End range for scanning IP')
+    parser.add_argument('-lfi', action='store_true', help='Scan for LFI vulnerabilities')
 
     colors.success("Please Check log file for information about any errors")
 
@@ -326,3 +327,24 @@ if __name__ == '__main__':
                 colors.error('Could not import the required module.')
             except Exception as e:
                 print(e)
+    
+    if args.lfi:
+        if not args.url:
+            colors.error('Please enter an URL  for scanning')
+            LOGGER.error('[-] Please enter an URL for scanning')
+            sys.exit(1)
+        try:
+            colors.info('Initiating LFI Scan')
+
+            from lib.website_scanner.lfi import lfiEngine
+            print(dir(lfiEngine))
+            lfiscanObj = lfiEngine.LFI(url=args.url, payload_path=os.getcwd()+'/payloads/lfi_payloads.json')
+            lfiscanObj.startScanner()
+
+        except ImportError:
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
+            sys.exit(1)
+        except Exception as e:
+            LOGGER.error(e)
+             

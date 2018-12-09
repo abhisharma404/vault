@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+
 import random
 import requests
 
-class Scanner():
+class Scanner(object):
+
     def __init__(self,url,payload_data):
         self.url = url
         self.payload_data = payload_data
@@ -40,8 +43,9 @@ class Scanner():
             print(e)
             return False
 
-    def scan(self, url):
+    def scan(self):
         success_count = 0
+        url = self.url
         ck = self.check_url(url)
         if ck:
             _matches = self.payload_data["linux"]
