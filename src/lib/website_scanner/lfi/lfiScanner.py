@@ -28,12 +28,12 @@ class Scanner(object):
             'User-Agent':ua,
         }
 
-        print("[+] Checking the url if it is live")
+        print("[+] Checking the URL if it is live")
         
         try:
             response = requests.get(url, headers=headers)
             response_code = response.status_code
-            print("[i] Got a respose with status code:{}".format(response_code))
+            print("[i] Got a respose for the URL with status code:{}".format(response_code))
 
             if response_code == 200:
                 self.scan_headers = headers
@@ -62,7 +62,7 @@ class Scanner(object):
                 for _payload in _payloads:
                     scan_url = _url+_payload
                     res = requests.get(scan_url, headers=self.scan_headers)
-                    colors.info("GET [{}] {}".format(res.status_code, scan_url))
+                    # colors.info("GET [{}] {}".format(res.status_code, scan_url))
 
                     for _match in _matches[_payload]:
                         if _match in res.text:

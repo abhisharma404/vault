@@ -9,8 +9,6 @@ class LFI(object):
         self.url=url
         with open(payload_path, 'r') as f:
             self.payload_data = json.load(f)
-        print(lfiScanner, json)
-    
 
     def startScanner(self):
         engine = lfiScanner.Scanner(url=self.url, payload_data=self.payload_data)

@@ -337,7 +337,6 @@ if __name__ == '__main__':
             colors.info('Initiating LFI Scan')
 
             from lib.website_scanner.lfi import lfiEngine
-            print(dir(lfiEngine))
             lfiscanObj = lfiEngine.LFI(url=args.url, payload_path=os.getcwd()+'/payloads/lfi_payloads.json')
             lfiscanObj.startScanner()
 
