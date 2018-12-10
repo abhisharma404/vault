@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 
-import argparse
-import logging
+import re
 import sys
 import os
+import logging
+import argparse
 import logger
-from urllib.parse import urlparse
 import colors
-import re
+from urllib.parse import urlparse
 
 """ This is the beginning point for VAULT Scanner.
 
@@ -110,6 +110,7 @@ if __name__ == '__main__':
     parser.add_argument('-ip_start_range', help='Start range for scanning IP')
     parser.add_argument('-ip_end_range', help='End range for scanning IP')
     parser.add_argument('-lfi', action='store_true', help='Scan for LFI vulnerabilities')
+    parser.add_argument('-whois', action='store_true', help='perform a whois lookup of a given IP')
 
     colors.success("Please Check log file for information about any errors")
 
@@ -129,6 +130,26 @@ if __name__ == '__main__':
     if args.port:
         args.start_port = args.port
         args.end_port = args.port
+
+    if args.whois:
+        if not args.ip:
+            colors.error('Please enter an IP for Whois lookup')
+            LOGGER.error('[-] Please enter an IP for Whois lookup')
+            sys.exit(1)
+        try:
+            from lib.whois_lookup import lookup
+            data = lookup.whois_lookup(args.ip)
+
+            colors.success('Information after Whois lookup: \n')
+
+            for k, v in data.items():
+                print(k, ':', v)
+
+        except ImportError:
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
+        except Exception as e:
+            LOGGER.error(e)
 
     if args.ssl:
         if not args.url:
