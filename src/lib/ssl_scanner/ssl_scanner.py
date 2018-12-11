@@ -60,6 +60,8 @@ def vulnerability_parser(data):
     }
     print_data(vuln_dict)
 
+    return vuln_dict
+
 
 def get_value(key, value):
 
