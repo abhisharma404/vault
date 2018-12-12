@@ -94,7 +94,7 @@ class HeaderVuln(object):
 
             print('[+] Cookie Secure :', cookie.secure)
             print('[+] Cookie httponly :', cookie.httponly)
-            print('[+] Cookies domain iniitial dot', cookie.domain_initial_dot)
+            print('[+] Cookies domain initial dot', cookie.domain_initial_dot)
             print('\n')
 
     def test_http_methods(self):

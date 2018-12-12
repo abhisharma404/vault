@@ -111,6 +111,7 @@ if __name__ == '__main__':
     parser.add_argument('-ip_end_range', help='End range for scanning IP')
     parser.add_argument('-lfi', action='store_true', help='Scan for LFI vulnerabilities')
     parser.add_argument('-whois', action='store_true', help='perform a whois lookup of a given IP')
+    parser.add_argument('-o', '--output', help='Output all data')
 
     colors.success("Please Check log file for information about any errors")
 
@@ -151,6 +152,8 @@ if __name__ == '__main__':
         except Exception as e:
             LOGGER.error(e)
 
+    output = args.output
+
     if args.ssl:
         if not args.url:
             colors.error('Please enter an URL for SSL scanning')
@@ -161,7 +164,21 @@ if __name__ == '__main__':
             colors.info('SSL scan using SSL Labs API')
 
             data = ssl_scanner.analyze(args.url)
-            ssl_scanner.vulnerability_parser(data)
+            ssl_data = ssl_scanner.vulnerability_parser(data)
+
+            if output:
+                if output.endswith('.txt'):
+                    file = output
+                else:
+                    file = output + '.txt'
+
+                with open(file, 'wt') as f:
+                    f.write('[+] Vulnerability Scan Result : \n\n')
+                    for k, v in ssl_data.items():
+                        f.write(str(k) + ' : ' + str(v) + os.linesep)
+
+                colors.success('File has been saved successfully')
+
         except ImportError:
             colors.error('Could not import the required module.')
             LOGGER.error('[-] Could not import the required module.')
@@ -181,6 +198,7 @@ if __name__ == '__main__':
             infoGatherObj.gather_header()
             infoGatherObj.insecure_cookies()
             infoGatherObj.test_http_methods()
+
         except ImportError:
             colors.error('Could not import the required module.')
             LOGGER.error('[-] Could not import the required module.')
