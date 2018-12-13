@@ -8,6 +8,7 @@ import argparse
 import logger
 import colors
 from urllib.parse import urlparse
+import dorker
 
 
 def check_url(url: str):
@@ -75,6 +76,7 @@ if __name__ == '__main__':
     parser.add_argument('-lfi', action='store_true', help='Scan for LFI vulnerabilities')
     parser.add_argument('-whois', action='store_true', help='perform a whois lookup of a given IP')
     parser.add_argument('-o', '--output', help='Output all data')
+    parser.add_argument('-d','--dork',help='Perform google dorking')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -364,3 +366,8 @@ if __name__ == '__main__':
             sys.exit(1)
         except Exception as e:
             LOGGER.error(e)
+    if args.dork:
+        dorks=args.dork
+        page=int(input("\nNumber of Pages to scrap :: \033[1;37m"))
+        print ('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
+        dorker.start_dorking(dorks,page)
