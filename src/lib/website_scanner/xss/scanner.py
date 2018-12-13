@@ -71,7 +71,7 @@ class Scanner:
             result = requests.post(url, data=post_data)
 
             if self.payload[i] in result.text:
-                colors.info('VULNERABILITY DETECTED!--> {}'.format(self.payload[i])
+                colors.info('VULNERABILITY DETECTED!--> {}'.format(self.payload[i]))
                 colors.success('Link is : {} '.format(url))
                 colors.info('Form Data')
                 print(form)
