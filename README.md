@@ -35,8 +35,6 @@ Vault Scanner can be used for:
 
 * SSL scanner.
 
-* Google dorker.
-
 * Crawl a website and collect all the URLs.
 
 * Scrape a website and collect all the images.
@@ -68,13 +66,12 @@ Starting Vault :
 usage: vault.py [-h] [-u URL] [-p PORT] [-sp START_PORT] [-ep END_PORT] [-ssl]
                 [-info] [-comment] [-fuzz] [-ip IP] [-t THREADS]
                 [-source_port SOURCE_PORT] [-fin] [-null] [-ack] [-xmas] [-c]
-                [-xss] [-this] [-d]
+                [-xss] [-this]
 
 optional arguments:
   -h, --help            show this help message and exit
   -u URL, --url URL     URL for scanning
   -p PORT, --port PORT  Single port for scanning
-  -d DORK, --dork DORK  For finding Google dorks
   -sp START_PORT, --start_port START_PORT
                         Start port for scanning
   -ep END_PORT, --end_port END_PORT
@@ -100,12 +97,15 @@ optional arguments:
                         Start range for scanning IP
   -ip_end_range IP_END_RANGE
                         End range for scanning IP
+  -lfi                  Scan for LFI vulnerabilities
+  -whois                perform a whois lookup of a given IP
+  -o OUTPUT, --output OUTPUT
+                        Output all data
 ```
 
 Example Usage :
 
 `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
-
 
 # Screenshot
 
