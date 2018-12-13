@@ -1,5 +1,4 @@
-import logger
-from urllib.parse import urlparse,unquote
+from urllib.parse import unquote
 import colors
 import requests
 from bs4 import BeautifulSoup
