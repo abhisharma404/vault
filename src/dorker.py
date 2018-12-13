@@ -1,4 +1,3 @@
-import logging
 import logger
 from urllib.parse import urlparse,unquote
 import colors
