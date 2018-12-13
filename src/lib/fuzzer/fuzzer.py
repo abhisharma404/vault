@@ -22,7 +22,7 @@ class Fuzzer(object):
             if not os.path.exists(self.fuzz_file_path):
                 raise Exception('Directory does not exist')
         except Exception as e:
-            print('[-]', e)
+            colors.error(e)
             sys.exit(1)
         if thread_num is None:
             self.thread_num = 1
@@ -44,7 +44,6 @@ class Fuzzer(object):
         if resp.status_code in self.success_codes:
             return 1
         elif resp.status_code in self.redirection_codes:
-            print(resp.status_code)
             return 2
         else:
             return 0
@@ -67,7 +66,7 @@ class Fuzzer(object):
                     colors.info('Redirection Detected -> {}'.format(fuzz_url))
                     self.redirected_url.append(fuzz_url)
             except Exception as e:
-                print(e)
+                colors.error(e)
 
     def initiate(self):
         self.readFromFile()

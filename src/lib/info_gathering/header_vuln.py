@@ -27,7 +27,7 @@ class HeaderVuln(object):
                 colors.success(' {} : {} '.format(key, value))
             return headers_dict
         except Exception as e:
-            print(e)
+            colors.error(e)
 
     def find_insecure_headers(self):
         headers_dict = self.gather_header()

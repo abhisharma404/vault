@@ -26,7 +26,7 @@ class XSS(object):
         return self.payload_list
 
     def initiateEngine(self):
-        print('[+] XSS Vulnerability Engine started...')
+        colors.info('XSS Vulnerability Engine started...')
         self.payload_list = self.listPayloads()
         engine = scanner.Scanner(self.url, self.payload_list)
         engine.inject_payload()

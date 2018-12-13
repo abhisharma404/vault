@@ -4,9 +4,10 @@ import random
 import requests
 import colors
 
+
 class Scanner(object):
 
-    def __init__(self,url,payload_data):
+    def __init__(self, url, payload_data):
         self.url = url
         self.payload_data = payload_data
         self.scan_headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10; rv:33.0) Gecko/20100101 Firefox/33.0',}
@@ -28,11 +29,11 @@ class Scanner(object):
             'User-Agent':ua,
         }
 
-        print("[+] Checking the URL if it is live")
+        colors.info('Checking the URL if it is live')
         try:
             response = requests.get(url, headers=headers)
             response_code = response.status_code
-            print("[i] Got a respose for the URL with status code:{}".format(response_code))
+            colors.info('Got a respose for the URL with status code:{}'.format(response_code))
 
             if response_code == 200:
                 self.scan_headers = headers
@@ -57,12 +58,11 @@ class Scanner(object):
             for _prefix in _prefixs:
                 urls.append(url+_prefix)
 
-            #Now Sart Scanning
+            # Now Sart Scanning
             for _url in urls:
                 for _payload in _payloads:
                     scan_url = _url+_payload
                     res = requests.get(scan_url, headers=self.scan_headers)
-                    # colors.info("GET [{}] {}".format(res.status_code, scan_url))
 
                     for _match in _matches[_payload]:
                         if _match in res.text:
@@ -71,14 +71,13 @@ class Scanner(object):
                         if "syntax error" in res.text:
                             colors.error("Syntax Parse Error: {}".format(scan_url))
 
-            #Still no success, now check with null byte
+            # Still no success, now check with null byte
             if success_count == 0:
                 colors.info("Now creating payloads with one NULL BYTE suffix.")
                 for _url in urls:
                     for _payload in _payloads:
                         scan_url = _url+_payload+null_byte
                         res = requests.get(scan_url, headers=self.scan_headers)
-                        # colors.info("GET [{}] {}".format(res.status_code, scan_url))
 
                         for _match in _matches[_payload]:
                             if _match in res.text:
@@ -88,7 +87,7 @@ class Scanner(object):
                                 colors.error("Syntax Parse Error:{}".format(scan_url))
 
             if success_count == 0:
-                print("[-] No LFI Detected :-( ")
+                colors.error('No LFI Detected')
 
         else:
-            print("[-] An error occured, make sure provided URL is valid and accessible.")
+            colors.error('An error occured, make sure provided URL is valid and accessible.')

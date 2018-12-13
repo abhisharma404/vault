@@ -9,43 +9,6 @@ import logger
 import colors
 from urllib.parse import urlparse
 
-""" This is the beginning point for VAULT Scanner.
-
-    OPTIONS ->
-
-    1. Scan a website for the following - 1. XSS
-                                          2. LFI
-                                          3. RFI
-                                          4. SQLi
-
-    2. Common header erros : 1. Clickjacking
-                             2. jQuery
-                             3. Insecure cookie flags
-                             4. Session fixation through a cookie injection
-                             5. Spoofing Agents
-                             6. Brute force login through authorization header
-                             7. Testing HTTP methods
-                             8. Insecure headers
-
-    3. Collecting data :  1. Port scanning
-                          2. Header grabbing
-                          3. Banner grabbing
-                          4. Finding comments in source code
-                          5. Smartwhois scan*
-                          6. Check if error handling is done or not and extract the site data using that information
-                          7. OS Scanning
-
-    4. SSL scanner
-
-    5. Crawl a website and collect all the url related fields
-
-    6. Scrap a website and collect all the images
-
-    7. URL fuzzing
-
-    8. Shellshock checking
-"""
-
 
 def check_url(url: str):
     """Check whether or not URL have a scheme
@@ -113,7 +76,7 @@ if __name__ == '__main__':
     parser.add_argument('-whois', action='store_true', help='perform a whois lookup of a given IP')
     parser.add_argument('-o', '--output', help='Output all data')
 
-    colors.success("Please Check log file for information about any errors")
+    colors.info("Please Check log file for information about any errors")
 
     # Print help message if no arguments are supplied
     if len(sys.argv) == 1:
@@ -192,7 +155,7 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             from lib.info_gathering import header_vuln
-            colors.success('Performing information gathering over : {}'.format(args.url))
+            colors.info('Performing information gathering over : {}'.format(args.url))
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
             infoGatherObj.gather_header()
@@ -212,7 +175,7 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             from lib.info_gathering import finding_comment
-            colors.success('Performing comment gathering over : {}'.format(args.url))
+            colors.info('Performing comment gathering over : {}'.format(args.url))
 
             findCommnentObj = finding_comment.FindingComments(args.url)
             findCommnentObj.parse_comments()
@@ -230,7 +193,7 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             from lib.fuzzer import fuzzer
-            colors.success('Performing fuzzing on : {}'.format(args.url))
+            colors.info('Performing fuzzing on : {}'.format(args.url))
             fuzzObj = fuzzer.Fuzzer(base_url=args.url, thread_num=args.threads)
             fuzzObj.initiate()
 
