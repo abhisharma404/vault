@@ -3,6 +3,7 @@
 import requests
 import re
 from bs4 import BeautifulSoup
+import colors
 
 
 class FindingComments(object):
@@ -26,6 +27,6 @@ class FindingComments(object):
         self.find_comment()
         if len(self.found_comments) > 0:
             for comment_code, comment in self.found_comments.items():
-                print('[+] Found for ', comment_code, ' : ', comment)
+                colors.success('Found for {} : {}'.format(comment_code, comment))
         else:
-            print('[-] No comment found!.')
+            colors.error('No comment found')

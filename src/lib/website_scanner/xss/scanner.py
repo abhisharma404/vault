@@ -26,7 +26,7 @@ class Scanner:
             for url in self.target_url:
                 list_forms = self.extract_forms(url)
                 if len(list_forms) == 0:
-                    print('[!] No form found for : {}'.format(url))
+                    colors.error('No form found for : {}'.format(url))
                 list_of_tasks = []
 
                 for form in list_forms:
@@ -39,7 +39,7 @@ class Scanner:
         else:
             list_forms = self.extract_forms(self.target_url[0])
             if len(list_forms) == 0:
-                print('[!] No form found for : {}'.format(self.target_url[0]))
+                colors.error('No form found for : {}'.format(self.target_url[0]))
             list_of_tasks = []
 
             for form in list_forms:
@@ -52,7 +52,7 @@ class Scanner:
 
         t2 = time.time()
 
-        print('[!] Completed in {}'.format(t2-t1))
+        colors.info('Completed in {}'.format(t2-t1))
 
     def scanLoad(self, form, url):
         input_box = form.findAll('input')
@@ -71,10 +71,10 @@ class Scanner:
             result = requests.post(url, data=post_data)
 
             if self.payload[i] in result.text:
-                print('\n[!] VULNERABILITY DETECTED!--> ' + self.payload[i])
-                print('[*] LINK IS ', url)
-                print('---FORM DATA---')
+                colors.info('VULNERABILITY DETECTED!--> {}'.format(self.payload[i]))
+                colors.success('Link is : {} '.format(url))
+                colors.info('Form Data')
                 print(form)
                 print('\n')
             else:
-                print("[+] OK , Payload : {} , URL : {}".format(self.payload[i], url))
+                colors.success("OK , Payload : {} , URL : {}".format(self.payload[i], url))

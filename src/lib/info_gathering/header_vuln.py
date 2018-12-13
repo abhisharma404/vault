@@ -3,6 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+import colors
 
 
 class HeaderVuln(object):
@@ -15,67 +16,67 @@ class HeaderVuln(object):
             resp = requests.get(self.url)
             return resp
         except:
-            print('[-] Error in network connection!')
+            colors.error('Error in network connection')
 
     def gather_header(self):
         try:
             r = self.get_response()
             headers_dict = r.headers
-            print('---[!] Header Details---\n')
+            colors.info('Header Details')
             for key, value in headers_dict.items():
-                print('[+] {} : {}'.format(key, value))
+                colors.success(' {} : {} '.format(key, value))
             return headers_dict
         except Exception as e:
-            print(e)
+            colors.error(e)
 
     def find_insecure_headers(self):
         headers_dict = self.gather_header()
 
         if headers_dict:
-            print('\n---[!] Finding vulnerabilities---\n')
+            colors.info('Finding vulnerabilities')
 
             try:
                 xssprotect = headers_dict['X-XSS-Protection']
                 if xssprotect != '1; mode=block':
-                    print('[-] X-XSS-Protection not set properly.')
+                    colors.error('X-XSS-Protection not set propely')
                 else:
-                    print('[+] X-XSS-Protection set propely.')
+                    colors.success('X-XSS-Protection set properly.')
             except:
-                print('[!] Escaping!...')
+                colors.info('Escaping')
 
             try:
                 contenttype = headers_dict['X-Content-Type-Options']
                 if contenttype != 'nosniff':
-                    print('[-] X-Content-Type-Options not set properly.')
+                    colors.error('X-Content-Type-Options not set properly.')
             except:
-                print('[!] Escaping')
+                colors.info('Escaping')
 
             try:
                 hsts = headers_dict['Strict-Transport-Security']
             except:
-                print('[-] HSTS not set properly.')
+                colors.error('HSTS not set properly.')
 
             try:
                 csp = headers_dict['Content-Security-Policy']
-                print('[+] CSP set properly.')
+                colors.success('CSP set properly.')
             except:
-                print('[-] CSP mising')
+                colors.error('CSP missing')
 
             try:
                 xframe = headers_dict['x-frame-options']
-                print('[+] Likely to be safe from X-Frame.')
+                colors.success('Likely to be safe from X-Frame')
             except:
-                print('[-] X-Frame Missing.')
+                colors.error('X-Frame Missing')
 
     def insecure_cookies(self):
         response = self.get_response()
         cookies = response.cookies
 
-        print('\n---[!] Testing Insecure Cookies---\n')
+        colors.info('Testing Insecure Cookies')
 
         for cookie in cookies:
-            print('[+] Name : ', cookie.name)
-            print('[+] Value : ', cookie.value)
+            colors.success('Name : {}'.format(cookie.name))
+            colors.success('Value : {}'.format(cookie.value))
 
             if not cookie.secure:
                 cookie.secure = 'True'
@@ -92,18 +93,18 @@ class HeaderVuln(object):
             else:
                 cookie.domain_initial_dot = 'False'
 
-            print('[+] Cookie Secure :', cookie.secure)
-            print('[+] Cookie httponly :', cookie.httponly)
-            print('[+] Cookies domain iniitial dot', cookie.domain_initial_dot)
+            colors.success('Cookie secure : {}'.format(cookie.secure))
+            colors.success('Cookie HTTP Only : {}'.format(cookie.httponly))
+            colors.success('Cookie domain initial dot : {}'.format(cookie.domain_initial_dot))
             print('\n')
 
     def test_http_methods(self):
         modes_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'TEST']
 
-        print('\n---[!] Testing HTTP methods---\n')
+        colors.info('Testing HTTP methods')
 
         for mode in modes_list:
             r = requests.request(mode, self.url)
-            print('[+]', mode, r.status_code, r.reason)
+            colors.success(' {} {} {}'.format(mode, r.status_code, r.reason))
             if mode == 'TRACE' and 'TRACE / HTTP/1.1' in r.text:
-                print('[!] Possible Cross Site Tracing vulnerability found')
+                colors.info('Possible Cross Site Tracing vulnerability found')

@@ -7,6 +7,7 @@ import threading
 import multiprocessing
 import os
 import sys
+import colors
 
 
 class Fuzzer(object):
@@ -21,7 +22,7 @@ class Fuzzer(object):
             if not os.path.exists(self.fuzz_file_path):
                 raise Exception('Directory does not exist')
         except Exception as e:
-            print('[-]', e)
+            colors.error(e)
             sys.exit(1)
         if thread_num is None:
             self.thread_num = 1
@@ -43,7 +44,6 @@ class Fuzzer(object):
         if resp.status_code in self.success_codes:
             return 1
         elif resp.status_code in self.redirection_codes:
-            print(resp.status_code)
             return 2
         else:
             return 0
@@ -60,13 +60,13 @@ class Fuzzer(object):
             try:
                 status = self.send_request(fuzz_url)
                 if status == 1:
-                    print('[+] Found -> ', fuzz_url)
+                    colors.success('Found -> {}'.format(fuzz_url))
                     self.discovered_url.append(fuzz_url)
                 elif status == 2:
-                    print('[!] Redirection Detected -> ', fuzz_url)
+                    colors.info('Redirection Detected -> {}'.format(fuzz_url))
                     self.redirected_url.append(fuzz_url)
             except Exception as e:
-                print(e)
+                colors.error(e)
 
     def initiate(self):
         self.readFromFile()
@@ -74,7 +74,7 @@ class Fuzzer(object):
 
         threads = []
 
-        print('[!] URL Fuzzing started...')
+        colors.info('URL Fuzzing started...')
 
         for _ in range(self.thread_num):
             newThread = threading.Thread(target=self.start_engine)
@@ -86,4 +86,4 @@ class Fuzzer(object):
 
         t2 = time.time()
 
-        print('[!] Successfully completed in : {} seconds.'.format(t2-t1))
+        colors.info('Successfully completed in : {} seconds.'.format(t2-t1))

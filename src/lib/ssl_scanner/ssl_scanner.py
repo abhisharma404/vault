@@ -2,6 +2,7 @@
 
 import requests
 import time
+import colors
 
 
 API_URL = "https://api.ssllabs.com/api/v3/analyze/"
@@ -25,7 +26,7 @@ def request_api(url, payload):
 def analyze(url):
     global analyze_payload
 
-    print('[+] Scanning...')
+    colors.success('Scanning')
     analyze_payload['host'] = url
     resp = request_api(API_URL, analyze_payload)
     analyze_payload.pop('startNew')
@@ -59,6 +60,8 @@ def vulnerability_parser(data):
 
     }
     print_data(vuln_dict)
+
+    return vuln_dict
 
 
 def get_value(key, value):
@@ -116,7 +119,7 @@ def get_value(key, value):
 
 
 def print_data(dict_value):
-    print('[+] Vulnerability Scan Result : \n')
+    colors.success('Vulnerability Scan Result : ')
     for key, item in dict_value.items():
         if not isinstance(item, bool):
             new_item = get_value(key, item)
