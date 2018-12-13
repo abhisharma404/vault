@@ -97,6 +97,10 @@ optional arguments:
                         Start range for scanning IP
   -ip_end_range IP_END_RANGE
                         End range for scanning IP
+  -lfi                  Scan for LFI vulnerabilities
+  -whois                perform a whois lookup of a given IP
+  -o OUTPUT, --output OUTPUT
+                        Output all data
 ```
 
 Example Usage :
