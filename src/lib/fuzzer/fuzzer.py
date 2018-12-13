@@ -7,6 +7,7 @@ import threading
 import multiprocessing
 import os
 import sys
+import colors
 
 
 class Fuzzer(object):
@@ -60,10 +61,10 @@ class Fuzzer(object):
             try:
                 status = self.send_request(fuzz_url)
                 if status == 1:
-                    print('[+] Found -> ', fuzz_url)
+                    colors.success('Found -> {}'.format(fuzz_url))
                     self.discovered_url.append(fuzz_url)
                 elif status == 2:
-                    print('[!] Redirection Detected -> ', fuzz_url)
+                    colors.info('Redirection Detected -> {}'.format(fuzz_url))
                     self.redirected_url.append(fuzz_url)
             except Exception as e:
                 print(e)
@@ -74,7 +75,7 @@ class Fuzzer(object):
 
         threads = []
 
-        print('[!] URL Fuzzing started...')
+        colors.info('URL Fuzzing started...')
 
         for _ in range(self.thread_num):
             newThread = threading.Thread(target=self.start_engine)
@@ -86,4 +87,4 @@ class Fuzzer(object):
 
         t2 = time.time()
 
-        print('[!] Successfully completed in : {} seconds.'.format(t2-t1))
+        colors.info('Successfully completed in : {} seconds.'.format(t2-t1))
