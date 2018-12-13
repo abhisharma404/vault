@@ -160,9 +160,36 @@ if __name__ == '__main__':
             colors.info('Performing information gathering over : {}'.format(args.url))
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
-            infoGatherObj.gather_header()
-            infoGatherObj.insecure_cookies()
-            infoGatherObj.test_http_methods()
+            header_data = infoGatherObj.gather_header()
+            cookie_data = infoGatherObj.insecure_cookies()
+            method_data = infoGatherObj.test_http_methods()
+
+            if output:
+                if output.endswith('.txt'):
+                    file = output
+                else:
+                    file = output + '.txt'
+                i = 1
+
+                with open(file, 'w') as f:
+                    f.write('---[!] Header Details---\n\n')
+
+                    for k, v in header_data.items():
+                        f.write(str(k) + ' : ' + str(v) + os.linesep)
+                    f.write('\n---[!] Testing Insecure Cookies---\n\n')
+
+                    for k in cookie_data:
+                        f.write(k + os.linesep)
+                    f.write('\n---[!] Testing HTTP methods---\n\n')
+
+                    for k in method_data:
+                        if i%3 != 0:
+                            f.write(str(k) + ' ')
+                        else:
+                            f.write(str(k) + os.linesep)
+                        i = i + 1
+
+                colors.success('File has been saved successfully')
 
         except ImportError:
             colors.error('Could not import the required module.')

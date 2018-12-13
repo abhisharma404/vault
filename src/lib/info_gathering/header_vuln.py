@@ -73,10 +73,13 @@ class HeaderVuln(object):
         cookies = response.cookies
 
         colors.info('Testing Insecure Cookies')
+        cookie_data = []
 
         for cookie in cookies:
             colors.success('Name : {}'.format(cookie.name))
             colors.success('Value : {}'.format(cookie.value))
+            cookie_data.append('Name : {}'.format(cookie.name))
+            cookie_data.append('Value : {}'.format(cookie.value))
 
             if not cookie.secure:
                 cookie.secure = 'True'
@@ -97,14 +100,26 @@ class HeaderVuln(object):
             colors.success('Cookie HTTP Only : {}'.format(cookie.httponly))
             colors.success('Cookie domain initial dot : {}'.format(cookie.domain_initial_dot))
             print('\n')
+            cookie_data.append('Cookie secure : {}'.format(cookie.secure))
+            cookie_data.append('Cookie HTTP Only : {}'.format(cookie.httponly))
+            cookie_data.append('Cookie domain initial dot : {}'.format(cookie.domain_initial_dot) + '\n')
+
+        return cookie_data
 
     def test_http_methods(self):
         modes_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'TEST']
 
         colors.info('Testing HTTP methods')
+        method_data = []
 
         for mode in modes_list:
             r = requests.request(mode, self.url)
             colors.success(' {} {} {}'.format(mode, r.status_code, r.reason))
+            method_data.append(mode)
+            method_data.append(r.status_code)
+            method_data.append(r.reason)
+
             if mode == 'TRACE' and 'TRACE / HTTP/1.1' in r.text:
                 colors.info('Possible Cross Site Tracing vulnerability found')
+
+        return method_data
