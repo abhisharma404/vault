@@ -1,108 +1,14 @@
 #!/usr/bin/env python
 
-import argparse
-import logging
+import re
 import sys
 import os
+import logging
+import argparse
 import logger
-from urllib.parse import urlparse,unquote
 import colors
-import re
-import requests
-from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 
-
-""" This is the beginning point for VAULT Scanner.
-
-    OPTIONS ->
-
-    1. Scan a website for the following - 1. XSS
-                                          2. LFI
-                                          3. RFI
-                                          4. SQLi
-
-    2. Common header erros : 1. Clickjacking
-                             2. jQuery
-                             3. Insecure cookie flags
-                             4. Session fixation through a cookie injection
-                             5. Spoofing Agents
-                             6. Brute force login through authorization header
-                             7. Testing HTTP methods
-                             8. Insecure headers
-
-    3. Collecting data :  1. Port scanning
-                          2. Header grabbing
-                          3. Banner grabbing
-                          4. Finding comments in source code
-                          5. Smartwhois scan*
-                          6. Check if error handling is done or not and extract the site data using that information
-                          7. OS Scanning
-
-    4. SSL scanner
-
-    5. Crawl a website and collect all the url related fields
-
-    6. Scrap a website and collect all the images
-
-    7. URL fuzzing
-
-    8. Shellshock checking
-"""
-
-def modifyLINK(url):
-	list1=[]
-	for ch in url:
-		if ch=="&":
-			break
-		else:
-			list1.append(ch)
-	ret=''.join(list1)
-	return ret
-
-def savetofile(URLlist):
-	response=str(input("\n\033[1;31mDo you want to save it in a file (yes/no):: \033[1;37m"))
-	if response == "yes":
-		name=str(input("\033[1;31mGive file name :: \033[1;37m"))
-		if name.endswith(".txt")==False:
-			l = name+".txt"
-		else:
-			l=name
-		f_open = open(l,"w")
-		for url in URLlist:
-			f_open.write(url + "\n")
-		f_open.close()
-		print("\033[1;32mYour file has been saved successfully")
-
-def start_dorking(search,page_count):
-    web_list=[]
-    m_search=modifyLINK(search)
-    count=0
-    page_count*=10
-    while (page_count!=count):
-        count=str(count)
-        m_search=str(m_search)
-        search_url="https://google.com/search?q="+m_search+"&start="+count
-        requested_page=requests.get(search_url).text
-        soup=BeautifulSoup(requested_page,'html.parser')
-        count=int(count)
-        if "Our systems have detected unusual traffic from your computer network" in soup.get_text():
-            colors.error("Google has detected the script. Try after some time.")
-            LOGGER.error('[-] script blocked by google. wait for some minutes')
-            break
-        h3_tags=soup.findAll("h3")
-        for h3 in h3_tags:
-            a_tag=h3.find("a")
-            link=a_tag.get("href")
-            link=link[7:]
-            if link.startswith("http"):
-                searchlink=modifyLINK(link)
-                res=unquote(searchlink)
-                web_list.append(res)
-                print("\033[1;37m--> \033[1;32m",res,end=" \n")
-        count+=10
-    savetofile(web_list)
-    sys.exit(0)
-    return web_list
 
 def check_url(url: str):
     """Check whether or not URL have a scheme
@@ -166,9 +72,11 @@ if __name__ == '__main__':
     parser.add_argument('-ping_sweep', action='store_true', help='ICMP ECHO request')
     parser.add_argument('-ip_start_range', help='Start range for scanning IP')
     parser.add_argument('-ip_end_range', help='End range for scanning IP')
-    parser.add_argument('-d','--dork',help='Perform google dorking')
+    parser.add_argument('-lfi', action='store_true', help='Scan for LFI vulnerabilities')
+    parser.add_argument('-whois', action='store_true', help='perform a whois lookup of a given IP')
+    parser.add_argument('-o', '--output', help='Output all data')
 
-    colors.success("Please Check log file for information about any errors")
+    colors.info("Please Check log file for information about any errors")
 
     # Print help message if no arguments are supplied
     if len(sys.argv) == 1:
@@ -187,6 +95,28 @@ if __name__ == '__main__':
         args.start_port = args.port
         args.end_port = args.port
 
+    if args.whois:
+        if not args.ip:
+            colors.error('Please enter an IP for Whois lookup')
+            LOGGER.error('[-] Please enter an IP for Whois lookup')
+            sys.exit(1)
+        try:
+            from lib.whois_lookup import lookup
+            data = lookup.whois_lookup(args.ip)
+
+            colors.success('Information after Whois lookup: \n')
+
+            for k, v in data.items():
+                print(k, ':', v)
+
+        except ImportError:
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
+        except Exception as e:
+            LOGGER.error(e)
+
+    output = args.output
+
     if args.ssl:
         if not args.url:
             colors.error('Please enter an URL for SSL scanning')
@@ -197,7 +127,21 @@ if __name__ == '__main__':
             colors.info('SSL scan using SSL Labs API')
 
             data = ssl_scanner.analyze(args.url)
-            ssl_scanner.vulnerability_parser(data)
+            ssl_data = ssl_scanner.vulnerability_parser(data)
+
+            if output:
+                if output.endswith('.txt'):
+                    file = output
+                else:
+                    file = output + '.txt'
+
+                with open(file, 'wt') as f:
+                    f.write('[+] Vulnerability Scan Result : \n\n')
+                    for k, v in ssl_data.items():
+                        f.write(str(k) + ' : ' + str(v) + os.linesep)
+
+                colors.success('File has been saved successfully')
+
         except ImportError:
             colors.error('Could not import the required module.')
             LOGGER.error('[-] Could not import the required module.')
@@ -211,12 +155,13 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             from lib.info_gathering import header_vuln
-            colors.success('Performing information gathering over : {}'.format(args.url))
+            colors.info('Performing information gathering over : {}'.format(args.url))
 
             infoGatherObj = header_vuln.HeaderVuln(args.url)
             infoGatherObj.gather_header()
             infoGatherObj.insecure_cookies()
             infoGatherObj.test_http_methods()
+
         except ImportError:
             colors.error('Could not import the required module.')
             LOGGER.error('[-] Could not import the required module.')
@@ -230,7 +175,7 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             from lib.info_gathering import finding_comment
-            colors.success('Performing comment gathering over : {}'.format(args.url))
+            colors.info('Performing comment gathering over : {}'.format(args.url))
 
             findCommnentObj = finding_comment.FindingComments(args.url)
             findCommnentObj.parse_comments()
@@ -248,7 +193,7 @@ if __name__ == '__main__':
             sys.exit(1)
         try:
             from lib.fuzzer import fuzzer
-            colors.success('Performing fuzzing on : {}'.format(args.url))
+            colors.info('Performing fuzzing on : {}'.format(args.url))
             fuzzObj = fuzzer.Fuzzer(base_url=args.url, thread_num=args.threads)
             fuzzObj.initiate()
 
@@ -400,8 +345,22 @@ if __name__ == '__main__':
                 colors.error('Could not import the required module.')
             except Exception as e:
                 print(e)
-    if args.dork:
-        dorks=args.dork
-        page=int(input("\nNumber of Pages to scrap ::"))
-        print ('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
-        start_dorking(dorks,page)
+
+    if args.lfi:
+        if not args.url:
+            colors.error('Please enter an URL  for scanning')
+            LOGGER.error('[-] Please enter an URL for scanning')
+            sys.exit(1)
+        try:
+            colors.info('Initiating LFI Scan')
+
+            from lib.website_scanner.lfi import lfiEngine
+            lfiscanObj = lfiEngine.LFI(url=args.url, payload_path=os.getcwd()+'/payloads/lfi_payloads.json')
+            lfiscanObj.startScanner()
+
+        except ImportError:
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
+            sys.exit(1)
+        except Exception as e:
+            LOGGER.error(e)
