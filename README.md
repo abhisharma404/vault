@@ -67,7 +67,9 @@ Starting Vault :
 usage: vault.py [-h] [-u URL] [-p PORT] [-sp START_PORT] [-ep END_PORT] [-ssl]
                 [-info] [-comment] [-fuzz] [-ip IP] [-t THREADS]
                 [-source_port SOURCE_PORT] [-fin] [-null] [-ack] [-xmas] [-c]
-                [-xss] [-this] [-d dork]
+                [-xss] [-this] [-ping_sweep] [-ip_start_range IP_START_RANGE]
+                [-ip_end_range IP_END_RANGE] [-lfi] [-whois] [-o OUTPUT]
+                [-d DORK]
 
 optional arguments:
   -h, --help            show this help message and exit
