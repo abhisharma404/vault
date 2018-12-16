@@ -124,7 +124,19 @@ def comment(args):
         colors.info('Performing comment gathering over : {}'.format(args.url))
 
         findCommnentObj = finding_comment.FindingComments(args.url)
-        findCommnentObj.parse_comments()
+        comment_dict = findCommnentObj.parse_comments()
+
+        if args.output:
+            if args.output.endswith('.txt'):
+                file = args.output
+            else:
+                file = args.output + '.txt'
+
+            with open(file, 'w') as f:
+                f.write('---[!] Comments---\n\n')
+                for k, v in comment_dict.items():
+                    f.write(str(k) + ' : ' + str(v) + os.linesep)
+            colors.success('File has been saved successfully')
 
     except ImportError:
         colors.error('Could not import the required module.')
@@ -391,7 +403,7 @@ if __name__ == '__main__':
     parser.add_argument('-lfi', action='store_true', help='Scan for LFI vulnerabilities')
     parser.add_argument('-whois', action='store_true', help='perform a whois lookup of a given IP')
     parser.add_argument('-o', '--output', help='Output all data')
-    parser.add_argument('-d','--dork',help='Perform google dorking')
+    parser.add_argument('-d', '--dork', help='Perform google dorking')
 
     colors.info("Please Check log file for information about any errors")
 
