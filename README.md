@@ -1,48 +1,63 @@
-# VAULT Scanner
+# VAULT 
+swiss army knife for hackers
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/740204dd950c4e49841c94f2c32af78a)](https://app.codacy.com/app/abhisharma404/vault_scanner?utm_source=github.com&utm_medium=referral&utm_content=abhisharma404/vault_scanner&utm_campaign=Badge_Grade_Dashboard)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner) 
 [![Join the chat at https://gitter.im/vault_scanner/kwoc](https://badges.gitter.im/vault_scanner/Lobby.svg)](https://gitter.im/vault_scanner/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Python](https://img.shields.io/badge/python-%3E%3D3-brightgreen.svg)
 ![version](https://img.shields.io/badge/version-0.1.0-yellow.svg)
 
-Vault Scanner can be used for:
+* #### Scan website for the following vulnerabilities
+- [x] XSS
+- [x] LFI
+- [ ] RFI
+- [ ] SQLi
 
-* Scan a website for the following:
-      - [XSS](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS))
-      - [LFI](https://en.wikipedia.org/wiki/File_inclusion_vulnerability#Local_File_Inclusion)
-      - [RFI](https://en.wikipedia.org/wiki/File_inclusion_vulnerability#Remote_File_Inclusion)
-      - [SQLi](https://en.wikipedia.org/wiki/SQL_injection)
+* #### Scan for common header errors
+- [x] Clickjacking
+- [ ] jQuery version checking
+- [x] Insecure cookie flags
+- [ ] Session fixation through cookie injection
+- [x] Testing HTTP methods
+- [x] Insecure headers
+- [ ] Brute force login through Authorization headers
 
-* Common header erros:
-      - Clickjacking
-      - jQuery
-      - Insecure cookie flags
-      - Session fixation through a cookie injection
-      - Spoofing Agents
-      - Brute force login through authorization header
-      - Testing HTTP methods
-      - Insecure headers
+* #### Collecting data
+- [x] Port scanning
+- [x] IP scanning
+- [x] SSL Scanner
+- [x] URL Fuzzer
+- [x] Header/banner grabbing
+- [x] Find comments in source code
+- [x] WHOIS Lookup
+- [x] Google Dork
+- [ ] OS Scan
+- [ ] Error handler checker
+- [ ] Admin panel finder
+- [ ] CMS Detection
+- [ ] Detect Honeypots
+- [ ] Detect DDoS attack
+- [ ] Open redirect vulnerability testing
 
-* Collecting data:
-      - Port scanning
-      - IP Scanning
-      - Header grabbing
-      - Banner grabbing
-      - Finding comments in source code
-      - Smartwhois scan
-      - Check if error handling is done or not and extract the site data using that information.
-      - OS scanning.
+* #### Crawling
+- [ ] Crawl a website and collect all the links
+- [ ] Crawl and scrape the website for images
 
-* SSL scanner.
-* Google Dorker
+* #### Attacks
+- [x] DDoS Attack
+- [ ] ARP Spoofer
+- [ ] DNS Spoofer
+- [ ] De-authentication attack
+- [ ] Shellsock
 
-* Crawl a website and collect all the URLs.
-
-* Scrape a website and collect all the images.
-
-* [URL fuzzing](https://en.wikipedia.org/wiki/Fuzzing).
-
-* [Shellshock](https://en.wikipedia.org/wiki/Shellshock_(software_bug)) checking.
+* #### Utilities
+- [ ] Generate customized backdoor
+- [ ] Hash scanner
+- [ ] Data monitoring
+- [ ] Keylogger
+- [ ] SSH Tunelling 
+- [ ] Generate sitemap
+- [ ] Mac address changer
+- [ ] Trace route
 
 # Getting Started
 
@@ -114,3 +129,5 @@ Example Usage :
 # Screenshot
 
 ![](logo/Initial_Setup.png)
+
+### This project is currently a part of IIT KWoC 2018.
