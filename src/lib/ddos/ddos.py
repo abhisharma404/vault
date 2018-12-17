@@ -7,6 +7,7 @@ import socket
 import sys
 from urllib.parse import urlparse
 import colors
+import time
 
 
 class DDoS(object):
