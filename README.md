@@ -41,7 +41,7 @@ swiss army knife for hackers
 - [x] DDoS Attack
 - [ ] ARP Spoofer
 - [ ] DNS Spoofer
-- [ ] Deuathentication attack
+- [ ] De-authentication attack
 - [ ] Shellsock
 
 * #### Utilities
@@ -54,47 +54,6 @@ swiss army knife for hackers
 - [ ] Mac address changer
 - [ ] Trace route
 - [ ] Detect DDoS attack
-
-
-
-VAULT currently performs 
-- [] 
-* Scan a website for the following:
-      - [XSS](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS))
-      - [LFI](https://en.wikipedia.org/wiki/File_inclusion_vulnerability#Local_File_Inclusion)
-      - [RFI](https://en.wikipedia.org/wiki/File_inclusion_vulnerability#Remote_File_Inclusion)
-      - [SQLi](https://en.wikipedia.org/wiki/SQL_injection)
-
-* Common header erros:
-      - Clickjacking
-      - jQuery
-      - Insecure cookie flags
-      - Session fixation through a cookie injection
-      - Spoofing Agents
-      - Brute force login through authorization header
-      - Testing HTTP methods
-      - Insecure headers
-
-* Collecting data:
-      - Port scanning
-      - IP Scanning
-      - Header grabbing
-      - Banner grabbing
-      - Finding comments in source code
-      - Smartwhois scan
-      - Check if error handling is done or not and extract the site data using that information.
-      - OS scanning.
-
-* SSL scanner.
-* Google Dorker
-
-* Crawl a website and collect all the URLs.
-
-* Scrape a website and collect all the images.
-
-* [URL fuzzing](https://en.wikipedia.org/wiki/Fuzzing).
-
-* [Shellshock](https://en.wikipedia.org/wiki/Shellshock_(software_bug)) checking.
 
 # Getting Started
 
