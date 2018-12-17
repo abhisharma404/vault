@@ -1,12 +1,64 @@
-# VAULT Scanner
+# VAULT 
+swiss army knife for hackers
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/740204dd950c4e49841c94f2c32af78a)](https://app.codacy.com/app/abhisharma404/vault_scanner?utm_source=github.com&utm_medium=referral&utm_content=abhisharma404/vault_scanner&utm_campaign=Badge_Grade_Dashboard)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner) 
 [![Join the chat at https://gitter.im/vault_scanner/kwoc](https://badges.gitter.im/vault_scanner/Lobby.svg)](https://gitter.im/vault_scanner/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Python](https://img.shields.io/badge/python-%3E%3D3-brightgreen.svg)
 ![version](https://img.shields.io/badge/version-0.1.0-yellow.svg)
 
-Vault Scanner can be used for:
+* #### Scan website for the following vulnerabilities
+- [x] XSS
+- [x] LFI
+- [ ] RFI
+- [ ] SQLi
 
+* #### Scan for common header errors
+- [x] Clickjacking
+- [ ] jQuery version checking
+- [x] Insecure cookie flags
+- [ ] Session fixation through cookie injection
+- [x] Testing HTTP methods
+- [x] Insecure headers
+- [ ] Brute force login through Authorization headers
+
+* #### Collecting data
+- [x] Port scanning
+- [x] IP scanning
+- [x] SSL Scanner
+- [x] URL Fuzzer
+- [x] Header/banner grabbing
+- [x] Find comments in source code
+- [x] WHOIS Lookup
+- [x] Google Dork
+- [ ] OS Scan
+- [ ] Error handler checker
+
+* #### Crawling
+- [ ] Crawl a website and collect all the links
+- [ ] Crawl and scrape the website for images
+
+* #### Attacks
+- [x] DDoS Attack
+- [ ] ARP Spoofer
+- [ ] DNS Spoofer
+- [ ] Deuathentication attack
+- [ ] Shellsock
+
+* #### Utilities
+- [ ] Generate customized backdoor
+- [ ] Hash scanner
+- [ ] Data monitoring
+- [ ] Keylogger
+- [ ] SSH Tunelling 
+- [ ] Generate sitemap
+- [ ] Mac address changer
+- [ ] Trace route
+- [ ] Detect DDoS attack
+
+
+
+VAULT currently performs 
+- [] 
 * Scan a website for the following:
       - [XSS](https://www.owasp.org/index.php/Cross-site_Scripting_(XSS))
       - [LFI](https://en.wikipedia.org/wiki/File_inclusion_vulnerability#Local_File_Inclusion)
