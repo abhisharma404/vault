@@ -361,6 +361,27 @@ def xss(args):
         sys.exit(1)
 
 
+def ddos(args):
+    if args.url is None and args.ip is None:
+        colors.error('Please provide either an IP address or an URL to perform DDoS attack')
+        sys.exit(1)
+    else:
+        try:
+            from lib.ddos import ddos
+
+            ddosObj = ddos.DDoS(url=args.url, ip=args.ip, start_port=args.start_port,
+                                end_port=args.end_port, dport=args.port,
+                                threads=args.threads, interval=args.interval)
+            ddosObj.startAttack()
+        except ImportError:
+            colors.error('Could not import the required module')
+            LOGGER.error('[-] Could not import the required module')
+        except Exception as e:
+            print(e)
+            LOGGER.error(e)
+            sys.exit(1)
+
+
 if __name__ == '__main__':
 
     print(""" ____   _________   ____ ___.____  ___________
@@ -404,6 +425,9 @@ if __name__ == '__main__':
     parser.add_argument('-whois', action='store_true', help='perform a whois lookup of a given IP')
     parser.add_argument('-o', '--output', help='Output all data')
     parser.add_argument('-d', '--dork', help='Perform google dorking')
+    parser.add_argument('-ddos', action='store_true', help='Perform DDoS attack')
+    parser.add_argument('-interval', help='Interval time for sending packets')
+
 
     colors.info("Please Check log file for information about any errors")
 
@@ -459,3 +483,6 @@ if __name__ == '__main__':
 
     if args.lfi:
         lfi(args)
+
+    if args.ddos:
+        ddos(args)
