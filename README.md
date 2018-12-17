@@ -22,8 +22,8 @@ swiss army knife for hackers
 - [ ] Brute force login through Authorization headers
 
 * #### Collecting data
-- [x] Port scanning
-- [x] IP scanning
+- [x] Port scanning : ACK, FIN, NULL, XMAS
+- [x] IP scanning : Ping Sweep
 - [x] SSL Scanner
 - [x] URL Fuzzer
 - [x] Header/banner grabbing
