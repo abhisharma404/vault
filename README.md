@@ -125,3 +125,5 @@ Example Usage :
 # Screenshot
 
 ![](logo/Initial_Setup.png)
+
+### This project is currently a part of IIT KWoC 2018.
