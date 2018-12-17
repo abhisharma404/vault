@@ -32,6 +32,11 @@ swiss army knife for hackers
 - [x] Google Dork
 - [ ] OS Scan
 - [ ] Error handler checker
+- [ ] Admin panel finder
+- [ ] CMS Detection
+- [ ] Detect Honeypots
+- [ ] Detect DDoS attack
+- [ ] Open redirect vulnerability testing
 
 * #### Crawling
 - [ ] Crawl a website and collect all the links
@@ -53,7 +58,6 @@ swiss army knife for hackers
 - [ ] Generate sitemap
 - [ ] Mac address changer
 - [ ] Trace route
-- [ ] Detect DDoS attack
 
 # Getting Started
 
