@@ -6,6 +6,7 @@ import sys
 
 def modifyLINK(url):
 	list1=[]
+	url=str(url)
 	for ch in url:
 		if ch=="&":
 			break
