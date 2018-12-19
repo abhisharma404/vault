@@ -19,15 +19,18 @@ end = '\x1b[0m'
 
 
 def error(message):
+    message = str(message)
     message = '\n[-] ' + message
     print(red, message, end)
 
 
 def success(message):
+    message = str(message)
     message = '\n[+] ' + message
     print(green, message, end)
 
 
 def info(message):
+    message = str(message)
     message = '\n[!] ' + message
     print(yellow, message, end)
