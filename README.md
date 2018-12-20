@@ -39,8 +39,8 @@ swiss army knife for hackers
 - [ ] Open redirect vulnerability testing
 
 * #### Crawling
-- [ ] Crawl a website and collect all the links
-- [ ] Crawl and scrape the website for images
+- [x] Crawl a website and collect all the links
+- [x] Crawl and scrape the website for images
 
 * #### Attacks
 - [x] DDoS Attack
