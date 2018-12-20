@@ -10,7 +10,6 @@ import colors
 from urllib.parse import urlparse
 import dorker
 
-
 def check_url(url: str):
     """Check whether or not URL have a scheme
 
@@ -407,6 +406,54 @@ def ddos(args):
             sys.exit(1)
 
 
+def crawl(args):
+    if args.url is None:
+        colors.error('Please provide either an URL to perform Crawling')
+        sys.exit(1)
+    else:
+        try:
+            from lib.crawler import caller
+
+            name = input('Enter the name of folder:->')
+            C = caller.Crawler(url=args.url, pname=name)
+            if args.cri is None:
+                C.start(return_set=False)
+                return ''
+            else:
+            	return C.start(return_set=True)
+            print('[X]Crawling completed')
+
+        except ImportError:
+            colors.error('Could not import the required module')
+            LOGGER.error('[-] Could not import the required module')
+        except Exception as e:
+            print(e)
+            LOGGER.error(e)
+            sys.exit(1)
+
+
+def scrap(args):
+    if args.url is None:
+        colors.error('Please provide URL to perform Scraping')
+        sys.exit(1)
+    else:
+        try:
+
+            from lib.crawler import finder
+            links , path =crawl(args)
+            finder.initiate(links, path)
+            print('[X]Scraping completed')
+
+        except ImportError:
+            colors.error('Could not import the required module')
+            LOGGER.error('[-] Could not import the required module')
+        except Exception as e:
+            print(e)
+            LOGGER.error(e)
+            sys.exit(1)
+
+
+
 if __name__ == '__main__':
 
     print(""" ____   _________   ____ ___.____  ___________
@@ -452,6 +499,8 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dork', help='Perform google dorking')
     parser.add_argument('-ddos', action='store_true', help='Perform DDoS attack')
     parser.add_argument('-interval', help='Interval time for sending packets')
+    parser.add_argument('-cr', action='store_true', help='For extracting links from a Web page')
+    parser.add_argument('-cri', action='store_true', help='For extracting images from a Web page')
     parser.add_argument('-all', action='store_true', help='Run all scans')
 
     colors.info("Please Check log file for information about any errors")
@@ -531,5 +580,11 @@ if __name__ == '__main__':
     if args.ddos:
         ddos(args)
 
+    if args.cr:
+        crawl(args)
+
+    if args.cri:
+        scrap(args)
+        
     if args.dork:
         dork(args)
