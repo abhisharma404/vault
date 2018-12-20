@@ -10,6 +10,7 @@ import colors
 from urllib.parse import urlparse
 import dorker
 
+
 def check_url(url: str):
     """Check whether or not URL have a scheme
 
@@ -420,9 +421,29 @@ def crawl(args):
                 C.start(return_set=False)
                 return ''
             else:
-            	return C.start(return_set=True)
+                return C.start(return_set=True)
             print('[X]Crawling completed')
 
+        except ImportError:
+            colors.error('Could not import the required module')
+            LOGGER.error('[-] Could not import the required module')
+        except Exception as e:
+            print(e)
+            LOGGER.error(e)
+            sys.exit(1)
+
+
+def admin_panel(args):
+    """Find admin panel of a given domain
+    """
+    if args.url is None:
+        colors.error('Please provide either an URL for finding admin panel')
+        sys.exit(1)
+    else:
+        try:
+            from lib.admin_panel import admin_panel
+
+            admin_panel.find_admin_panel(args.url)
         except ImportError:
             colors.error('Could not import the required module')
             LOGGER.error('[-] Could not import the required module')
@@ -440,7 +461,7 @@ def scrap(args):
         try:
 
             from lib.crawler import finder
-            links , path =crawl(args)
+            links, path = crawl(args)
             finder.initiate(links, path)
             print('[X]Scraping completed')
 
@@ -502,6 +523,7 @@ if __name__ == '__main__':
     parser.add_argument('-cr', action='store_true', help='For extracting links from a Web page')
     parser.add_argument('-cri', action='store_true', help='For extracting images from a Web page')
     parser.add_argument('-all', action='store_true', help='Run all scans')
+    parser.add_argument('-admin', action='store_true', help='Find admin panel on a given domain')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -521,6 +543,7 @@ if __name__ == '__main__':
             comment(args)
             xss(args)
             lfi(args)
+            admin_panel(args)
 
         if args.ip:
             args.ip = check_ip(args.ip)
@@ -536,6 +559,9 @@ if __name__ == '__main__':
 
     if args.ip:
         args.ip = check_ip(args.ip)
+
+    if args.admin:
+        admin_panel(args)
 
     if args.port:
         args.start_port = args.port
@@ -585,6 +611,6 @@ if __name__ == '__main__':
 
     if args.cri:
         scrap(args)
-        
+
     if args.dork:
         dork(args)
