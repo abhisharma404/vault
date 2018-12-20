@@ -10,7 +10,6 @@ import colors
 from urllib.parse import urlparse
 import dorker
 
-
 def check_url(url: str):
     """Check whether or not URL have a scheme
 
@@ -20,7 +19,6 @@ def check_url(url: str):
         return 'http://' + url
 
     return url
-
 
 def check_ip(ip: str):
     """
@@ -32,7 +30,6 @@ def check_ip(ip: str):
         colors.error('Please enter a valid IP address')
         LOGGER.error('[-] Please enter a valid IP address')
         sys.exit(1)
-
 
 def ssl(args):
     if not args.url:
@@ -64,7 +61,6 @@ def ssl(args):
         LOGGER.error('[-] Could not import the required module.')
     except Exception as e:
         LOGGER.error(e)
-
 
 def info(args):
     if not args.url:
@@ -113,7 +109,6 @@ def info(args):
     except Exception as e:
         LOGGER.error(e)
 
-
 def comment(args):
     if not args.url:
         colors.error('Please enter an URL for finding comments')
@@ -144,7 +139,6 @@ def comment(args):
     except Exception as e:
         LOGGER.error(e)
 
-
 def fuzz(args):
     if not args.url:
         colors.error('Please enter an URL for fuzzing')
@@ -161,7 +155,6 @@ def fuzz(args):
         LOGGER.error('[-] Could not import the required module.')
     except Exception as e:
         LOGGER.error(e)
-
 
 def fin(args):
     if not args.ip:
@@ -184,7 +177,6 @@ def fin(args):
     except Exception as e:
         LOGGER.error(e)
 
-
 def null(args):
     if not args.ip:
         colors.error('Please enter an IP address for scanning')
@@ -206,7 +198,6 @@ def null(args):
     except Exception as e:
         LOGGER.error(e)
 
-
 def ack(args):
     if not args.ip:
         colors.error('Please enter an IP address for scanning')
@@ -226,7 +217,6 @@ def ack(args):
         LOGGER.error('[-] Could not import the required module.')
     except Exception as e:
         LOGGER.error(e)
-
 
 def whois(args):
     if not args.ip:
@@ -260,7 +250,6 @@ def whois(args):
     except Exception as e:
         LOGGER.error(e)
 
-
 def lfi(args):
     if not args.url:
         colors.error('Please enter an URL  for scanning')
@@ -279,7 +268,6 @@ def lfi(args):
         sys.exit(1)
     except Exception as e:
         LOGGER.error(e)
-
 
 def dork(args):
 
@@ -300,7 +288,6 @@ def dork(args):
                 for k in web_lists:
                     f.write(str(k) + os.linesep)
             colors.success('File has been saved successfully')
-
 
 def xmas(args):
     if not args.ip:
@@ -323,7 +310,6 @@ def xmas(args):
     except Exception as e:
         LOGGER.error(e)
 
-
 def ping_sweep(args):
     if not args.ip:
         colors.error('Please enter an IP address for scanning')
@@ -343,7 +329,6 @@ def ping_sweep(args):
             colors.error('Could not import the required module.')
         except Exception as e:
             print(e)
-
 
 def xss(args):
     if args.url:
@@ -367,7 +352,7 @@ def xss(args):
                 LOGGER.error('[-] Could not import the required module.')
             except Exception as e:
                 LOGGER.error(e)
-
+                
         try:
             import xss
 
@@ -404,7 +389,6 @@ def ddos(args):
             print(e)
             LOGGER.error(e)
             sys.exit(1)
-            
             
 def dorking():
     dorks=args.dork
@@ -464,7 +448,7 @@ if __name__ == '__main__':
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
         sys.exit(1)
-
+        
     args = parser.parse_args()
 
     if args.url:
