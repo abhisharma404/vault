@@ -98,7 +98,7 @@ def info(args):
                 f.write('\n---[!] Testing HTTP methods---\n\n')
 
                 for k in method_data:
-                    if i%3 != 0:
+                    if i % 3 != 0:
                         f.write(str(k) + ' ')
                     else:
                         f.write(str(k) + os.linesep)
@@ -241,6 +241,18 @@ def whois(args):
         for k, v in data.items():
             print(k, ':', v)
 
+        if args.output:
+            if args.output.endswith('.txt'):
+                file = args.output
+            else:
+                file = args.output + '.txt'
+
+            with open(file, 'w') as f:
+                f.write('Information after Whois lookup: \n\n')
+                for k, v in data.items():
+                    f.write(str(k) + ' : ' + str(v) + os.linesep)
+            colors.success('File has been saved successfully')
+
     except ImportError:
         colors.error('Could not import the required module.')
         LOGGER.error('[-] Could not import the required module.')
@@ -257,7 +269,7 @@ def lfi(args):
         colors.info('Initiating LFI Scan')
 
         from lib.website_scanner.lfi import lfiEngine
-        lfiscanObj = lfiEngine.LFI(url=args.url, payload_path=os.getcwd()+'/payloads/lfi_payloads.json')
+        lfiscanObj = lfiEngine.LFI(url=args.url, payload_path=os.getcwd() + '/payloads/lfi_payloads.json')
         lfiscanObj.startScanner()
 
     except ImportError:
@@ -269,11 +281,24 @@ def lfi(args):
 
 
 def dork(args):
+
     if args.dork:
-        dorks=args.dork
-        page=int(input("\nNumber of Pages to scrap :: \033[1;37m"))
-        print ('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
-        dorker.start_dorking(dorks,page)
+        dorks = args.dork
+        page = int(input("\nNumber of Pages to scrap :: \033[1;37m"))
+        print('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
+        web_lists = dorker.start_dorking(dorks, page)
+
+        if args.output:
+            if args.output.endswith('.txt'):
+                file = args.output
+            else:
+                file = args.output + '.txt'
+
+            with open(file, 'w') as f:
+                f.write('Google Dorks results: \n\n')
+                for k in web_lists:
+                    f.write(str(k) + os.linesep)
+            colors.success('File has been saved successfully')
 
 
 def xmas(args):
@@ -346,7 +371,7 @@ def xss(args):
             import xss
 
             xssScanObj = xss.XSS(url=links,
-                                 payload_file=os.getcwd()+'/payloads/xss_payloads.txt')
+                                 payload_file=os.getcwd() + '/payloads/xss_payloads.txt')
             xssScanObj.initiateEngine()
         except ImportError:
             colors.error('Could not import the required module')
@@ -476,6 +501,7 @@ if __name__ == '__main__':
     parser.add_argument('-interval', help='Interval time for sending packets')
     parser.add_argument('-cr', action='store_true', help='For extracting links from a Web page')
     parser.add_argument('-cri', action='store_true', help='For extracting images from a Web page')
+    parser.add_argument('-all', action='store_true', help='Run all scans')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -485,6 +511,25 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = parser.parse_args()
+
+    if args.all:
+        if args.url:
+            args.url = check_url(args.url)
+            ssl(args)
+            info(args)
+            fuzz(args)
+            comment(args)
+            xss(args)
+            lfi(args)
+
+        if args.ip:
+            args.ip = check_ip(args.ip)
+            whois(args)
+            xmas(args)
+            fin(args)
+            null(args)
+            ack(args)
+            ping_sweep(args)
 
     if args.url:
         args.url = check_url(args.url)
@@ -540,3 +585,6 @@ if __name__ == '__main__':
 
     if args.cri:
         scrap(args)
+        
+    if args.dork:
+        dork(args)
