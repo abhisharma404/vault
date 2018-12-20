@@ -452,6 +452,7 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dork', help='Perform google dorking')
     parser.add_argument('-ddos', action='store_true', help='Perform DDoS attack')
     parser.add_argument('-interval', help='Interval time for sending packets')
+    parser.add_argument('-all', action='store_true', help='Run all scans')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -461,6 +462,25 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = parser.parse_args()
+
+    if args.all:
+        if args.url:
+            args.url = check_url(args.url)
+            ssl(args)
+            info(args)
+            fuzz(args)
+            comment(args)
+            xss(args)
+            lfi(args)
+
+        if args.ip:
+            args.ip = check_ip(args.ip)
+            whois(args)
+            xmas(args)
+            fin(args)
+            null(args)
+            ack(args)
+            ping_sweep(args)
 
     if args.url:
         args.url = check_url(args.url)
