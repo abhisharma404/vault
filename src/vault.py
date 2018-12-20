@@ -385,7 +385,6 @@ def xss(args):
         LOGGER.error('[-] Please enter an URL for XSS Scanning')
         sys.exit(1)
 
-
 def ddos(args):
     if args.url is None and args.ip is None:
         colors.error('Please provide either an IP address or an URL to perform DDoS attack')
