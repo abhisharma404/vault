@@ -381,7 +381,7 @@ def ddos(args):
             LOGGER.error(e)
             sys.exit(1)
             
-def dorking(dork):
+def dorking():
     dorks=args.dork
     page=int(input("\nNumber of Pages to scrap :: \033[1;37m"))
     print('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
@@ -492,4 +492,4 @@ if __name__ == '__main__':
     if args.ddos:
         ddos(args)
     if args.dork:
-        dorking(dork)
+        dorking()
