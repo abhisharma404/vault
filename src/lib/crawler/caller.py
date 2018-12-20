@@ -28,7 +28,6 @@ class Crawler:
 			t.start()
 
 
-
 	def work(self):
 		url = self.queue.get()
 		Spider.crawl_page(threading.current_thread().name, url)
