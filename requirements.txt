@@ -3,3 +3,4 @@ requests==2.20.1
 HTMLParser==0.0.2
 colorama==0.3.9
 ipwhois
+scapy==2.4.0
