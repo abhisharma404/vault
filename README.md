@@ -6,60 +6,15 @@
 [![Join the chat at https://gitter.im/vault_scanner/kwoc](https://badges.gitter.im/vault_scanner/Lobby.svg)](https://gitter.im/vault_scanner/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Python](https://img.shields.io/badge/python-%3E%3D3-brightgreen.svg)
 ![version](https://img.shields.io/badge/version-0.1.0-yellow.svg)
 
-* #### Scan website for the following vulnerabilities
-- [x] XSS
-- [x] LFI
-- [ ] RFI
-- [ ] SQLi
+## Table of contents
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Usage](#usage)
+- [Screenshot](#screenshot)
+- [Contributing](#contributing)
+- [License](#license)
 
-* #### Scan for common header errors
-- [x] Clickjacking
-- [ ] jQuery version checking
-- [x] Insecure cookie flags
-- [ ] Session fixation through cookie injection
-- [x] Testing HTTP methods
-- [x] Insecure headers
-- [ ] Brute force login through Authorization headers
-
-* #### Collecting data
-- [x] Port scanning : ACK, FIN, NULL, XMAS
-- [x] IP scanning : Ping Sweep
-- [x] SSL Scanner
-- [x] URL Fuzzer
-- [x] Header/banner grabbing
-- [x] Find comments in source code
-- [x] WHOIS Lookup
-- [x] Google Dork
-- [ ] OS Scan
-- [ ] Error handler checker
-- [ ] Admin panel finder
-- [ ] CMS Detection
-- [ ] Detect Honeypots
-- [ ] Detect DDoS attack
-- [ ] Open redirect vulnerability testing
-
-* #### Crawling
-- [x] Crawl a website and collect all the links
-- [x] Crawl and scrape the website for images
-
-* #### Attacks
-- [x] DDoS Attack
-- [ ] ARP Spoofer
-- [ ] DNS Spoofer
-- [ ] De-authentication attack
-- [ ] Shellsock
-
-* #### Utilities
-- [ ] Generate customized backdoor
-- [ ] Hash scanner
-- [ ] Data monitoring
-- [ ] Keylogger
-- [ ] SSH Tunelling 
-- [ ] Generate sitemap
-- [ ] Mac address changer
-- [ ] Trace route
-
-# Getting Started
+## Getting Started
 
 Steps to setup :
 
@@ -76,7 +31,61 @@ Starting Vault :
 1. `cd vault_scanner/src`
 2. `python3 vault.py`
 
-# Usage
+## Features
+* #### Scan website for the following vulnerabilities
+- [x] XSS
+- [x] LFI
+- [ ] RFI
+- [ ] SQLi
+
+* #### Scanner
+- [x] Port scanning : ACK, FIN, NULL, XMAS
+- [x] IP scanning : Ping Sweep, ARP
+- [x] SSL vulnerability scan
+- [ ] OS scan
+- [ ] Hash scanner
+
+* #### Others
+- [x] Clickjacking
+- [ ] jQuery version checking
+- [x] Insecure cookie flags
+- [ ] Session fixation through cookie injection
+- [x] Testing HTTP methods
+- [x] Insecure headers
+- [ ] Brute force login through authorization headers
+- [x] URL Fuzzer
+- [x] Header/banner grabbing
+- [x] Find comments in source code
+- [x] WHOIS Lookup
+- [x] Google Dork
+- [ ] Error handler checker
+- [x] Admin panel finder
+- [ ] CMS Detection
+- [ ] Detect Honeypots
+- [ ] Detect DDoS attack
+- [ ] Open redirect vulnerability testing
+
+* #### Crawling
+- [x] Crawl a website and collect all the links
+- [x] Crawl and scrape the website for images
+
+* #### Attacks
+- [x] DDoS Attack
+- [ ] ARP Spoofer
+- [ ] DNS Spoofer
+- [ ] De-authentication attack
+- [ ] Mac Flood Attack
+
+* #### Utilities
+- [ ] Generate customized backdoor
+- [ ] Data monitoring
+- [ ] Keylogger
+- [ ] SSH Tunelling
+- [ ] Generate sitemap
+- [ ] Mac address changer
+- [ ] Trace route
+
+## Usage
 
 ```
 usage: vault.py [-h] [-u URL] [-p PORT] [-sp START_PORT] [-ep END_PORT] [-ssl]
@@ -122,12 +131,15 @@ optional arguments:
                         Output all data
 ```
 
-Example Usage :
+Example Usage : `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
 
-`python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
-
-# Screenshot
-
+## Screenshot
 ![](logo/Initial_Setup.png)
+
+## Contributing
+Any and all contributions, issues, features and tips are welcome.
+
+## License
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner) 
 
 ### This project is currently a part of IIT KWoC 2018.
