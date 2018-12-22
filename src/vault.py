@@ -474,6 +474,25 @@ def scrap(args):
             sys.exit(1)
 
 
+def arp_scan(args):
+    if not args.ip:
+        colors.error('Please enter an IP address for scanning')
+        sys.exit(1)
+    else:
+        try:
+            colors.info('Initiating ARP Scan')
+
+            from lib.ip_scanner import arp_scanner
+
+            arpScanObj = arp_scanner.ARPScan(ip=args.ip,
+                                                start_ip=args.ip_start_range,
+                                                end_ip=args.ip_end_range,
+                                                threads=args.threads)
+            arpScanObj.threadingScan()
+        except ImportError:
+            colors.error('Could not import the required module.')
+        except Exception as e:
+            print(e)
 
 if __name__ == '__main__':
 
@@ -512,6 +531,7 @@ if __name__ == '__main__':
     parser.add_argument('-xss', action='store_true', help='Scan for XSS vulnerabilities')
     parser.add_argument('-this', action='store_true', help='Only scan the given URL, do not crawl')
     parser.add_argument('-ping_sweep', action='store_true', help='ICMP ECHO request')
+    parser.add_argument('-arp', action='store_true', help='ARP Scan')
     parser.add_argument('-ip_start_range', help='Start range for scanning IP')
     parser.add_argument('-ip_end_range', help='End range for scanning IP')
     parser.add_argument('-lfi', action='store_true', help='Scan for LFI vulnerabilities')
@@ -614,3 +634,6 @@ if __name__ == '__main__':
 
     if args.dork:
         dork(args)
+
+    if args.arp:
+        arp_scan(args)
