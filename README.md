@@ -60,10 +60,11 @@ Starting Vault :
 - [x] Google Dork
 - [ ] Error handler checker
 - [x] Admin panel finder
+- [ ] Open redirect vulnerability testing
 - [ ] CMS Detection
 - [ ] Detect Honeypots
 - [ ] Detect DDoS attack
-- [ ] Open redirect vulnerability testing
+- [ ] Detect De-authentication attack
 
 * #### Crawling
 - [x] Crawl a website and collect all the links
@@ -74,6 +75,8 @@ Starting Vault :
 - [ ] ARP Spoofer
 - [ ] DNS Spoofer
 - [ ] De-authentication attack
+- [ ] Network disassociation attack
+- [ ] Ping of death
 - [ ] Mac Flood Attack
 
 * #### Utilities
@@ -82,7 +85,7 @@ Starting Vault :
 - [ ] Keylogger
 - [ ] SSH Tunelling
 - [ ] Generate sitemap
-- [ ] Mac address changer
+- [ ] MAC address changer
 - [ ] Trace route
 
 ## Usage
