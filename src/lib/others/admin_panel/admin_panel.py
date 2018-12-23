@@ -4,7 +4,7 @@ import requests
 
 def load_list():
     try:
-        with open("lib/admin_panel/links.txt", encoding="utf8") as wlf:
+        with open("lib/others/admin_panel/links.txt", encoding="utf8") as wlf:
             content = wlf.read().splitlines()
         return content
 
@@ -18,7 +18,7 @@ def find_admin_panel(domain):
     """
     found = []
 
-    print("loading admin page list...")
+    print("Loading admin page list...")
     urls = load_list()
 
     for link in urls:

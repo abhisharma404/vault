@@ -51,8 +51,9 @@ class DDoS(object):
         else:
             self.INTER = 0.0001
 
-        threads = int(threads)
+
         if threads is not None:
+            threads = int(threads)
             self.threadValidator(threads)
         else:
             self.threads = 1
