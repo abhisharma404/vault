@@ -56,7 +56,6 @@ class ARPScan(object):
             colors.success('Running as root')
 
     def parseResult(self, t1):
-
         """
         Prints the live IP with their MAC address
 
