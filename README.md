@@ -56,6 +56,7 @@ Starting Vault :
 - [x] URL Fuzzer
 - [x] Header/banner grabbing
 - [x] Find comments in source code
+- [ ] Find e-mails in source code
 - [x] WHOIS Lookup
 - [x] Google Dork
 - [ ] Error handler checker
@@ -77,7 +78,7 @@ Starting Vault :
 - [ ] De-authentication attack
 - [ ] Network disassociation attack
 - [ ] Ping of death
-- [ ] Mac Flood Attack
+- [ ] MAC Flood Attack
 
 * #### Utilities
 - [ ] Generate customized backdoor
