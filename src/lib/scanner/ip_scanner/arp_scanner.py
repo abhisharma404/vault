@@ -45,10 +45,8 @@ class ARPScan(object):
 
     @staticmethod
     def is_root():
-
         """
         Checks if program is running as root or not
-
         """
 
         if os.geteuid() != 0:
@@ -62,7 +60,7 @@ class ARPScan(object):
         """
         Prints the live IP with their MAC address
 
-        :t1 : Start time of the scan
+        :t1: Start time of the scan
         """
 
         print('-' * 35)
@@ -85,12 +83,10 @@ class ARPScan(object):
         self.ip = '.'.join(self.ip)
 
     def ARPScan(self, end):
-
         """
         Sends ARP Request packets to the destination IP
-
-        :end : End part of the IP
-
+        
+        :end: End part of the IP
         """
 
         arp_ip = self.ip + '.' + str(end)
@@ -104,7 +100,6 @@ class ARPScan(object):
             self.answ_packets.append(answ)
 
     def threadingScan(self):
-
         """
         Threads the scanning process
         """
