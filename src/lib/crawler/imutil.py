@@ -6,8 +6,8 @@ import os
 import urllib
 
 
-def image_download(url , name):
-    r = requests.get(url, stream = True, headers = {'User-agent': 'Mozilla/5.0'})
+def image_download(url, name):
+    r = requests.get(url, stream=True, headers={'User-agent': 'Mozilla/5.0'})
     if r.status_code == 200:
         with open(name + '.png', 'wb') as f:
             r.raw.decode_content = True
@@ -24,8 +24,8 @@ def create_project_dir(directory):
 
 
 def create_data_files(project_name, base_url):
-    queue = os.path.join(project_name , 'queue.txt')
-    crawled = os.path.join(project_name,"crawled.txt")
+    queue = os.path.join(project_name, 'queue.txt')
+    crawled = os.path.join(project_name, "crawled.txt")
     if not os.path.isfile(queue):
         write_file(queue, base_url)
     if not os.path.isfile(crawled):
@@ -46,7 +46,7 @@ def file_to_set(file_name):
 
 
 def set_to_file(links, file_name):
-    with open(file_name,"w") as f:
+    with open(file_name, "w") as f:
         for l in sorted(links):
             f.write(l+"\n")
 

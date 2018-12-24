@@ -30,7 +30,8 @@ class Scanner:
                 list_of_tasks = []
 
                 for form in list_forms:
-                    t = threading.Thread(target=self.scanLoad, args=(form, url,))
+                    t = threading.Thread(target=self.scanLoad,
+                                         args=(form, url,))
                     t.start()
                     list_of_tasks.append(t)
 
@@ -39,7 +40,8 @@ class Scanner:
         else:
             list_forms = self.extract_forms(self.target_url[0])
             if len(list_forms) == 0:
-                colors.error('No form found for : {}'.format(self.target_url[0]))
+                colors.error('No form found for : {}'
+                             .format(self.target_url[0]))
             list_of_tasks = []
 
             for form in list_forms:
@@ -71,10 +73,12 @@ class Scanner:
             result = requests.post(url, data=post_data)
 
             if self.payload[i] in result.text:
-                colors.info('VULNERABILITY DETECTED!--> {}'.format(self.payload[i]))
+                colors.info('VULNERABILITY DETECTED!--> {}'
+                            .format(self.payload[i]))
                 colors.success('Link is : {} '.format(url))
                 colors.info('Form Data')
                 print(form)
                 print('\n')
             else:
-                colors.success("OK , Payload : {} , URL : {}".format(self.payload[i], url))
+                colors.success("OK , Payload : {} , URL : {}"
+                               .format(self.payload[i], url))

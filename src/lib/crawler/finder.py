@@ -16,7 +16,7 @@ class Linkfinder(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
-            for(attribute , value) in attrs:
+            for(attribute, value) in attrs:
                 if attribute == 'href':
                     url = urllib.parse.urljoin(self.base_url, value)
                     self.links.add(url)
@@ -37,8 +37,9 @@ class Imagefinder(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == 'img':
-            for(attribute , value) in attrs:
-                if attribute == 'src' or attribute == 'alt' or attribute == 'srcset':
+            for(attribute, value) in attrs:
+                if attribute == 'src' or attribute == 'alt' or \
+                   attribute == 'srcset':
                     url = urllib.parse.urljoin(self.url, value)
                     self.img_links.add(url)
 
@@ -50,8 +51,10 @@ class Imagefinder(HTMLParser):
 
     def crawl(self):
         try:
-            if not self.url.lower().startswith('ftp:/') or not self.url.lower().startswith('file:/'):
-                req = urllib.request.Request(self.url, headers = {'User-Agent':'Mozilla/5.0'})
+            if not self.url.lower().startswith('ftp:/') or not \
+               self.url.lower().startswith('file:/'):
+                req = urllib.request.\
+                      Request(self.url, headers={'User-Agent': 'Mozilla/5.0'})
                 con = urllib.request.urlopen(req)
                 html_string = con.read().decode("utf-8")
                 self.feed(html_string)
@@ -67,7 +70,7 @@ class Imagefinder(HTMLParser):
 def initiate(list_url, path):
     try:
         from . import imutil as imu
-        c=0
+        c = 0
         for x in list_url:
             I = Imagefinder(x)
             I.crawl()

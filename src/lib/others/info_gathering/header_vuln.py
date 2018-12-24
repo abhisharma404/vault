@@ -98,16 +98,19 @@ class HeaderVuln(object):
 
             colors.success('Cookie secure : {}'.format(cookie.secure))
             colors.success('Cookie HTTP Only : {}'.format(cookie.httponly))
-            colors.success('Cookie domain initial dot : {}'.format(cookie.domain_initial_dot))
+            colors.success('Cookie domain initial dot : {}'
+                           .format(cookie.domain_initial_dot))
             print('\n')
             cookie_data.append('Cookie secure : {}'.format(cookie.secure))
             cookie_data.append('Cookie HTTP Only : {}'.format(cookie.httponly))
-            cookie_data.append('Cookie domain initial dot : {}'.format(cookie.domain_initial_dot) + '\n')
+            cookie_data.append('Cookie domain initial dot : {}'
+                               .format(cookie.domain_initial_dot) + '\n')
 
         return cookie_data
 
     def test_http_methods(self):
-        modes_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE', 'TEST']
+        modes_list = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE',
+                      'TEST']
 
         colors.info('Testing HTTP methods')
         method_data = []

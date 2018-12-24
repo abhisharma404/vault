@@ -21,7 +21,8 @@ class IPScanner(object):
         if start_ip is None:
             self.start_ip = 0
         elif (int(start_ip) < 0 or int(start_ip) > 256):
-            colors.error('Start range cannot be less than 0 or greater than 256')
+            colors.error('Start range cannot be less than 0 or greater than '
+                         '256')
             sys.exit(1)
         else:
             self.start_ip = int(start_ip)
@@ -55,7 +56,8 @@ class IPScanner(object):
         ping_ip = self.ip + '.' + str(end)
         command = self.checkOS()
         command.append(ping_ip)
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+        process = subprocess.Popen(command, stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE, shell=False)
         stdout, stderr = process.communicate()
         if self.checkStatus(stdout.decode('utf-8')):
             colors.success('Open : {}'.format(ping_ip))

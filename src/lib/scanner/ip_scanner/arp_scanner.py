@@ -23,7 +23,8 @@ class ARPScan(object):
         if start_ip is None:
             self.start_ip = 0
         elif (int(start_ip) < 0 or int(start_ip) > 256):
-            colors.error('Start range cannot be less than 0 or greater than 256')
+            colors.error('Start range cannot be less than 0 or greater than '
+                         '256')
             sys.exit(1)
         else:
             self.start_ip = int(start_ip)
@@ -84,7 +85,7 @@ class ARPScan(object):
     def ARPScan(self, end):
         """
         Sends ARP Request packets to the destination IP
-        
+
         :end: End part of the IP
         """
 

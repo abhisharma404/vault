@@ -28,7 +28,8 @@ class FindingComments(object):
         comment_dict = {}
         if len(self.found_comments) > 0:
             for comment_code, comment in self.found_comments.items():
-                colors.success('Found for {} : {}'.format(comment_code, comment))
+                colors.success('Found for {} : {}'
+                               .format(comment_code, comment))
                 comment_dict[comment_code] = comment
         else:
             colors.error('No comment found')

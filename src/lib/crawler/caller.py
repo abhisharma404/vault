@@ -17,13 +17,16 @@ class Crawler:
         self.crawl = set()
         self.domain_name = imu.get_domain_name(self.url)
         print('>>>This may slow down your pc depending upon the website...')
-        Spider(self.pname, self.url, self.domain_name, self.path_queue, self.path_crawl)
+        Spider(self.pname, self.url, self.domain_name, self.path_queue,
+               self.path_crawl)
 
-#    def __init__(self, project_name, base_url, domain_name, path_queue, path_crawl):
+    """ def __init__(self, project_name, base_url, domain_name, path_queue,
+                 path_crawl):
+    """
 
     def create_spider(self):
-        for _ in range(0,1000):
-            t = threading.Thread(target = self.work)
+        for _ in range(0, 1000):
+            t = threading.Thread(target=self.work)
             t.daemon = True
             t.start()
 
@@ -44,11 +47,11 @@ class Crawler:
             print(str(len(qlinks)) + ' Left to be Crawled.')
             self.create_jobs()
 
-    def start(self, return_set:bool):
+    def start(self, return_set: bool):
         self.create_spider()
         self.start_crawl()
         print('[x]Crawling Complete.')
-        if return_set == True:
-            return imu.file_to_set(self.path_crawl),self.pname
+        if return_set:
+            return imu.file_to_set(self.path_crawl), self.pname
         else:
             return ''

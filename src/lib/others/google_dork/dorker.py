@@ -31,12 +31,15 @@ def start_dorking(search, page_count):
     while page_count != count:
         count = str(count)
         m_search = str(m_search)
-        search_url = "https://google.com/search?q=" + m_search + "&start=" + count
+        search_url = "https://google.com/search?q=" + m_search + "&start=" +\
+                     count
         requested_page = requests.get(search_url).text
         soup = BeautifulSoup(requested_page, 'html.parser')
         count = int(count)
-        if "Our systems have detected unusual traffic from your computer network" in soup.get_text():
-            colors.error("Google has detected the script. Try after some time.")
+        if "Our systems have detected unusual traffic from your computer"\
+           "network" in soup.get_text():
+            colors.error("Google has detected the script. Try after some "
+                         "time.")
             LOGGER.error('[-] script blocked by google. wait for some minutes')
             break
         h3_tags = soup.findAll("h3")

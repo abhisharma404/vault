@@ -18,7 +18,7 @@ class Crawl(object):
         return re.findall('(?:href=")(.*?)"', response.text)
 
     def crawl(self, url=None):
-        if url == None:
+        if url is None:
             url = self.url
 
         href_links = self.extract_links_from()
