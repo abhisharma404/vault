@@ -39,19 +39,21 @@ def check_ip(ip: str):
         sys.exit(1)
 
 
-def check_ip_range(ip_range: int):
+def check_ip_range(ip_start_range: int, ip_end_range: int):
     """
     Check whether the input IP range is valid or not
     """
     try:
-        number = int(ip_range)
+        ip_start_range = int(ip_start_range)
+        ip_end_range = int(ip_end_range)
     except ValueError:
         colors.error('Please enter a valid number for the IP range')
         LOGGER.error('[-] Please enter a valid number for the IP range')
         sys.exit(1)
     else:
-        if number > 0 and number < 255:
-            return number
+        if ip_start_range > 0 and ip_end_range < 255 and\
+           ip_start_range < ip_end_range:
+            return ip_start_range, ip_end_range
         else:
             colors.error('Please enter a valid IP range')
             LOGGER.error('[-] Please enter a valid IP range')
@@ -625,6 +627,7 @@ def ssl(args):
     except Exception as e:
         LOGGER.error(e)
 
+
 def open_redirect(args):
     if not args.url:
         colors.error('Please enter an URL  for scanning')
@@ -644,7 +647,6 @@ def open_redirect(args):
             print(e)
             LOGGER.error(e)
             sys.exit(1)
-
 
 
 if __name__ == '__main__':
@@ -710,7 +712,8 @@ if __name__ == '__main__':
     parser.add_argument('-all', action='store_true', help='Run all scans')
     parser.add_argument('-admin', action='store_true',
                         help='Find admin panel on a given domain')
-    parser.add_argument('-orv', action='store_true', help='Test for open redirection Vulnerability')
+    parser.add_argument('-orv', action='store_true',
+                        help='Test for open redirection Vulnerability')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -727,11 +730,13 @@ if __name__ == '__main__':
     if args.ip:
         args.ip = check_ip(args.ip)
 
-    if args.ip_start_range:
-        args.ip_start_range = check_ip_range(args.ip_start_range)
-
-    if args.ip_end_range:
-        args.ip_end_range = check_ip_range(args.ip_end_range)
+    if args.ip_start_range and args.ip_end_range:
+        args.ip_start_range, args.ip_end_range = \
+            check_ip_range(args.ip_start_range, args.ip_end_range)
+    elif args.ip_start_range or args.ip_end_range:
+        colors.error('Please enter an IP start range and an IP end range')
+        LOGGER.error('[-] Please enter an IP start range and an IP end range')
+        sys.exit(1)
 
     if args.all:
         if args.url:
