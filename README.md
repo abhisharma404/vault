@@ -53,9 +53,9 @@ Starting Vault :
   - [x] Testing HTTP methods
   - [x] Insecure headers
   - [x] Header/banner grabbing
- - Finder
-   - [x] Find comments in source code
-   - [ ] Find e-mails in source code
+  - Finder
+    - [x] Find comments in source code
+    - [ ] Find e-mails in source code
 - [ ] Session fixation through cookie injection
 - [ ] Brute force login through authorization headers
 - [x] URL Fuzzer
