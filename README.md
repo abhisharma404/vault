@@ -46,17 +46,19 @@ Starting Vault :
 - [ ] Hash scanner
 
 * #### Others
-- [x] Clickjacking
-- [ ] jQuery version checking
-- [x] Insecure cookie flags
+- Information Gathering
+  - [x] Clickjacking
+  - [ ] jQuery version checking
+  - [x] Insecure cookie flags
+  - [x] Testing HTTP methods
+  - [x] Insecure headers
+  - [x] Header/banner grabbing
+ - Finder
+  - [x] Find comments in source code
+  - [ ] Find e-mails in source code
 - [ ] Session fixation through cookie injection
-- [x] Testing HTTP methods
-- [x] Insecure headers
 - [ ] Brute force login through authorization headers
 - [x] URL Fuzzer
-- [x] Header/banner grabbing
-- [x] Find comments in source code
-- [ ] Find e-mails in source code
 - [x] WHOIS Lookup
 - [x] Google Dork
 - [ ] Error handler checker
