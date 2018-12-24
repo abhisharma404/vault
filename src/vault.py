@@ -607,6 +607,27 @@ def ssl(args):
     except Exception as e:
         LOGGER.error(e)
 
+def open_redirect(args):
+    if not args.url:
+        colors.error('Please enter an URL  for scanning')
+        LOGGER.error('[-] Please enter an URL for scanning')
+        sys.exit(1)
+    else:
+        try:
+            colors.info("Testing for open redirection Vulnerability")
+
+            from lib.others.open_redirection import redirection
+            redirection.ORVT(args.url)
+
+        except ImportError:
+            colors.error('Could not import the required module')
+            LOGGER.error('[-] Could not import the required module')
+        except Exception as e:
+            print(e)
+            LOGGER.error(e)
+            sys.exit(1)
+
+
 
 if __name__ == '__main__':
 
@@ -671,6 +692,7 @@ if __name__ == '__main__':
     parser.add_argument('-all', action='store_true', help='Run all scans')
     parser.add_argument('-admin', action='store_true',
                         help='Find admin panel on a given domain')
+    parser.add_argument('-orv', action='store_true', help='Test for open redirection Vulnerability')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -696,6 +718,7 @@ if __name__ == '__main__':
             xss(args)
             lfi(args)
             admin_panel(args)
+            open_redirect(args)
 
         if args.ip:
             whois(args)
@@ -707,6 +730,9 @@ if __name__ == '__main__':
 
     if args.admin:
         admin_panel(args)
+
+    if args.orv:
+        open_redirect(args)
 
     if args.port:
         args.start_port = args.port
