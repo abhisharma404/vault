@@ -54,8 +54,8 @@ Starting Vault :
   - [x] Insecure headers
   - [x] Header/banner grabbing
  - Finder
-  - [x] Find comments in source code
-  - [ ] Find e-mails in source code
+   - [x] Find comments in source code
+   - [ ] Find e-mails in source code
 - [ ] Session fixation through cookie injection
 - [ ] Brute force login through authorization headers
 - [x] URL Fuzzer
@@ -144,6 +144,7 @@ Example Usage : `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
 
 ## Contributing
 Any and all contributions, issues, features and tips are welcome.
+Please refer to `CONTRIBUTING.md` for more details.
 
 ## License
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner) 
