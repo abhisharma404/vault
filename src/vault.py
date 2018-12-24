@@ -616,7 +616,7 @@ def open_redirect(args):
         try:
             colors.info("Testing for open redirection Vulnerability")
 
-            from lib.open_redirection import redirection
+            from lib.others.open_redirection import redirection
             redirection.ORVT(args.url)
 
         except ImportError:
