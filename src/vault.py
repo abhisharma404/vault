@@ -39,6 +39,24 @@ def check_ip(ip: str):
         sys.exit(1)
 
 
+def check_ip_range(ip_range: int):
+    """
+    Check whether the input IP range is valid or not
+    """
+    try:
+        number = int(ip_range)
+    except ValueError:
+        colors.error('Please enter a valid number for the IP range')
+        LOGGER.error('[-] Please enter a valid number for the IP range')
+        sys.exit(1)
+    else:
+        if number > 0 and number < 255:
+            return number
+        else:
+            colors.error('Please enter a valid IP range')
+            LOGGER.error('[-] Please enter a valid IP range')
+            sys.exit(1)
+
 """
 >> Attacks function goes here
 
@@ -708,6 +726,12 @@ if __name__ == '__main__':
 
     if args.ip:
         args.ip = check_ip(args.ip)
+
+    if args.ip_start_range:
+        args.ip_start_range = check_ip_range(args.ip_start_range)
+
+    if args.ip_end_range:
+        args.ip_end_range = check_ip_range(args.ip_end_range)
 
     if args.all:
         if args.url:
