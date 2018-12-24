@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 
 
 """
-Validation & misc. functions goes here
+>> Validation & misc. functions goes here
 """
 
 def check_url(url: str):
