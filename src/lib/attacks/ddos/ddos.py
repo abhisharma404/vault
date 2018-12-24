@@ -12,7 +12,8 @@ import time
 
 class DDoS(object):
 
-    def __init__(self, url, ip, start_port, end_port, dport, threads, interval):
+    def __init__(self, url, ip, start_port, end_port, dport, threads,
+                 interval):
 
         if url is not None and ip is not None:
             colors.error('Please provide either the URL or the IP address...')
@@ -51,7 +52,6 @@ class DDoS(object):
         else:
             self.INTER = 0.0001
 
-
         if threads is not None:
             threads = int(threads)
             self.threadValidator(threads)
@@ -60,16 +60,17 @@ class DDoS(object):
 
         self.number_of_packets = 0
 
-
     def threadValidator(self, threads):
         """
         Validates the number of threads
         """
         if threads > 100:
             choice = input('Are you sure you want to use {} threads...?'
-                            'This can slow down your system.(Y/N)'.format(threads))
+                           'This can slow down your system.(Y/N)'
+                           .format(threads))
             if choice == 'N' or choice == 'n':
-                threads = int(input('>> Please enter the number of threads you want to use...'))
+                threads = int(input('>> Please enter the number of threads'
+                                    ' you want to use...'))
                 self.threadValidator(threads)
             else:
                 self.threads = threads
@@ -89,10 +90,10 @@ class DDoS(object):
         """
         Generates random IP address
         """
-        ip = str(random.randint(1, 254)) \
-             + '.' + str(random.randint(0, 255)) \
-             + '.' + str(random.randint(0, 255)) \
-             + '.' + str(random.randint(0, 255))
+        ip = str(random.randint(1, 254)) + '.'\
+            + str(random.randint(0, 255)) + '.'\
+            + str(random.randint(0, 255)) + '.'\
+            + str(random.randint(0, 255))
 
         return ip
 
@@ -132,7 +133,8 @@ class DDoS(object):
     def startAttack(self):
 
         try:
-            colors.info('DDoS Attack on : {} : {}'.format(self.target_ip, self.dport))
+            colors.info('DDoS Attack on : {} : {}'
+                        .format(self.target_ip, self.dport))
 
             colors.success('DDoS Attack started, press CTRL+C to stop...')
 

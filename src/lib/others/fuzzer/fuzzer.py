@@ -12,7 +12,8 @@ import colors
 
 class Fuzzer(object):
 
-    """fuzzObj = Fuzzer(base_url='http://sample-site', thread_num=10, fuzz_file_path='fuzz_url.txt')"""
+    """fuzzObj = Fuzzer(base_url='http://sample-site', thread_num=10,
+                        fuzz_file_path='fuzz_url.txt')"""
 
     def __init__(self, base_url=None, thread_num=None):
         self.m = multiprocessing.Manager()

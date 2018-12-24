@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 >> Validation & misc. functions goes here
 """
 
+
 def check_url(url: str):
     """Check whether or not URL have a scheme
 
@@ -29,7 +30,8 @@ def check_ip(ip: str):
     """
     Check whether the input IP is valid or not
     """
-    if re.match(r'^(?:(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])(\.(?!$)|$)){4}$', ip):
+    if re.match(r'^(?:(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])'
+                '(\.(?!$)|$)){4}$', ip):
         return ip
     else:
         colors.error('Please enter a valid IP address')
@@ -52,15 +54,18 @@ Traversal : - attacks
 
 # DDoS
 
+
 def ddos(args):
     if args.url is None and args.ip is None:
-        colors.error('Please provide either an IP address or an URL to perform DDoS attack')
+        colors.error('Please provide either an IP address or an URL to perform'
+                     ' DDoS attack')
         sys.exit(1)
     else:
         try:
             from lib.attacks.ddos import ddos
 
-            ddosObj = ddos.DDoS(url=args.url, ip=args.ip, start_port=args.start_port,
+            ddosObj = ddos.DDoS(url=args.url, ip=args.ip,
+                                start_port=args.start_port,
                                 end_port=args.end_port, dport=args.port,
                                 threads=args.threads, interval=args.interval)
             ddosObj.startAttack()
@@ -85,6 +90,7 @@ Traversal : - website_scanner
 
 # XSS
 
+
 def xss(args):
     if args.url:
         links = []
@@ -93,10 +99,12 @@ def xss(args):
         sys.path.insert(0, path)
 
         if args.this:
-            colors.success('Performing XSS Vulnerability Scan on : {}'.format(args.url))
+            colors.success('Performing XSS Vulnerability Scan on : {}'
+                           .format(args.url))
             links.append(args.url)
         else:
-            colors.success('Collecting all the links, crawling : {}'.format(args.url))
+            colors.success('Collecting all the links, crawling : {}'
+                           .format(args.url))
 
             try:
                 import crawler
@@ -111,8 +119,8 @@ def xss(args):
         try:
             import xss
 
-            xssScanObj = xss.XSS(url=links,
-                                 payload_file=os.getcwd() + '/payloads/xss_payloads.txt')
+            xssScanObj = xss.XSS(url=links, payload_file=os.getcwd() +
+                                 '/payloads/xss_payloads.txt')
             xssScanObj.initiateEngine()
         except ImportError:
             colors.error('Could not import the required module')
@@ -137,7 +145,8 @@ def lfi(args):
         colors.info('Initiating LFI Scan')
 
         from lib.website_scanner.lfi import lfiEngine
-        lfiscanObj = lfiEngine.LFI(url=args.url, payload_path=os.getcwd() + '/payloads/lfi_payloads.json')
+        lfiscanObj = lfiEngine.LFI(url=args.url, payload_path=os.getcwd() +
+                                   '/payloads/lfi_payloads.json')
         lfiscanObj.startScanner()
 
     except ImportError:
@@ -155,6 +164,7 @@ Traversal : - crawler
 """
 
 # Crawl
+
 
 def crawl(args):
     if args.url is None:
@@ -226,6 +236,7 @@ Traversal : - others
 
 # Info gathering
 
+
 def info(args):
     if not args.url:
         colors.error('Please enter an URl for information gathering')
@@ -233,7 +244,8 @@ def info(args):
         sys.exit(1)
     try:
         from lib.others.info_gathering import header_vuln
-        colors.info('Performing information gathering over : {}'.format(args.url))
+        colors.info('Performing information gathering over : {}'
+                    .format(args.url))
 
         infoGatherObj = header_vuln.HeaderVuln(args.url)
         header_data = infoGatherObj.gather_header()
@@ -422,6 +434,7 @@ Traversal : - scanner
 
 # IP Scanner
 
+
 def ack(args):
     if not args.ip:
         colors.error('Please enter an IP address for scanning')
@@ -432,8 +445,10 @@ def ack(args):
 
         from lib.scanner.port_scanner import port_scanner
 
-        portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
-                                               end_port=args.end_port, threads=args.threads,
+        portScanObj = port_scanner.PortScanner(ip=args.ip,
+                                               start_port=args.start_port,
+                                               end_port=args.end_port,
+                                               threads=args.threads,
                                                source_port=args.source_port)
         portScanObj.tcp_ack_scan()
     except ImportError:
@@ -453,8 +468,10 @@ def fin(args):
 
         from lib.scanner.port_scanner import port_scanner
 
-        portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
-                                               end_port=args.end_port, threads=args.threads,
+        portScanObj = port_scanner.PortScanner(ip=args.ip,
+                                               start_port=args.start_port,
+                                               end_port=args.end_port,
+                                               threads=args.threads,
                                                source_port=args.source_port)
         portScanObj.fin_scan()
     except ImportError:
@@ -475,8 +492,10 @@ def null(args):
 
         from lib.scanner.port_scanner import port_scanner
 
-        portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
-                                               end_port=args.end_port, threads=args.threads,
+        portScanObj = port_scanner.PortScanner(ip=args.ip,
+                                               start_port=args.start_port,
+                                               end_port=args.end_port,
+                                               threads=args.threads,
                                                source_port=args.source_port)
         portScanObj.null_scan()
     except ImportError:
@@ -497,8 +516,10 @@ def xmas(args):
 
         from lib.scanner.port_scanner import port_scanner
 
-        portScanObj = port_scanner.PortScanner(ip=args.ip, start_port=args.start_port,
-                                               end_port=args.end_port, threads=args.threads,
+        portScanObj = port_scanner.PortScanner(ip=args.ip,
+                                               start_port=args.start_port,
+                                               end_port=args.end_port,
+                                               threads=args.threads,
                                                source_port=args.source_port)
         portScanObj.xmas_scan()
     except ImportError:
@@ -543,9 +564,9 @@ def arp_scan(args):
             from lib.scanner.ip_scanner import arp_scanner
 
             arpScanObj = arp_scanner.ARPScan(ip=args.ip,
-                                                start_ip=args.ip_start_range,
-                                                end_ip=args.ip_end_range,
-                                                threads=args.threads)
+                                             start_ip=args.ip_start_range,
+                                             end_ip=args.ip_end_range,
+                                             threads=args.threads)
             arpScanObj.threadingScan()
         except ImportError:
             colors.error('Could not import the required module.')
@@ -610,33 +631,46 @@ if __name__ == '__main__':
     parser.add_argument('-sp', '--start_port', help='Start port for scanning')
     parser.add_argument('-ep', '--end_port', help='End port for scanning')
     parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
-    parser.add_argument('-info', action='store_true', help='Gather information')
-    parser.add_argument('-comment', action='store_true', help='Finding comments')
+    parser.add_argument('-info', action='store_true',
+                        help='Gather information')
+    parser.add_argument('-comment', action='store_true',
+                        help='Finding comments')
     parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
     parser.add_argument('-ip', '--ip', help='IP address for port scanning')
     parser.add_argument('-t', '--threads', help='Number of threads to use')
     parser.add_argument('-source_port', help='Source port for sending packets')
     parser.add_argument('-fin', action='store_true', help='Perform FIN Scan')
     parser.add_argument('-null', action='store_true', help='Perform NULL Scan')
-    parser.add_argument('-ack', action='store_true', help='Perform TCP ACK Scan')
+    parser.add_argument('-ack', action='store_true',
+                        help='Perform TCP ACK Scan')
     parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
-    parser.add_argument('-c', '--crawl', action='store_true', help='Crawl and collect all the links')
-    parser.add_argument('-xss', action='store_true', help='Scan for XSS vulnerabilities')
-    parser.add_argument('-this', action='store_true', help='Only scan the given URL, do not crawl')
-    parser.add_argument('-ping_sweep', action='store_true', help='ICMP ECHO request')
+    parser.add_argument('-c', '--crawl', action='store_true',
+                        help='Crawl and collect all the links')
+    parser.add_argument('-xss', action='store_true',
+                        help='Scan for XSS vulnerabilities')
+    parser.add_argument('-this', action='store_true',
+                        help='Only scan the given URL, do not crawl')
+    parser.add_argument('-ping_sweep', action='store_true',
+                        help='ICMP ECHO request')
     parser.add_argument('-arp', action='store_true', help='ARP Scan')
     parser.add_argument('-ip_start_range', help='Start range for scanning IP')
     parser.add_argument('-ip_end_range', help='End range for scanning IP')
-    parser.add_argument('-lfi', action='store_true', help='Scan for LFI vulnerabilities')
-    parser.add_argument('-whois', action='store_true', help='perform a whois lookup of a given IP')
+    parser.add_argument('-lfi', action='store_true',
+                        help='Scan for LFI vulnerabilities')
+    parser.add_argument('-whois', action='store_true',
+                        help='perform a whois lookup of a given IP')
     parser.add_argument('-o', '--output', help='Output all data')
     parser.add_argument('-d', '--dork', help='Perform google dorking')
-    parser.add_argument('-ddos', action='store_true', help='Perform DDoS attack')
+    parser.add_argument('-ddos', action='store_true',
+                        help='Perform DDoS attack')
     parser.add_argument('-interval', help='Interval time for sending packets')
-    parser.add_argument('-cr', action='store_true', help='For extracting links from a web page')
-    parser.add_argument('-cri', action='store_true', help='For extracting images from a Web page')
+    parser.add_argument('-cr', action='store_true',
+                        help='For extracting links from a web page')
+    parser.add_argument('-cri', action='store_true',
+                        help='For extracting images from a Web page')
     parser.add_argument('-all', action='store_true', help='Run all scans')
-    parser.add_argument('-admin', action='store_true', help='Find admin panel on a given domain')
+    parser.add_argument('-admin', action='store_true',
+                        help='Find admin panel on a given domain')
 
     colors.info("Please Check log file for information about any errors")
 

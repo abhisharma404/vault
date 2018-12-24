@@ -12,5 +12,6 @@ class LFI(object):
             self.payload_data = json.load(f)
 
     def startScanner(self):
-        engine = lfiScanner.Scanner(url=self.url, payload_data=self.payload_data)
+        engine = lfiScanner.Scanner(url=self.url,
+                                    payload_data=self.payload_data)
         engine.scan()
