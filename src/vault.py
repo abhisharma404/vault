@@ -362,7 +362,11 @@ def fuzz(args):
 # Google dork
 
 def dork(args):
-    if args.dork:
+    if not args.dork:
+        colors.error('Please enter an URL for Dork URL')
+        LOGGER.error('[-] Please enter an URL for Dork URL')
+        sys.exit(1)
+    else:
         from lib.others.google_dork import dorker
         dorks = args.dork
         page = int(input("\nNumber of Pages to scrap :: \033[1;37m"))
