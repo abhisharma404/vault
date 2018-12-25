@@ -63,7 +63,7 @@ Starting Vault :
 - [x] Google Dork
 - [ ] Error handler checker
 - [x] Admin panel finder
-- [ ] Open redirect vulnerability testing
+- [x] Open redirect vulnerability
 - [ ] CMS Detection
 - [ ] Detect Honeypots
 - [ ] Detect DDoS attack
