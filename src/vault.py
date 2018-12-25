@@ -98,6 +98,21 @@ def ddos(args):
             sys.exit(1)
 
 
+def mac_flood(args):
+    try:
+        from lib.attacks.mac_flood import mac_flood
+
+        mac_floodObj = mac_flood.MACFlood(interface=args.interface)
+        mac_floodObj.startAttack()
+    except ImportError:
+        colors.error('Could not import the required module')
+        LOGGER.error('[-] Could not import the required module')
+    except Exception as e:
+        print(e)
+        LOGGER.error(e)
+        sys.exit(1)
+
+
 """
 >> Website scanner function goes here
 
@@ -711,6 +726,8 @@ if __name__ == '__main__':
     parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
     parser.add_argument('-ip', '--ip', help='IP address for port scanning')
     parser.add_argument('-t', '--threads', help='Number of threads to use')
+    parser.add_argument('-i', '--interface',
+                        help='Networking Interface to use')
     parser.add_argument('-source_port', help='Source port for sending packets')
     parser.add_argument('-fin', action='store_true', help='Perform FIN Scan')
     parser.add_argument('-null', action='store_true', help='Perform NULL Scan')
@@ -736,6 +753,8 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dork', help='Perform google dorking')
     parser.add_argument('-ddos', action='store_true',
                         help='Perform DDoS attack')
+    parser.add_argument('-mac_flood', action='store_true',
+                        help='Perform MAC Flooding attack')
     parser.add_argument('-interval', help='Interval time for sending packets')
     parser.add_argument('-cr', action='store_true',
                         help='For extracting links from a web page')
@@ -841,6 +860,9 @@ if __name__ == '__main__':
 
     if args.ddos:
         ddos(args)
+
+    if args.mac_flood:
+        mac_flood(args)
 
     if args.cr:
         crawl(args)
