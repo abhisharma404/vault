@@ -367,23 +367,29 @@ def dork(args):
         LOGGER.error('[-] Please enter an URL for Dork URL')
         sys.exit(1)
     else:
-        from lib.others.google_dork import dorker
-        dorks = args.dork
-        page = int(input("\nNumber of Pages to scrap :: \033[1;37m"))
-        print('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
-        web_lists = dorker.start_dorking(dorks, page)
+        try:
+            from lib.others.google_dork import dorker
+            dorks = args.dork
+            page = int(input("\nNumber of Pages to scrap :: \033[1;37m"))
+            print('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
+            web_lists = dorker.start_dorking(dorks, page)
 
-        if args.output:
-            if args.output.endswith('.txt'):
-                file = args.output
-            else:
-                file = args.output + '.txt'
+            if args.output:
+                if args.output.endswith('.txt'):
+                    file = args.output
+                else:
+                    file = args.output + '.txt'
 
-            with open(file, 'w') as f:
-                f.write('Google Dorks results: \n\n')
-                for k in web_lists:
-                    f.write(str(k) + os.linesep)
-            colors.success('File has been saved successfully')
+                with open(file, 'w') as f:
+                    f.write('Google Dorks results: \n\n')
+                    for k in web_lists:
+                        f.write(str(k) + os.linesep)
+                colors.success('File has been saved successfully')
+        except ImportError:
+            colors.error('Could not import the required module.')
+            LOGGER.error('[-] Could not import the required module.')
+        except Exception as e:
+            LOGGER.error(e)
 
 
 # WHOIS Lookup
