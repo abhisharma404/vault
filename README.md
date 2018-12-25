@@ -1,8 +1,8 @@
-# VAULT 
+# VAULT
 #### swiss army knife for hackers
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/740204dd950c4e49841c94f2c32af78a)](https://app.codacy.com/app/abhisharma404/vault_scanner?utm_source=github.com&utm_medium=referral&utm_content=abhisharma404/vault_scanner&utm_campaign=Badge_Grade_Dashboard)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner) 
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner)
 [![Join the chat at https://gitter.im/vault_scanner/kwoc](https://badges.gitter.im/vault_scanner/Lobby.svg)](https://gitter.im/vault_scanner/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Python](https://img.shields.io/badge/python-%3E%3D3-brightgreen.svg)
 ![version](https://img.shields.io/badge/version-0.1.0-yellow.svg)
 
@@ -55,7 +55,7 @@ Starting Vault :
   - [x] Header/banner grabbing
   - Finder
     - [x] Find comments in source code
-    - [ ] Find e-mails in source code
+    - [x] Find e-mails in source code
 - [ ] Session fixation through cookie injection
 - [ ] Brute force login through authorization headers
 - [x] URL Fuzzer
@@ -63,7 +63,7 @@ Starting Vault :
 - [x] Google Dork
 - [ ] Error handler checker
 - [x] Admin panel finder
-- [ ] Open redirect vulnerability testing
+- [x] Open redirect vulnerability
 - [ ] CMS Detection
 - [ ] Detect Honeypots
 - [ ] Detect DDoS attack
@@ -147,6 +147,6 @@ Any and all contributions, issues, features and tips are welcome.
 Please refer to `CONTRIBUTING.md` for more details.
 
 ## License
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner) 
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner)
 
 ### This project is currently a part of IIT KWoC 2018.

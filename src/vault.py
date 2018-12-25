@@ -339,6 +339,37 @@ def comment(args):
         LOGGER.error(e)
 
 
+def email(args):
+    if not args.url:
+        colors.error('Please enter an URL for finding emails')
+        LOGGER.error('[-] Please enter an URL for finding emails')
+        sys.exit(1)
+    try:
+        from lib.others.info_gathering.finder import finding_email
+        colors.info('Performing email gathering over : {}'.format(args.url))
+
+        findEmailObj = finding_email.FindingEmails(args.url)
+        found_emails = findEmailObj.parse_emails()
+
+        if args.output:
+            if args.output.endswith('.txt'):
+                file = args.output
+            else:
+                file = args.output + '.txt'
+
+            with open(file, 'w') as f:
+                f.write('---[!] Emails---\n\n')
+                for email in found_emails:
+                    f.write(str(email) + os.linesep)
+            colors.success('File has been saved successfully')
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
+
+
 # Fuzzer
 
 def fuzz(args):
@@ -686,6 +717,7 @@ if __name__ == '__main__':
                         help='Gather information')
     parser.add_argument('-comment', action='store_true',
                         help='Finding comments')
+    parser.add_argument('-email', action='store_true', help='Finding emails')
     parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
     parser.add_argument('-ip', '--ip', help='IP address for port scanning')
     parser.add_argument('-t', '--threads', help='Number of threads to use')
@@ -754,6 +786,7 @@ if __name__ == '__main__':
             info(args)
             fuzz(args)
             comment(args)
+            email(args)
             xss(args)
             lfi(args)
             admin_panel(args)
@@ -791,6 +824,9 @@ if __name__ == '__main__':
 
     if args.comment:
         comment(args)
+
+    if args.email:
+        email(args)
 
     if args.fin:
         fin(args)
