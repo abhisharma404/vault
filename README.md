@@ -42,7 +42,7 @@ Starting Vault :
 - [x] Port scanning : ACK, FIN, NULL, XMAS
 - [x] IP scanning : Ping Sweep, ARP
 - [x] SSL vulnerability scan
-- [ ] OS scan
+- [x] OS scan
 - [ ] Hash scanner
 
 * #### Others
