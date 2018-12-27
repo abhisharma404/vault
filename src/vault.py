@@ -673,6 +673,30 @@ def ssl(args):
     except Exception as e:
         LOGGER.error(e)
 
+# OS Scanner
+
+
+def os_scan(args):
+    if args.url is None and args.ip is None:
+        colors.error('Please provide either an IP address or an URL to '
+                     'perform OS Scan')
+        LOGGER.error('[-] Please provide either an IP address or an URL to '
+                     'perform OS Scan')
+        sys.exit(1)
+    try:
+        colors.info('OS Scan using Nmap')
+
+        from lib.scanner.os_scan import os_scan
+
+        os_scanObj = os_scan.OSScan(ip=args.ip, url=args.url)
+        os_scanObj.os_scan()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
+
 
 def open_redirect(args):
     if not args.url:
@@ -734,6 +758,8 @@ if __name__ == '__main__':
     parser.add_argument('-ack', action='store_true',
                         help='Perform TCP ACK Scan')
     parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
+    parser.add_argument('-os_scan', action='store_true',
+                        help='Perform OS Scan')
     parser.add_argument('-c', '--crawl', action='store_true',
                         help='Crawl and collect all the links')
     parser.add_argument('-xss', action='store_true',
@@ -854,6 +880,9 @@ if __name__ == '__main__':
 
     if args.ping_sweep:
         ping_sweep(args)
+
+    if args.os_scan:
+        os_scan(args)
 
     if args.lfi:
         lfi(args)
