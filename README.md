@@ -68,6 +68,7 @@ Starting Vault :
 - [ ] Detect Honeypots
 - [ ] Detect DDoS attack
 - [ ] Detect De-authentication attack
+- [ ] Detect ARP spoof attack
 
 * #### Crawling
 - [x] Crawl a website and collect all the links
