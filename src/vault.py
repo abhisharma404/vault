@@ -278,6 +278,7 @@ Traversal : - others
                         - finding_email
                         - finding_comment
                     - header_vuln
+                    - jquery_check
                 - whois_lookup
 """
 
@@ -396,8 +397,28 @@ def email(args):
     except Exception as e:
         LOGGER.error(e)
 
+# Check Jquery version for associated vulnerabilites
+
+
+def jquery(args):
+    if not args.url:
+        colors.error('Please enter an URL for jquery checking')
+        LOGGER.error('[-] Please enter an URL for jquery checking')
+        sys.exit(1)
+    try:
+        from lib.others.info_gathering import jquery_check
+
+        jquery_checkObj = jquery_check.JqueryCheck(url=args.url)
+        jquery_checkObj.start_engine()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
 
 # Fuzzer
+
 
 def fuzz(args):
     if not args.url:
@@ -845,6 +866,8 @@ if __name__ == '__main__':
     parser.add_argument('-sender', help='Email to send from')
     parser.add_argument('-destination', help='Email to send to')
     parser.add_argument('-arp_spoof', action='store_true', help='ARP Spoofing')
+    parser.add_argument('-jquery', action='store_true',
+                        help='Check jQuery version and get vulnerabilities')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -964,3 +987,6 @@ if __name__ == '__main__':
 
     if args.arp_spoof:
         arp_spoof(args)
+
+    if args.jquery:
+        jquery(args)
