@@ -85,7 +85,7 @@ Starting Vault :
 * #### Utilities
 - [ ] Generate customized backdoor
 - [ ] Data monitoring
-- [ ] Keylogger
+- [X] Keylogger
 - [ ] SSH Tunelling
 - [ ] Generate sitemap
 - [ ] MAC address changer

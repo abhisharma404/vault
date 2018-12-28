@@ -4,3 +4,4 @@ HTMLParser==0.0.2
 ipwhois
 scapy==2.4.0
 python-nmap
+pynput
