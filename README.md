@@ -76,7 +76,7 @@ Starting Vault :
 
 * #### Attacks
 - [x] DDoS Attack
-- [ ] ARP Spoofer
+- [x] ARP Spoofer
 - [ ] DNS Spoofer
 - [ ] De-authentication attack
 - [ ] Network disassociation attack
