@@ -113,6 +113,18 @@ def mac_flood(args):
         sys.exit(1)
 
 
+def arp_spoof(args):
+    try:
+        from lib.attacks.arp_spoof import arp_spoofer
+
+        arpSpoofObj = arp_spoofer.ARPSpoof(ip=args.ip)
+        arpSpoofObj.startSpoof()
+    except ImportError:
+        colors.error('Could not import the required module')
+    except Exception as e:
+        print(e)
+
+
 """
 >> Website scanner function goes here
 
@@ -832,6 +844,7 @@ if __name__ == '__main__':
     parser.add_argument('-password', help='Password to login')
     parser.add_argument('-sender', help='Email to send from')
     parser.add_argument('-destination', help='Email to send to')
+    parser.add_argument('-arp_spoof', action='store_true', help='ARP Spoofing')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -948,3 +961,6 @@ if __name__ == '__main__':
 
     if args.keylogger:
         keylogger(args)
+
+    if args.arp_spoof:
+        arp_spoof(args)
