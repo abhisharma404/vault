@@ -64,6 +64,7 @@ class ARPSpoof(object):
         """
         Check whether the input MAC is valid or not
         """
+
         if re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", mac.lower()):
             return True
 
@@ -104,7 +105,7 @@ class ARPSpoof(object):
             colors.info('Router IP set to : {}'.format(self.router_ip))
         else:
             colors.error('Please enter a valid Router IP address')
-            self.findRouterIP()
+            self.get_router_IP()
 
     def get_target_IP(self):
         """
