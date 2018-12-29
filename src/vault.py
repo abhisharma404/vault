@@ -129,7 +129,7 @@ def ping_death(args):
     try:
         from lib.attacks.ping_death import ping_death
 
-        ping_deathObj = ping_death.pingDeath(url=args.url, ip=args.ip)
+        ping_deathObj = ping_death.pingDeath(ip=args.ip, url=args.url)
         ping_deathObj.startAttack()
     except ImportError:
         colors.error('Could not import the required module')
