@@ -80,7 +80,7 @@ Starting Vault :
 - [ ] DNS Spoofer
 - [ ] De-authentication attack
 - [ ] Network disassociation attack
-- [ ] Ping of death
+- [X] Ping of death
 - [x] MAC Flood Attack
 
 * #### Utilities
