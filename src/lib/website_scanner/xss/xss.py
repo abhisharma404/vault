@@ -1,6 +1,7 @@
 #! /usr/bin/python
 
 import scanner
+import colors
 from crawler import Crawl
 
 
