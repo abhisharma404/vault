@@ -48,7 +48,7 @@ Starting Vault :
 * #### Others
 - Information Gathering
   - [x] Clickjacking
-  - [ ] jQuery version checking
+  - [x] jQuery version checking
   - [x] Insecure cookie flags
   - [x] Testing HTTP methods
   - [x] Insecure headers
