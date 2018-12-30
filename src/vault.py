@@ -125,6 +125,21 @@ def arp_spoof(args):
         print(e)
 
 
+def ping_death(args):
+    try:
+        from lib.attacks.ping_death import ping_death
+
+        ping_deathObj = ping_death.pingDeath(ip=args.ip, url=args.url)
+        ping_deathObj.startAttack()
+    except ImportError:
+        colors.error('Could not import the required module')
+        LOGGER.error('[-] Could not import the required module')
+    except Exception as e:
+        print(e)
+        LOGGER.error(e)
+        sys.exit(1)
+
+
 """
 >> Website scanner function goes here
 
@@ -868,6 +883,8 @@ if __name__ == '__main__':
     parser.add_argument('-arp_spoof', action='store_true', help='ARP Spoofing')
     parser.add_argument('-jquery', action='store_true',
                         help='Check jQuery version and get vulnerabilities')
+    parser.add_argument('-ping_death', action='store_true',
+                        help='Perform ping of death attack')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -990,3 +1007,6 @@ if __name__ == '__main__':
 
     if args.jquery:
         jquery(args)
+
+    if args.ping_death:
+        ping_death(args)
