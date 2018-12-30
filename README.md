@@ -57,7 +57,7 @@ Starting Vault :
     - [x] Find comments in source code
     - [x] Find e-mails in source code
 - [ ] Session fixation through cookie injection
-- [ ] Brute force login through authorization headers
+- [x] Brute force login through authorization headers
 - [x] URL Fuzzer
 - [x] WHOIS Lookup
 - [x] Google Dork
