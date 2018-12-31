@@ -32,10 +32,10 @@ class ARPSpoof(object):
             self.get_router_IP()
 
         if self.target_mac is None:
-            self.getMAC(self.target_ip, 'TARGET')
+            self.target_mac = self.getMAC(self.target_ip, 'TARGET')
 
         if self.router_mac is None:
-            self.getMAC(self.router_ip, 'ROUTER')
+            self.router_mac = self.getMAC(self.router_ip, 'ROUTER')
 
     @staticmethod
     def is_root():
@@ -96,7 +96,8 @@ class ARPSpoof(object):
         ip_candidates = re.findall(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b", output)
 
         colors.success('Router IP found is : {}'.format(ip_candidates[1]))
-        val = str(input('>> Continue with this IP address(Y/y) or enter a different IP address : ')).strip()
+        val = str(input('>> Continue with this IP address(Y/y)'
+                        'or enter a different IP address : ')).strip()
         if val == 'Y' or val == 'y':
             self.router_ip = ip_candidates[1]
             colors.info('Router IP set to : {}'.format(self.router_ip))
