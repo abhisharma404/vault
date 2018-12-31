@@ -568,8 +568,62 @@ Traversal : - scanner
                 - ssl_scanner
 """
 
-# IP Scanner
+# Hash scanner
 
+def hash_scan(args):
+
+    LIST_OF_SCANS = []
+
+    if not args.all:
+        if args.md5:
+            LIST_OF_SCANS.append('md5')
+        if args.sha1:
+            LIST_OF_SCANS.append('sha1')
+        if args.sha224:
+            LIST_OF_SCANS.append('sha224')
+        if args.sha256:
+            LIST_OF_SCANS.append('sha256')
+        if args.sha512:
+            LIST_OF_SCANS.append('sha512')
+    else:
+        LIST_OF_SCANS = ['md5', 'sha1', 'sha224', 'sha256', 'sha512']
+
+    if args.exclude:
+        to_ignore = [mode for mode in (args.exclude).split(' ')]
+        try:
+            for mode in to_ignore:
+                LIST_OF_SCANS.remove(mode)
+        except Exception as e:
+            print(e)
+
+    try:
+        from lib.scanner.hash_scanner import hash_scanner
+
+        hashScanObj = hash_scanner.HashScanner(list_scans=LIST_OF_SCANS,
+                                               threads=args.threads,
+                                               file_path=args.dir)
+        resultDict = hashScanObj.startScan()
+
+        if args.output:
+            if args.output.endswith('.txt'):
+                file = args.output
+            else:
+                file = args.output + '.txt'
+
+            with open(file, 'wt') as f:
+                f.write('[+] Hash Scan Result : \n\n')
+                for key, item in resultDict.items():
+                    f.write(str(key) + ' : ' + str(item) + os.linesep)
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        print(e)
+        LOGGER.error(e)
+
+
+# IP Scanner
 
 def ack(args):
     if not args.ip:
@@ -902,6 +956,7 @@ if __name__ == '__main__':
     parser.add_argument('-cri', action='store_true',
                         help='For extracting images from a Web page')
     parser.add_argument('-all', action='store_true', help='Run all scans')
+    parser.add_argument('-exclude', help='Scans to exclude')
     parser.add_argument('-admin', action='store_true',
                         help='Find admin panel on a given domain')
     parser.add_argument('-orv', action='store_true',
@@ -921,6 +976,13 @@ if __name__ == '__main__':
     parser.add_argument('-bruteforce', action='store_true',
                         help='Perform brute force attack through Authorization'
                              'headers')
+    parser.add_argument('-hash', action='store_true', help='Start hash scan')
+    parser.add_argument('-md5', action='store_true', help='Scan MD5')
+    parser.add_argument('-sha1', action='store_true', help='Scan SHA1')
+    parser.add_argument('-sha224', action='store_true', help='Scan SHA224')
+    parser.add_argument('-sha256', action='store_true', help='Scan SHA256')
+    parser.add_argument('-sha512', action='store_true', help='Scan SHA512')
+    parser.add_argument('-dir', help='Directory to scan')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -1051,3 +1113,6 @@ if __name__ == '__main__':
 
     if args.bruteforce:
         bruteforce(args)
+
+    if args.hash:
+        hash_scan(args)

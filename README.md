@@ -43,7 +43,7 @@ Starting Vault :
 - [x] IP scanning : Ping Sweep, ARP
 - [x] SSL vulnerability scan
 - [x] OS scan
-- [ ] Hash scanner
+- [x] Hash scanner : MD5, SHA1, SHA224, SHA256, SHA512
 
 * #### Others
 - Information Gathering
