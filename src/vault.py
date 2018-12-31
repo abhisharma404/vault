@@ -59,6 +59,7 @@ def check_ip_range(ip_start_range: int, ip_end_range: int):
             LOGGER.error('[-] Please enter a valid IP range')
             sys.exit(1)
 
+
 """
 >> Attacks function goes here
 
@@ -533,6 +534,7 @@ def admin_panel(args):
             LOGGER.error(e)
             sys.exit(1)
 
+
 def bruteforce(args):
     if not args.url:
         colors.error('Please enter an URL for bruteforce')
@@ -786,6 +788,7 @@ def open_redirect(args):
             LOGGER.error(e)
             sys.exit(1)
 
+
 """
 >> utilities functions goes here
 
@@ -819,6 +822,16 @@ def keylogger(args):
         LOGGER.error('[-] Could not import the required module.')
     except Exception as e:
         LOGGER.error(e)
+
+
+def check_root():
+    user = os.getuid()
+
+    if user==0:
+        return True
+    else:
+        colors.error("Plese Start port scanner with root privileges")
+        sys.exit(1)
 
 
 if __name__ == '__main__':
@@ -946,11 +959,13 @@ if __name__ == '__main__':
 
         if args.ip:
             whois(args)
-            xmas(args)
-            fin(args)
-            null(args)
-            ack(args)
             ping_sweep(args)
+
+            if check_root():
+                xmas(args)
+                fin(args)
+                null(args)
+                ack(args)
 
     if args.admin:
         admin_panel(args)
@@ -980,16 +995,16 @@ if __name__ == '__main__':
     if args.email:
         email(args)
 
-    if args.fin:
+    if args.fin and check_root():
         fin(args)
 
-    if args.null:
+    if args.null and check_root():
         null(args)
 
-    if args.ack:
+    if args.ack and check_root():
         ack(args)
 
-    if args.xmas:
+    if args.xmas and check_root():
         xmas(args)
 
     if args.xss:
