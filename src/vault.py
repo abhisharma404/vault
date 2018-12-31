@@ -98,6 +98,48 @@ def ddos(args):
             sys.exit(1)
 
 
+def mac_flood(args):
+    try:
+        from lib.attacks.mac_flood import mac_flood
+
+        mac_floodObj = mac_flood.MACFlood(interface=args.interface)
+        mac_floodObj.startAttack()
+    except ImportError:
+        colors.error('Could not import the required module')
+        LOGGER.error('[-] Could not import the required module')
+    except Exception as e:
+        print(e)
+        LOGGER.error(e)
+        sys.exit(1)
+
+
+def arp_spoof(args):
+    try:
+        from lib.attacks.arp_spoof import arp_spoofer
+
+        arpSpoofObj = arp_spoofer.ARPSpoof(ip=args.ip)
+        arpSpoofObj.startSpoof()
+    except ImportError:
+        colors.error('Could not import the required module')
+    except Exception as e:
+        print(e)
+
+
+def ping_death(args):
+    try:
+        from lib.attacks.ping_death import ping_death
+
+        ping_deathObj = ping_death.pingDeath(ip=args.ip, url=args.url)
+        ping_deathObj.startAttack()
+    except ImportError:
+        colors.error('Could not import the required module')
+        LOGGER.error('[-] Could not import the required module')
+    except Exception as e:
+        print(e)
+        LOGGER.error(e)
+        sys.exit(1)
+
+
 """
 >> Website scanner function goes here
 
@@ -239,6 +281,7 @@ def scrap(args):
 
 Traversal : - others
                 - admin_panel
+                - brute force login
                 - detect_cms
                 - detect_ddos
                 - detect_deauth
@@ -251,6 +294,7 @@ Traversal : - others
                         - finding_email
                         - finding_comment
                     - header_vuln
+                    - jquery_check
                 - whois_lookup
 """
 
@@ -369,8 +413,28 @@ def email(args):
     except Exception as e:
         LOGGER.error(e)
 
+# Check Jquery version for associated vulnerabilites
+
+
+def jquery(args):
+    if not args.url:
+        colors.error('Please enter an URL for jquery checking')
+        LOGGER.error('[-] Please enter an URL for jquery checking')
+        sys.exit(1)
+    try:
+        from lib.others.info_gathering import jquery_check
+
+        jquery_checkObj = jquery_check.JqueryCheck(url=args.url)
+        jquery_checkObj.start_engine()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
 
 # Fuzzer
+
 
 def fuzz(args):
     if not args.url:
@@ -478,6 +542,25 @@ def admin_panel(args):
             print(e)
             LOGGER.error(e)
             sys.exit(1)
+
+def bruteforce(args):
+    if not args.url:
+        colors.error('Please enter an URL for bruteforce')
+        LOGGER.error('[-] Please enter an URL for bruteforce')
+        sys.exit(1)
+    try:
+        from lib.others.bruteforce_login import bruteforce_login
+        colors.info('Performing bruteforce on : {}'.format(args.url))
+        bruteforceObj = bruteforce_login.BruteforceLogin(url=args.url,
+                                                         threads=args.threads,
+                                                         user=args.username)
+        bruteforceObj.startAttack()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
 
 
 """
@@ -668,6 +751,30 @@ def ssl(args):
     except Exception as e:
         LOGGER.error(e)
 
+# OS Scanner
+
+
+def os_scan(args):
+    if args.url is None and args.ip is None:
+        colors.error('Please provide either an IP address or an URL to '
+                     'perform OS Scan')
+        LOGGER.error('[-] Please provide either an IP address or an URL to '
+                     'perform OS Scan')
+        sys.exit(1)
+    try:
+        colors.info('OS Scan using Nmap')
+
+        from lib.scanner.os_scan import os_scan
+
+        os_scanObj = os_scan.OSScan(ip=args.ip, url=args.url)
+        os_scanObj.os_scan()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
+
 
 def open_redirect(args):
     if not args.url:
@@ -688,6 +795,40 @@ def open_redirect(args):
             print(e)
             LOGGER.error(e)
             sys.exit(1)
+
+"""
+>> utilities functions goes here
+
+Traversal : - utilities
+                - backdoor_generator
+                - data_monitor
+                - extract_sitemap
+                - keylogger
+                - mac-changer
+                - ssh_tunnel
+                - trace_route
+"""
+
+
+def keylogger(args):
+    try:
+        colors.info('Keylogger starting...')
+
+        from lib.utilities.keylogger import keylogger
+
+        keyloggerObj = keylogger.Keylogger(interval=args.interval,
+                                           sender=args.sender,
+                                           destination=args.destination,
+                                           host=args.host, port=args.port,
+                                           username=args.username,
+                                           password=args.password)
+        keyloggerObj.start_keylogger()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
 
 
 if __name__ == '__main__':
@@ -721,12 +862,16 @@ if __name__ == '__main__':
     parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
     parser.add_argument('-ip', '--ip', help='IP address for port scanning')
     parser.add_argument('-t', '--threads', help='Number of threads to use')
+    parser.add_argument('-i', '--interface',
+                        help='Networking Interface to use')
     parser.add_argument('-source_port', help='Source port for sending packets')
     parser.add_argument('-fin', action='store_true', help='Perform FIN Scan')
     parser.add_argument('-null', action='store_true', help='Perform NULL Scan')
     parser.add_argument('-ack', action='store_true',
                         help='Perform TCP ACK Scan')
     parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
+    parser.add_argument('-os_scan', action='store_true',
+                        help='Perform OS Scan')
     parser.add_argument('-c', '--crawl', action='store_true',
                         help='Crawl and collect all the links')
     parser.add_argument('-xss', action='store_true',
@@ -746,6 +891,8 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dork', help='Perform google dorking')
     parser.add_argument('-ddos', action='store_true',
                         help='Perform DDoS attack')
+    parser.add_argument('-mac_flood', action='store_true',
+                        help='Perform MAC Flooding attack')
     parser.add_argument('-interval', help='Interval time for sending packets')
     parser.add_argument('-cr', action='store_true',
                         help='For extracting links from a web page')
@@ -756,6 +903,21 @@ if __name__ == '__main__':
                         help='Find admin panel on a given domain')
     parser.add_argument('-orv', action='store_true',
                         help='Test for open redirection Vulnerability')
+    parser.add_argument('-keylogger', action='store_true',
+                        help='Capture keystrokes and send them by email')
+    parser.add_argument('-host', help='SMTP Host to use')
+    parser.add_argument('-username', help='Username to login')
+    parser.add_argument('-password', help='Password to login')
+    parser.add_argument('-sender', help='Email to send from')
+    parser.add_argument('-destination', help='Email to send to')
+    parser.add_argument('-arp_spoof', action='store_true', help='ARP Spoofing')
+    parser.add_argument('-jquery', action='store_true',
+                        help='Check jQuery version and get vulnerabilities')
+    parser.add_argument('-ping_death', action='store_true',
+                        help='Perform ping of death attack')
+    parser.add_argument('-bruteforce', action='store_true',
+                        help='Perform brute force attack through Authorization'
+                             'headers')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -846,11 +1008,17 @@ if __name__ == '__main__':
     if args.ping_sweep:
         ping_sweep(args)
 
+    if args.os_scan:
+        os_scan(args)
+
     if args.lfi:
         lfi(args)
 
     if args.ddos:
         ddos(args)
+
+    if args.mac_flood:
+        mac_flood(args)
 
     if args.cr:
         crawl(args)
@@ -863,3 +1031,18 @@ if __name__ == '__main__':
 
     if args.arp:
         arp_scan(args)
+
+    if args.keylogger:
+        keylogger(args)
+
+    if args.arp_spoof:
+        arp_spoof(args)
+
+    if args.jquery:
+        jquery(args)
+
+    if args.ping_death:
+        ping_death(args)
+
+    if args.bruteforce:
+        bruteforce(args)

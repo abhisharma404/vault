@@ -27,7 +27,7 @@ def error(message):
 def success(message):
     message = str(message)
     message = '\n[+] ' + message
-    print(green, message, end)
+    print(lightgreen, message, end)
 
 
 def info(message):

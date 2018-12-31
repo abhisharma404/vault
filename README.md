@@ -42,13 +42,13 @@ Starting Vault :
 - [x] Port scanning : ACK, FIN, NULL, XMAS
 - [x] IP scanning : Ping Sweep, ARP
 - [x] SSL vulnerability scan
-- [ ] OS scan
+- [x] OS scan
 - [ ] Hash scanner
 
 * #### Others
 - Information Gathering
   - [x] Clickjacking
-  - [ ] jQuery version checking
+  - [x] jQuery version checking
   - [x] Insecure cookie flags
   - [x] Testing HTTP methods
   - [x] Insecure headers
@@ -57,7 +57,7 @@ Starting Vault :
     - [x] Find comments in source code
     - [x] Find e-mails in source code
 - [ ] Session fixation through cookie injection
-- [ ] Brute force login through authorization headers
+- [x] Brute force login through authorization headers
 - [x] URL Fuzzer
 - [x] WHOIS Lookup
 - [x] Google Dork
@@ -68,6 +68,7 @@ Starting Vault :
 - [ ] Detect Honeypots
 - [ ] Detect DDoS attack
 - [ ] Detect De-authentication attack
+- [ ] Detect ARP spoof attack
 
 * #### Crawling
 - [x] Crawl a website and collect all the links
@@ -75,17 +76,17 @@ Starting Vault :
 
 * #### Attacks
 - [x] DDoS Attack
-- [ ] ARP Spoofer
+- [x] ARP Spoofer
 - [ ] DNS Spoofer
 - [ ] De-authentication attack
 - [ ] Network disassociation attack
-- [ ] Ping of death
-- [ ] MAC Flood Attack
+- [X] Ping of death
+- [x] MAC Flood Attack
 
 * #### Utilities
 - [ ] Generate customized backdoor
 - [ ] Data monitoring
-- [ ] Keylogger
+- [X] Keylogger
 - [ ] SSH Tunelling
 - [ ] Generate sitemap
 - [ ] MAC address changer
