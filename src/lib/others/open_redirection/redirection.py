@@ -1,7 +1,7 @@
 import sys
 import requests
 
-FILE = "lib/open_redirection/payload.txt"
+FILE = "payloads/ORV_payload.txt"
 
 
 def load_payload():

@@ -1,10 +1,12 @@
 import sys
 import requests
 
+FILE = "payloads/admin_payload.txt"
+
 
 def load_list():
     try:
-        with open("lib/others/admin_panel/links.txt", encoding="utf8") as wlf:
+        with open(FILE, encoding="utf8") as wlf:
             content = wlf.read().splitlines()
         return content
 
