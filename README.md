@@ -5,6 +5,7 @@
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner)
 [![Join the chat at https://gitter.im/vault_scanner/kwoc](https://badges.gitter.im/vault_scanner/Lobby.svg)](https://gitter.im/vault_scanner/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Python](https://img.shields.io/badge/python-%3E%3D3-brightgreen.svg)
 ![version](https://img.shields.io/badge/version-0.1.0-yellow.svg)
+![support](https://img.shields.io/badge/OS-Linux-orange.svg)
 
 ## Table of contents
 - [Getting Started](#getting-started)
@@ -16,7 +17,7 @@
 
 ## Getting Started
 
-Steps to setup :
+#### Steps to setup :
 
 1. `git clone <your-fork-url>`
 2. `cd vault_scanner`
@@ -26,7 +27,7 @@ Steps to setup :
 6. `source venv/bin/activate`
 7. `pip3 install -r requirements.txt`
 
-Starting Vault :
+#### Starting Vault :
 
 1. `cd vault_scanner/src`
 2. `python3 vault.py`
