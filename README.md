@@ -96,17 +96,22 @@ Starting Vault :
 
 ```
 usage: vault.py [-h] [-u URL] [-p PORT] [-sp START_PORT] [-ep END_PORT] [-ssl]
-                [-info] [-comment] [-fuzz] [-ip IP] [-t THREADS]
-                [-source_port SOURCE_PORT] [-fin] [-null] [-ack] [-xmas] [-c]
-                [-xss] [-this] [-ping_sweep] [-ip_start_range IP_START_RANGE]
+                [-info] [-comment] [-email] [-fuzz] [-ip IP] [-t THREADS]
+                [-i INTERFACE] [-source_port SOURCE_PORT] [-fin] [-null]
+                [-ack] [-xmas] [-os_scan] [-c] [-xss] [-this] [-ping_sweep]
+                [-arp] [-ip_start_range IP_START_RANGE]
                 [-ip_end_range IP_END_RANGE] [-lfi] [-whois] [-o OUTPUT]
-                [-d DORK]
+                [-d DORK] [-ddos] [-mac_flood] [-interval INTERVAL] [-cr]
+                [-cri] [-all] [-exclude EXCLUDE] [-admin] [-orv] [-keylogger]
+                [-host HOST] [-username USERNAME] [-password PASSWORD]
+                [-sender SENDER] [-destination DESTINATION] [-arp_spoof]
+                [-jquery] [-ping_death] [-bruteforce] [-hash] [-md5] [-sha1]
+                [-sha224] [-sha256] [-sha512] [-dir DIR]
 
 optional arguments:
   -h, --help            show this help message and exit
   -u URL, --url URL     URL for scanning
   -p PORT, --port PORT  Single port for scanning
-  -d DORK,--dork DORK   Performs Google Dorking
   -sp START_PORT, --start_port START_PORT
                         Start port for scanning
   -ep END_PORT, --end_port END_PORT
@@ -114,20 +119,25 @@ optional arguments:
   -ssl                  perform SSL scan
   -info                 Gather information
   -comment              Finding comments
+  -email                Finding emails
   -fuzz                 Fuzzing URL
   -ip IP, --ip IP       IP address for port scanning
   -t THREADS, --threads THREADS
                         Number of threads to use
+  -i INTERFACE, --interface INTERFACE
+                        Networking Interface to use
   -source_port SOURCE_PORT
                         Source port for sending packets
   -fin                  Perform FIN Scan
   -null                 Perform NULL Scan
   -ack                  Perform TCP ACK Scan
   -xmas                 Perform XMAS Scan
+  -os_scan              Perform OS Scan
   -c, --crawl           Crawl and collect all the links
   -xss                  Scan for XSS vulnerabilities
   -this                 Only scan the given URL, do not crawl
   -ping_sweep           ICMP ECHO request
+  -arp                  ARP Scan
   -ip_start_range IP_START_RANGE
                         Start range for scanning IP
   -ip_end_range IP_END_RANGE
@@ -136,6 +146,35 @@ optional arguments:
   -whois                perform a whois lookup of a given IP
   -o OUTPUT, --output OUTPUT
                         Output all data
+  -d DORK, --dork DORK  Perform google dorking
+  -ddos                 Perform DDoS attack
+  -mac_flood            Perform MAC Flooding attack
+  -interval INTERVAL    Interval time for sending packets
+  -cr                   For extracting links from a web page
+  -cri                  For extracting images from a Web page
+  -all                  Run all scans
+  -exclude EXCLUDE      Scans to exclude
+  -admin                Find admin panel on a given domain
+  -orv                  Test for open redirection Vulnerability
+  -keylogger            Capture keystrokes and send them by email
+  -host HOST            SMTP Host to use
+  -username USERNAME    Username to login
+  -password PASSWORD    Password to login
+  -sender SENDER        Email to send from
+  -destination DESTINATION
+                        Email to send to
+  -arp_spoof            ARP Spoofing
+  -jquery               Check jQuery version and get vulnerabilities
+  -ping_death           Perform ping of death attack
+  -bruteforce           Perform brute force attack through
+                        Authorizationheaders
+  -hash                 Start hash scan
+  -md5                  Scan MD5
+  -sha1                 Scan SHA1
+  -sha224               Scan SHA224
+  -sha256               Scan SHA256
+  -sha512               Scan SHA512
+  -dir DIR              Directory to scan
 ```
 
 Example Usage : `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
