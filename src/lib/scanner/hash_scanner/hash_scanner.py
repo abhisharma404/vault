@@ -101,9 +101,9 @@ class HashScanner(object):
         the selected mode
         """
 
-        bytes = self.extractBytes(file_path)
+        file_bytes = self.extractBytes(file_path)
         temp_name = str(file_path) + ' -> ' + str(mode)
-        temp_dict = {temp_name : eval('hashlib.{}(bytes)'.format(mode)).hexdigest()}
+        temp_dict = {temp_name : eval('hashlib.{}(file_bytes)'.format(mode)).hexdigest()}
         self.sharedDict.update(temp_dict)
 
     def modeScan(self, mode):
