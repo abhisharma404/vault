@@ -281,6 +281,7 @@ def scrap(args):
 
 Traversal : - others
                 - admin_panel
+                - brute force login
                 - detect_cms
                 - detect_ddos
                 - detect_deauth
@@ -531,6 +532,25 @@ def admin_panel(args):
             print(e)
             LOGGER.error(e)
             sys.exit(1)
+
+def bruteforce(args):
+    if not args.url:
+        colors.error('Please enter an URL for bruteforce')
+        LOGGER.error('[-] Please enter an URL for bruteforce')
+        sys.exit(1)
+    try:
+        from lib.others.bruteforce_login import bruteforce_login
+        colors.info('Performing bruteforce on : {}'.format(args.url))
+        bruteforceObj = bruteforce_login.BruteforceLogin(url=args.url,
+                                                         threads=args.threads,
+                                                         user=args.username)
+        bruteforceObj.startAttack()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
 
 
 """
@@ -885,6 +905,9 @@ if __name__ == '__main__':
                         help='Check jQuery version and get vulnerabilities')
     parser.add_argument('-ping_death', action='store_true',
                         help='Perform ping of death attack')
+    parser.add_argument('-bruteforce', action='store_true',
+                        help='Perform brute force attack through Authorization'
+                             'headers')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -1010,3 +1033,6 @@ if __name__ == '__main__':
 
     if args.ping_death:
         ping_death(args)
+
+    if args.bruteforce:
+        bruteforce(args)
