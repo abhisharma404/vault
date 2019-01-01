@@ -75,6 +75,44 @@ class MACChanger(object):
                     random.randint(0, 255),
                     )
 
+    @staticmethod
+    def getInterface():
+        """
+        Collects all the interfaces
+        """
+
+        colors.info('Collecting all the interfaces')
+
+        p = subprocess.Popen(['ifconfig'], shell=False,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        output, error = p.communicate()
+
+        if error:
+            print(error.decode('utf-8'))
+            sys.exit(1)
+
+        output = output.decode('utf-8')
+        interfaces = re.findall('(.*): ', output)
+
+        total_index = 0
+
+        # Parse and print the collected interfaces
+        print('*' * 25)
+        print('Index'.ljust(8, ' '), '|', ' Interface '.ljust(12, ' '), '|')
+        print('*' * 25)
+        for index, interface in enumerate(interfaces):
+            print(index, ' '.ljust(5), ' | ', interface.ljust(11, ' '), '|')
+            total_index = total_index + 1
+            print('-' * 25)
+
+        intf = -1
+        while intf > total_index or intf < 0:
+            intf = int(input('\n>> Enter the index of the interface : ').strip())
+
+        colors.info('Selected interface is : {}'.format(interfaces[intf]))
+        return interfaces[intf]
+
     def interfaceMAC(self):
         """
         Returns the MAC address of
@@ -124,43 +162,6 @@ class MACChanger(object):
         else:
             colors.error('Failed to restore MAC address, trying again...')
             self.resetMAC()
-
-    def getInterface(self):
-        """
-        Collects all the interfaces
-        """
-
-        colors.info('Collecting all the interfaces')
-
-        p = subprocess.Popen(['ifconfig'], shell=False,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        output, error = p.communicate()
-
-        if error:
-            print(error.decode('utf-8'))
-            sys.exit(1)
-
-        output = output.decode('utf-8')
-        interfaces = re.findall('(.*): ', output)
-
-        total_index = 0
-
-        # Parse and print the collected interfaces
-        print('*' * 25)
-        print('Index'.ljust(8, ' '), '|', ' Interface '.ljust(12, ' '), '|')
-        print('*' * 25)
-        for index, interface in enumerate(interfaces):
-            print(index, ' '.ljust(5), ' | ', interface.ljust(11, ' '), '|')
-            total_index = total_index + 1
-            print('-' * 25)
-
-        intf = -1
-        while intf > total_index or intf < 0:
-            intf = int(input('\n>> Enter the index of the interface : ').strip())
-
-        colors.info('Selected interface is : {}'.format(interfaces[intf]))
-        return interfaces[intf]
 
     def startProcess(self):
         """
