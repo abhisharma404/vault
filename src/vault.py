@@ -554,6 +554,26 @@ def bruteforce(args):
     except Exception as e:
         LOGGER.error(e)
 
+# try to detect the CMS used in a website
+
+
+def detect_cms(args):
+    if not args.url:
+        colors.error('Please enter an URL for CMS detecting')
+        LOGGER.error('[-] Please enter an URL for CMS detecting')
+        sys.exit(1)
+    try:
+        from lib.others.detect_cms import detect_cms
+
+        detect_cmsObj = detect_cms.DetectCMS(url=args.url)
+        detect_cmsObj.start_engine()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+    except Exception as e:
+        LOGGER.error(e)
+
 
 """
 >> Scanner functions goes here
@@ -983,6 +1003,9 @@ if __name__ == '__main__':
     parser.add_argument('-sha256', action='store_true', help='Scan SHA256')
     parser.add_argument('-sha512', action='store_true', help='Scan SHA512')
     parser.add_argument('-dir', help='Directory to scan')
+    parser.add_argument('-detect_cms', action='store_true',
+                        help='Perform CMS Detection')
+
 
     colors.info("Please Check log file for information about any errors")
 
@@ -1116,3 +1139,6 @@ if __name__ == '__main__':
 
     if args.hash:
         hash_scan(args)
+
+    if args.detect_cms:
+        detect_cms(args)

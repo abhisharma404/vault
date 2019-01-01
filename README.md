@@ -65,7 +65,7 @@
 - [ ] Error handler checker
 - [x] Admin panel finder
 - [x] Open redirect vulnerability
-- [ ] CMS Detection
+- [x] CMS Detection
 - [ ] Detect Honeypots
 - [ ] Detect DDoS attack
 - [ ] Detect De-authentication attack
