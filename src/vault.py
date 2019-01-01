@@ -60,6 +60,16 @@ def check_ip_range(ip_start_range: int, ip_end_range: int):
             sys.exit(1)
 
 
+def check_root():
+    user = os.getuid()
+
+    if user==0:
+        return True
+    else:
+        colors.error("Plese start with root privileges")
+        sys.exit(1)
+
+
 """
 >> Attacks function goes here
 
@@ -894,18 +904,31 @@ def keylogger(args):
     except ImportError:
         colors.error('Could not import the required module.')
         LOGGER.error('[-] Could not import the required module.')
+        sys.exit(1)
+
     except Exception as e:
         LOGGER.error(e)
 
 
-def check_root():
-    user = os.getuid()
+def mac_changer(args):
 
-    if user==0:
-        return True
-    else:
-        colors.error("Plese Start port scanner with root privileges")
+    try:
+        colors.info('Loading MAC Changer...')
+
+        from lib.utilities.mac_changer import mac_changer
+
+        macObj = mac_changer.MACChanger(mac_addr=args.mac,
+                                        interface=args.interface)
+        macObj.startProcess()
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
         sys.exit(1)
+
+    except Exception as e:
+        print(e)
+        LOGGER.error(e)
 
 
 if __name__ == '__main__':
@@ -1005,7 +1028,9 @@ if __name__ == '__main__':
     parser.add_argument('-dir', help='Directory to scan')
     parser.add_argument('-detect_cms', action='store_true',
                         help='Perform CMS Detection')
-
+    parser.add_argument('-change_mac', action='store_true',
+                        help='Chnage MAC address')
+    parser.add_argument('-mac', help='New MAC address')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -1142,3 +1167,6 @@ if __name__ == '__main__':
 
     if args.detect_cms:
         detect_cms(args)
+
+    if args.change_mac:
+        mac_changer(args)
