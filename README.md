@@ -82,7 +82,7 @@
 - [ ] De-authentication attack
 - [ ] Network disassociation attack
 - [X] Ping of death
-- [x] MAC Flood Attack
+- [x] MAC Flood attack
 
 * #### Utilities
 - [ ] Generate customized backdoor
@@ -90,7 +90,7 @@
 - [X] Keylogger
 - [ ] SSH Tunelling
 - [ ] Generate sitemap
-- [ ] MAC address changer
+- [x] MAC address changer
 - [ ] Trace route
 
 ## Usage
