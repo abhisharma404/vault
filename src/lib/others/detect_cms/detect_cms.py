@@ -56,8 +56,8 @@ class DetectCMS(object):
         if re.search("\/media\/system\/(?:css|images|js)\/",
            self.response.text):
             self.scores["Joomla"] += 1
-        if re.search("\/templates\/*(?:(?:[a-zA-Z]+).+)\/(?:css|images|js)",
-           self.response.text):
+        if re.search("\/templates\/*(?:(?:[a-zA-Z\\.\\-\\_]+)+)\/"
+                     "(?:css|images|js)", self.response.text):
             self.scores["Joomla"] += 1
 
     def extract_files(self):
@@ -73,11 +73,82 @@ class DetectCMS(object):
            response.status_code == 403:
             self.scores["Wordpress"] += 1
 
+        response = requests.get(urljoin(self.url,
+                                        "wp-includes/wlwmanifest.xml"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes or\
+           response.status_code == 403:
+            self.scores["Wordpress"] += 1
+
+        response = requests.get(urljoin(self.url, "license.txt"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes:
+            if "wordpress" in response.text:
+                self.scores["Wordpress"] += 1
+
+        response = requests.get(urljoin(self.url, "wp-links-opml.php"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes:
+            if "wordpress" in response.text:
+                self.scores["Wordpress"] += 1
+
+        response = requests.get(urljoin(self.url, "readme.html"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes:
+            if "wordpress" in response.text:
+                self.scores["Wordpress"] += 1
+
+        response = requests.get(urljoin(self.url, "xmlrpc.php?rsd"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes:
+            if "wordpress" in response.text:
+                self.scores["Wordpress"] += 1
+
+        response = requests.get(urljoin(self.url, "wp-feed.php"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes:
+            if re.search("<generator>*(?:(?:[a-zA-Z]+).+)wordpress"
+                         "*(?:(?:[a-zA-Z]+).+)<\/generator>", response.text):
+                self.scores["Wordpress"] += 1
+
         response = requests.get(urljoin(self.url, "administrator"))
         if response.status_code in self.success_codes or\
            response.status_code in self.redirection_codes or\
            response.status_code == 403:
             self.scores["Joomla"] += 1
+
+        response = requests.get(urljoin(self.url,
+                                        "components/com_wrapper/wrapper.xml"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes or\
+           response.status_code == 403:
+            if "Joomla! Project" in response.text:
+                self.scores["Joomla"] += 1
+
+        response = requests.get(urljoin(self.url, "?format=feed"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes:
+            if re.search("<generator>Joomla!*(?:(?:[a-zA-Z ]+).+)"
+                         "<\/generator>", response.text):
+                self.scores["Joomla"] += 1
+
+        match = re.search("\/templates\/*(?:(?:[a-zA-Z\\.\\-\\_]+)+)\/",
+                         self.response.text)
+        if match:
+            response = requests.get(urljoin(self.url,
+                                            match.group(0) +
+                                            "templateDetails.xml"))
+            if response.status_code in self.success_codes or\
+               response.status_code in self.redirection_codes:
+                if "Joomla!" in response.text:
+                    self.scores["Joomla"] += 1
+
+        response = requests.get(urljoin(self.url, "web.config.txt"))
+        if response.status_code in self.success_codes or\
+           response.status_code in self.redirection_codes or\
+           response.status_code == 403:
+            if "Joomla!" in response.text:
+                self.scores["Joomla"] += 1
 
         response = requests.get(urljoin(self.url, "user"))
         if response.status_code in self.success_codes or\
