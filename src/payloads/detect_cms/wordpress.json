@@ -1,0 +1,95 @@
+{
+  "CMS": {
+    "name": "Wordpress"
+  },
+  "code": [
+    {
+      "type": "tag-contains",
+      "value": {
+        "element": "meta",
+        "name": "generator",
+        "text": "wordpress"
+      }
+    },
+    {
+      "type": "regex",
+      "value": "\\\/wp-content\\\/"
+    },
+    {
+      "type": "regex",
+      "value": "\\\/wp-includes\\\/"
+    },
+    {
+      "type": "regex",
+      "value": "\\\/\\\/(?:api|s).w.org"
+    },
+    {
+      "type": "regex",
+      "value": "\\\/\\\/(?:pixel|s0-s9|stats).wp.com"
+    },
+    {
+      "type": "regex",
+      "value": "\\\/\\\/wp.me\\\/"
+    }
+  ],
+  "file": [
+    {
+      "type": "request-header",
+      "value": {
+        "text": "/wp-json/"
+      }
+    },
+    {
+      "type": "request",
+      "value": {
+        "url": "wp-admin"
+      }
+    },
+    {
+      "type": "request",
+      "value": {
+        "url": "wp-json"
+      }
+    },
+    {
+      "type": "request",
+      "value": {
+        "url": "wp-includes/wlwmanifest.xml"
+      }
+    },
+    {
+      "type": "request",
+      "value": {
+        "url": "license.txt"
+      }
+    },
+    {
+      "type": "request-contains",
+      "value": {
+        "url": "wp-links-opml.php",
+        "text": "wordpress"
+      }
+    },
+    {
+      "type": "request-contains",
+      "value": {
+        "url": "readme.html",
+        "text": "wordpress"
+      }
+    },
+    {
+      "type": "request-contains",
+      "value": {
+        "url": "xmlrpc.php?rsd",
+        "text": "wordpress"
+      }
+    },
+    {
+      "type": "request-regex",
+      "value": {
+        "url": "wp-feed.php",
+        "regex": "<generator>*(?:(?:[a-zA-Z]+).+)wordpress*(?:(?:[a-zA-Z]+).+)<\\\/generator>"
+      }
+    }
+  ]
+}

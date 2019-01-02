@@ -1,0 +1,67 @@
+{
+  "CMS": {
+    "name": "Joomla"
+  },
+  "code": [
+    {
+      "type": "tag-contains",
+      "value": {
+        "element": "meta",
+        "name": "generator",
+        "text": "joomla"
+      }
+    },
+    {
+      "type": "regex",
+      "value": "\\\/media\\\/jui\\\/(?:css|js)\\\/"
+    },
+    {
+      "type": "regex",
+      "value": "\\\/media\\\/media\\\/(?:css|images|js)\\\/"
+    },
+    {
+      "type": "regex",
+      "value": "\\\/media\\\/system\\\/(?:css|images|js)\\\/"
+    },
+    {
+      "type": "regex",
+      "value": "\\\/templates\\\/*(?:(?:[a-zA-Z\\.\\-\\_]+)+)\\\/(?:css|images|js)"
+    }
+  ],
+  "file": [
+    {
+      "type": "request-header",
+      "value": {
+        "text": "expires: wed, 17 aug 2005 00:00:00 gmt"
+      }
+    },
+    {
+      "type": "request",
+      "value": {
+        "url": "administrator"
+      }
+    },
+    {
+      "type": "request-contains",
+      "value": {
+        "url": "components/com_wrapper/wrapper.xml",
+        "text": "Joomla! Project"
+      }
+    },
+    {
+      "type": "request-regex",
+      "value": {
+        "url": "?format=feed",
+        "regex": "<generator>Joomla!*(?:(?:[a-zA-Z ]+).+)<\\\/generator>"
+      }
+    },
+    {
+      "type": "match-request-contains",
+      "value": {
+        "regex": "\\\/templates\\\/*(?:(?:[a-zA-Z\\.\\-\\_]+)+)\\\/",
+        "url": "templateDetails.xml",
+        "text": "Joomla!"
+      }
+    }
+  ]
+}
