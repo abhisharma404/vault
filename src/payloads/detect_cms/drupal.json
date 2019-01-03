@@ -1,0 +1,23 @@
+{
+  "CMS": {
+    "name": "Drupal"
+  },
+  "code": [
+    {
+      "type": "tag-contains",
+      "value": {
+        "element": "meta",
+        "name": "generator",
+        "text": "drupal"
+      }
+    }
+  ],
+  "file": [
+    {
+      "type": "request",
+      "value": {
+        "url": "user"
+      }
+    }
+  ]
+}
