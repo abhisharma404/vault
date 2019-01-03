@@ -66,7 +66,7 @@
 - [x] Admin panel finder
 - [x] Open redirect vulnerability
 - [x] CMS Detection
-- [ ] Detect Honeypots
+- [x] Detect Honeypots
 - [ ] Detect DDoS attack
 - [ ] Detect De-authentication attack
 - [ ] Detect ARP spoof attack
