@@ -63,7 +63,7 @@ def check_ip_range(ip_start_range: int, ip_end_range: int):
 def check_root():
     user = os.getuid()
 
-    if user==0:
+    if user == 0:
         return True
     else:
         colors.error("Plese start with root privileges")
@@ -600,6 +600,7 @@ Traversal : - scanner
 
 # Hash scanner
 
+
 def hash_scan(args):
 
     LIST_OF_SCANS = []
@@ -931,6 +932,30 @@ def mac_changer(args):
         LOGGER.error(e)
 
 
+def detect_honeypot(args):
+    """Check if the given ip is a honeypot or not
+    """
+    if not args.ip:
+        colors.error('Please enter an IP address for scanning')
+        LOGGER.error('[-] Please enter an IP address for scanning')
+        sys.exit(1)
+    try:
+        colors.info('Detecting honeypot: ')
+
+        from lib.others.detect_honeypots import honeypots
+
+        honeypots.honeypot(args.ip)
+
+    except ImportError:
+        colors.error('Could not import the required module.')
+        LOGGER.error('[-] Could not import the required module.')
+        sys.exit(1)
+
+    except Exception as e:
+        print(e)
+        LOGGER.error(e)
+
+
 if __name__ == '__main__':
 
     print(""" ____   _________   ____ ___.____  ___________
@@ -1031,6 +1056,7 @@ if __name__ == '__main__':
     parser.add_argument('-change_mac', action='store_true',
                         help='Chnage MAC address')
     parser.add_argument('-mac', help='New MAC address')
+    parser.add_argument('-honey', action='store_true', help='detect honeypot')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -1070,12 +1096,16 @@ if __name__ == '__main__':
         if args.ip:
             whois(args)
             ping_sweep(args)
+            detect_honeypot(args)
 
             if check_root():
                 xmas(args)
                 fin(args)
                 null(args)
                 ack(args)
+
+    if args.honey:
+        detect_honeypot(args)
 
     if args.admin:
         admin_panel(args)
