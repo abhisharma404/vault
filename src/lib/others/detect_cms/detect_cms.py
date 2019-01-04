@@ -60,7 +60,9 @@ class DetectCMS(object):
                         self.scores[cms["CMS"]["name"]] += 1
                 if payload["type"] == "request-header":
                     for header in self.response.headers:
-                        if payload["value"]["text"] in header.lower():
+                        if payload["value"]["text"] in\
+                           str(header + ": " +
+                               self.response.headers[header]).lower():
                             self.scores[cms["CMS"]["name"]] += 1
                 if payload["type"] == "request-contains":
                     response = requests.get(urljoin(self.url,

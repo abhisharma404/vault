@@ -10,13 +10,56 @@
         "name": "generator",
         "text": "drupal"
       }
+    },
+    {
+      "type": "regex",
+      "value": "\\\/sites\\\/default\\\/files\\\/(?:css|js)\\\/"
+    },
+    {
+      "type": "regex",
+      "value": "\\\/core\\\/(?:themes|assets|misc)\\\/"
+    },
+    {
+      "type": "regex",
+      "value": "data-drupal-link-system-path"
     }
   ],
   "file": [
     {
+      "type": "request-header",
+      "value": {
+        "text": "x-generator: drupal"
+      }
+    },
+    {
+      "type": "request-header",
+      "value": {
+        "text": "x-drupal"
+      }
+    },
+    {
       "type": "request",
       "value": {
         "url": "user"
+      }
+    },
+    {
+      "type": "request",
+      "value": {
+        "url": "/misc/drupal.js"
+      }
+    },
+    {
+      "type": "request",
+      "value": {
+        "url": "/misc/druplicon.js"
+      }
+    },
+    {
+      "type": "request-contains",
+      "value": {
+        "url": "CHANGELOG.txt",
+        "text": "drupal"
       }
     }
   ]
