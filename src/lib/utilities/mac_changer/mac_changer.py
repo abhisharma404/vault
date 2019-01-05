@@ -46,7 +46,8 @@ class MACChanger(object):
         Check whether the input MAC is valid or not
         """
 
-        if re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", mac.lower()):
+        if re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$",
+                    mac.lower()):
             return True
 
     @staticmethod
@@ -108,7 +109,8 @@ class MACChanger(object):
 
         intf = -1
         while intf > total_index or intf < 0:
-            intf = int(input('\n>> Enter the index of the interface : ').strip())
+            intf = int(input('\n>> Enter the index of the interface : ')
+                       .strip())
 
         colors.info('Selected interface is : {}'.format(interfaces[intf]))
         return interfaces[intf]
@@ -120,8 +122,8 @@ class MACChanger(object):
         """
 
         result = subprocess.Popen(['ifconfig', self.interface],
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.PIPE)
         output, error = result.communicate()
 
         if error:
@@ -139,7 +141,7 @@ class MACChanger(object):
         """
 
         colors.info('Changing MAC address...')
-        time.sleep(2) # Wait for the interface to be up
+        time.sleep(2)  # Wait for the interface to be up
 
         subprocess.call(['ifconfig', self.interface, 'down'])
         subprocess.call(['ifconfig', self.interface,
@@ -156,7 +158,8 @@ class MACChanger(object):
         checkMAC = self.interfaceMAC()
 
         if checkMAC == self.origMAC:
-            colors.success('MAC address restored to default : {}'.format(self.origMAC))
+            colors.success('MAC address restored to default : {}'
+                           .format(self.origMAC))
             colors.info('Exiting...')
             sys.exit(1)
         else:
@@ -173,8 +176,10 @@ class MACChanger(object):
         checkMAC = self.interfaceMAC()
 
         if checkMAC == self.newMAC:
-            colors.success('MAC address succesfully changed to : {}'.format(self.newMAC))
-            choice = str(input('>> Do you want to restore to default (R/r)? ').strip())
+            colors.success('MAC address succesfully changed to : {}'
+                           .format(self.newMAC))
+            choice = str(input('>> Do you want to restore to default (R/r)? ')
+                         .strip())
             if choice == 'R' or choice == 'r':
                 self.resetMAC()
         else:

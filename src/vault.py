@@ -997,8 +997,6 @@ if __name__ == '__main__':
     parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
     parser.add_argument('-os_scan', action='store_true',
                         help='Perform OS Scan')
-    parser.add_argument('-c', '--crawl', action='store_true',
-                        help='Crawl and collect all the links')
     parser.add_argument('-xss', action='store_true',
                         help='Scan for XSS vulnerabilities')
     parser.add_argument('-this', action='store_true',
