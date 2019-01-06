@@ -19,7 +19,8 @@ class HashScanner(object):
         if file_path is not None:
             self.file_path = file_path
         else:
-            colors.error('File path cannot be empty, please specify the path to scan')
+            colors.error('File path cannot be empty, please specify the path '
+                         'to scan')
             sys.exit(1)
 
         if list_scans is not None:
@@ -33,14 +34,15 @@ class HashScanner(object):
             self.threadValidator(threads)
         else:
             self.threads = 10
-            colors.info('No threads set, hence using {} threads.'.format(self.threads))
+            colors.info('No threads set, hence using {} threads.'
+                        .format(self.threads))
 
         self.file_list = []
         m = multiprocessing.Manager()
         self.sharedDict = m.dict()
 
         deepScan_choice = str(input('>> Do you want to perform a deep scan'
-                                    ' i.e. scan all sub-directories? (Y/N) : '))
+                                    ' i.e. scan all sub-directories? (Y/N): '))
         if deepScan_choice == 'Y' or deepScan_choice == 'y':
             self.deepScan = True
         else:
@@ -92,7 +94,7 @@ class HashScanner(object):
                         temp_path = os.path.join(root, file)
                         self.file_list.append(temp_path)
 
-                    if self.deepScan == False:
+                    if self.deepScan is False:
                         break
 
     def scanFile(self, file_path, mode):
@@ -103,7 +105,8 @@ class HashScanner(object):
 
         file_bytes = self.extractBytes(file_path)
         temp_name = str(file_path) + ' -> ' + str(mode)
-        temp_dict = {temp_name : eval('hashlib.{}(file_bytes)'.format(mode)).hexdigest()}
+        temp_dict = {temp_name: eval('hashlib.{}(file_bytes)'
+                                     .format(mode)).hexdigest()}
         self.sharedDict.update(temp_dict)
 
     def modeScan(self, mode):
@@ -151,7 +154,7 @@ class HashScanner(object):
 
         finally:
             t2 = time.time()
-            colors.success('Completed in {}'.format (t2-t1))
+            colors.success('Completed in {}'.format(t2-t1))
             resultDict = self.parseResult()
             return resultDict
 
