@@ -79,7 +79,7 @@
 - [x] DDoS Attack
 - [x] ARP Spoofer
 - [ ] DNS Spoofer
-- [ ] De-authentication attack
+- [x] De-authentication attack
 - [ ] Network disassociation attack
 - [X] Ping of death
 - [x] MAC Flood attack
@@ -99,15 +99,18 @@
 usage: vault.py [-h] [-u URL] [-p PORT] [-sp START_PORT] [-ep END_PORT] [-ssl]
                 [-info] [-comment] [-email] [-fuzz] [-ip IP] [-t THREADS]
                 [-i INTERFACE] [-source_port SOURCE_PORT] [-fin] [-null]
-                [-ack] [-xmas] [-os_scan] [-c] [-xss] [-this] [-ping_sweep]
-                [-arp] [-ip_start_range IP_START_RANGE]
-                [-ip_end_range IP_END_RANGE] [-lfi] [-whois] [-o OUTPUT]
-                [-d DORK] [-ddos] [-mac_flood] [-interval INTERVAL] [-cr]
-                [-cri] [-all] [-exclude EXCLUDE] [-admin] [-orv] [-keylogger]
-                [-host HOST] [-username USERNAME] [-password PASSWORD]
-                [-sender SENDER] [-destination DESTINATION] [-arp_spoof]
-                [-jquery] [-ping_death] [-bruteforce] [-hash] [-md5] [-sha1]
-                [-sha224] [-sha256] [-sha512] [-dir DIR]
+                [-ack] [-xmas] [-os_scan] [-xss] [-this] [-ping_sweep] [-arp]
+                [-ip_start_range IP_START_RANGE] [-ip_end_range IP_END_RANGE]
+                [-lfi] [-whois] [-o OUTPUT] [-d DORK] [-ddos] [-mac_flood]
+                [-interval INTERVAL] [-cr] [-cri] [-all] [-exclude EXCLUDE]
+                [-admin] [-orv] [-keylogger] [-host HOST] [-username USERNAME]
+                [-password PASSWORD] [-sender SENDER]
+                [-destination DESTINATION] [-arp_spoof] [-jquery]
+                [-ping_death] [-bruteforce] [-hash] [-md5] [-sha1] [-sha224]
+                [-sha256] [-sha512] [-dir DIR] [-detect_cms] [-change_mac]
+                [-mac MAC] [-honey] [-target_bssid TARGET_BSSID] [-deauth]
+
+VAULT
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -134,7 +137,6 @@ optional arguments:
   -ack                  Perform TCP ACK Scan
   -xmas                 Perform XMAS Scan
   -os_scan              Perform OS Scan
-  -c, --crawl           Crawl and collect all the links
   -xss                  Scan for XSS vulnerabilities
   -this                 Only scan the given URL, do not crawl
   -ping_sweep           ICMP ECHO request
@@ -176,6 +178,13 @@ optional arguments:
   -sha256               Scan SHA256
   -sha512               Scan SHA512
   -dir DIR              Directory to scan
+  -detect_cms           Perform CMS Detection
+  -change_mac           Chnage MAC address
+  -mac MAC              New MAC address
+  -honey                Detect honeypot
+  -target_bssid TARGET_BSSID
+                        Target BSSID
+  -deauth               De-authentication attack
 ```
 
 Example Usage : `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
