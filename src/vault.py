@@ -150,6 +150,21 @@ def ping_death(args):
         LOGGER.error(e)
         sys.exit(1)
 
+def deauth(args):
+    try:
+        from lib.attacks.deauth import deauth_attack
+
+        deauthObj = deauth_attack.Deauth(interface=args.interface,
+                                         target_bssid=args.target_bssid)
+        deauthObj.startProcess()
+    except ImportError:
+        colors.error('Could not import the required module')
+        LOGGER.error('[-] Could not import the required module')
+    except Exception as e:
+        print(e)
+        LOGGER.error(e)
+        sys.exit(1)
+
 
 """
 >> Website scanner function goes here
@@ -1054,7 +1069,9 @@ if __name__ == '__main__':
     parser.add_argument('-change_mac', action='store_true',
                         help='Chnage MAC address')
     parser.add_argument('-mac', help='New MAC address')
-    parser.add_argument('-honey', action='store_true', help='detect honeypot')
+    parser.add_argument('-honey', action='store_true', help='Detect honeypot')
+    parser.add_argument('-target_bssid', help='Target BSSID')
+    parser.add_argument('-deauth', action='store_true', help='De-authentication attack')
 
     colors.info("Please Check log file for information about any errors")
 
@@ -1198,3 +1215,6 @@ if __name__ == '__main__':
 
     if args.change_mac:
         mac_changer(args)
+
+    if args.deauth:
+        deauth(args)
