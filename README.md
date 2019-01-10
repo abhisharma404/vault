@@ -20,7 +20,7 @@
 #### Steps to setup :
 
 1. `git clone <your-fork-url>`
-2. `cd vault_scanner`
+2. `cd vault`
 3. `sudo apt-get install python3-pip`
 4. `sudo pip3 install virtualenv`
 5. `virtualenv venv`
@@ -29,7 +29,7 @@
 
 #### Starting Vault :
 
-1. `cd vault_scanner/src`
+1. `cd vault/src`
 2. `python3 vault.py`
 
 ## Features
