@@ -8,7 +8,9 @@ import argparse
 import logger
 import colors
 from urllib.parse import urlparse
-
+import signal
+import warnings
+import threading
 
 """
 >> Validation & misc. functions goes here
@@ -68,6 +70,16 @@ def check_root():
     else:
         colors.error("Plese start with root privileges")
         sys.exit(1)
+
+
+def handle_sigint(signum, frame):
+    message = "Vault was interrupted by SIGINT (Ctrl+C)"
+    warnings.formatwarning = lambda msg, *args, **kwargs: "\n%s\n" % msg
+    warnings.warn(message=message)
+    sys.exit(1)
+
+
+signal.signal(signal.SIGINT, handle_sigint)
 
 
 """
