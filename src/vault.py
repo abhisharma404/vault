@@ -10,7 +10,6 @@ import colors
 from urllib.parse import urlparse
 import signal
 import warnings
-import threading
 
 """
 >> Validation & misc. functions goes here
