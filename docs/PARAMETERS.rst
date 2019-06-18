@@ -2,7 +2,7 @@ Parameters
 ===========
 
 * ``-u`` or ``--url``
-    This options is tp provide the URL that is to be tested.
+    This argument is to provide the URL that is to be tested.
     Ex: ``python vault.py -u http://example.com``
 
 * ``-ip`` or ``--ip``
