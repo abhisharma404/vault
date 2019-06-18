@@ -9,8 +9,6 @@ import logger
 import colors
 from urllib.parse import urlparse
 import signal
-import threading
-from concurrent.futures import ThreadPoolExecutor
 
 """
 >> Validation & misc. functions goes here
