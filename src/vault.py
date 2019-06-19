@@ -8,7 +8,7 @@ import argparse
 import logger
 import colors
 from urllib.parse import urlparse
-
+import signal
 
 """
 >> Validation & misc. functions goes here
@@ -70,10 +70,26 @@ def check_root():
         sys.exit(1)
 
 
+def handle_sigint(signum, frame):
+    global sigint_count
+    message1 = "Press Ctrl-C once again"
+    message2 = "Vault was interrupted by SIGINT"
+    sigint_count += 1
+    if sigint_count >= 2:
+        colors.error(message2)
+    else:
+        colors.info(message1)
+    sys.exit(1)
+
+
+sigint_count = 0
+signal.signal(signal.SIGINT, handle_sigint)
+
+
 """
 >> Attacks function goes here
 
-Traversal : - attacks
+Traversal : current_tread = threading.current_thread()- attacks
                 - arp_spoof
                 - ddos
                 - deauth
