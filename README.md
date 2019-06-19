@@ -6,6 +6,8 @@
 [![Join the chat at https://gitter.im/vault_scanner/kwoc](https://badges.gitter.im/vault_scanner/Lobby.svg)](https://gitter.im/vault_scanner/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![Python](https://img.shields.io/badge/python-%3E%3D3-brightgreen.svg)
 ![version](https://img.shields.io/badge/version-0.1.0-yellow.svg)
 ![support](https://img.shields.io/badge/OS-Linux-orange.svg)
+[![Documentation Status](https://readthedocs.org/projects/vault-scanner/badge/?version=latest)](https://vault-scanner.readthedocs.io/en/latest/?badge=latest)
+
 
 ## Table of contents
 - [Getting Started](#getting-started)
