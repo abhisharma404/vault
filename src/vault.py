@@ -8,7 +8,6 @@ try:
     import logger
     import colors
     from urllib.parse import urlparse
-    import signal
 except KeyboardInterrupt:
     sys.stderr = open('err.txt','w')
     print('\nProcess stopped by user.')
