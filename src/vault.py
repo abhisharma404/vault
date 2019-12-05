@@ -1,15 +1,17 @@
 #!/usr/bin/env python
-
-import re
-import sys
-import os
-import logging
-import argparse
-import logger
-import colors
-from urllib.parse import urlparse
-import signal
-
+try:
+    import re
+    import sys
+    import os
+    import logging
+    import argparse
+    import logger
+    import colors
+    from urllib.parse import urlparse
+    import signal
+except KeyboardInterrupt:
+    sys.stderr = open('err.txt','w')
+    print('\nProcess stopped by user.')
 """
 >> Validation & misc. functions goes here
 """
@@ -68,22 +70,6 @@ def check_root():
     else:
         colors.error("Plese start with root privileges")
         sys.exit(1)
-
-
-def handle_sigint(signum, frame):
-    global sigint_count
-    message1 = "Press Ctrl-C once again"
-    message2 = "Vault was interrupted by SIGINT"
-    sigint_count += 1
-    if sigint_count >= 2:
-        colors.error(message2)
-    else:
-        colors.info(message1)
-    sys.exit(1)
-
-
-sigint_count = 0
-signal.signal(signal.SIGINT, handle_sigint)
 
 
 """
@@ -989,248 +975,251 @@ def detect_honeypot(args):
 
 if __name__ == '__main__':
 
-    print(""" ____   _________   ____ ___.____  ___________
+    try:
+        print(""" ____   _________   ____ ___.____  ___________
 \   \ /   /  _  \ |    |   \    | \__    ___/
  \   Y   /  /_\  \|    |   /    |   |    |
   \     /    |    \    |  /|    |___|    |
    \___/\____|__  /______/ |_______ \____|
                 \/                 \/         """)
+        print("\nWelcome to Vault...!\n")
 
-    print("\nWelcome to Vault...!\n")
+        log_file_name = os.path.join(os.getcwd(), "vault.log")
+        logger.Logger.create_logger(log_file_name, __package__)
+        LOGGER = logging.getLogger(__name__)
 
-    log_file_name = os.path.join(os.getcwd(), "vault.log")
-    logger.Logger.create_logger(log_file_name, __package__)
-    LOGGER = logging.getLogger(__name__)
+        # Taking in arguments
+        parser = argparse.ArgumentParser(description="VAULT")
 
-    # Taking in arguments
-    parser = argparse.ArgumentParser(description="VAULT")
+        parser.add_argument('-u', '--url', help='URL for scanning')
+        parser.add_argument('-p', '--port', help='Single port for scanning')
+        parser.add_argument('-sp', '--start_port', help='Start port for scanning')
+        parser.add_argument('-ep', '--end_port', help='End port for scanning')
+        parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
+        parser.add_argument('-info', action='store_true',
+                            help='Gather information')
+        parser.add_argument('-comment', action='store_true',
+                            help='Finding comments')
+        parser.add_argument('-email', action='store_true', help='Finding emails')
+        parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
+        parser.add_argument('-ip', '--ip', help='IP address for port scanning')
+        parser.add_argument('-t', '--threads', help='Number of threads to use')
+        parser.add_argument('-i', '--interface',
+                            help='Networking Interface to use')
+        parser.add_argument('-source_port', help='Source port for sending packets')
+        parser.add_argument('-fin', action='store_true', help='Perform FIN Scan')
+        parser.add_argument('-null', action='store_true', help='Perform NULL Scan')
+        parser.add_argument('-ack', action='store_true',
+                            help='Perform TCP ACK Scan')
+        parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
+        parser.add_argument('-os_scan', action='store_true',
+                            help='Perform OS Scan')
+        parser.add_argument('-xss', action='store_true',
+                            help='Scan for XSS vulnerabilities')
+        parser.add_argument('-this', action='store_true',
+                            help='Only scan the given URL, do not crawl')
+        parser.add_argument('-ping_sweep', action='store_true',
+                            help='ICMP ECHO request')
+        parser.add_argument('-arp', action='store_true', help='ARP Scan')
+        parser.add_argument('-ip_start_range', help='Start range for scanning IP')
+        parser.add_argument('-ip_end_range', help='End range for scanning IP')
+        parser.add_argument('-lfi', action='store_true',
+                            help='Scan for LFI vulnerabilities')
+        parser.add_argument('-whois', action='store_true',
+                            help='perform a whois lookup of a given IP')
+        parser.add_argument('-o', '--output', help='Output all data')
+        parser.add_argument('-d', '--dork', help='Perform google dorking')
+        parser.add_argument('-ddos', action='store_true',
+                            help='Perform DDoS attack')
+        parser.add_argument('-mac_flood', action='store_true',
+                            help='Perform MAC Flooding attack')
+        parser.add_argument('-interval', help='Interval time for sending packets')
+        parser.add_argument('-cr', action='store_true',
+                            help='For extracting links from a web page')
+        parser.add_argument('-cri', action='store_true',
+                            help='For extracting images from a Web page')
+        parser.add_argument('-all', action='store_true', help='Run all scans')
+        parser.add_argument('-exclude', help='Scans to exclude')
+        parser.add_argument('-admin', action='store_true',
+                            help='Find admin panel on a given domain')
+        parser.add_argument('-orv', action='store_true',
+                            help='Test for open redirection Vulnerability')
+        parser.add_argument('-keylogger', action='store_true',
+                            help='Capture keystrokes and send them by email')
+        parser.add_argument('-host', help='SMTP Host to use')
+        parser.add_argument('-username', help='Username to login')
+        parser.add_argument('-password', help='Password to login')
+        parser.add_argument('-sender', help='Email to send from')
+        parser.add_argument('-destination', help='Email to send to')
+        parser.add_argument('-arp_spoof', action='store_true', help='ARP Spoofing')
+        parser.add_argument('-jquery', action='store_true',
+                            help='Check jQuery version and get vulnerabilities')
+        parser.add_argument('-ping_death', action='store_true',
+                            help='Perform ping of death attack')
+        parser.add_argument('-bruteforce', action='store_true',
+                            help='Perform brute force attack through Authorization'
+                                'headers')
+        parser.add_argument('-hash', action='store_true', help='Start hash scan')
+        parser.add_argument('-md5', action='store_true', help='Scan MD5')
+        parser.add_argument('-sha1', action='store_true', help='Scan SHA1')
+        parser.add_argument('-sha224', action='store_true', help='Scan SHA224')
+        parser.add_argument('-sha256', action='store_true', help='Scan SHA256')
+        parser.add_argument('-sha512', action='store_true', help='Scan SHA512')
+        parser.add_argument('-dir', help='Directory to scan')
+        parser.add_argument('-detect_cms', action='store_true',
+                            help='Perform CMS Detection')
+        parser.add_argument('-change_mac', action='store_true',
+                            help='Chnage MAC address')
+        parser.add_argument('-mac', help='New MAC address')
+        parser.add_argument('-honey', action='store_true', help='Detect honeypot')
+        parser.add_argument('-target_bssid', help='Target BSSID')
+        parser.add_argument('-deauth', action='store_true', help='De-authentication attack')
 
-    parser.add_argument('-u', '--url', help='URL for scanning')
-    parser.add_argument('-p', '--port', help='Single port for scanning')
-    parser.add_argument('-sp', '--start_port', help='Start port for scanning')
-    parser.add_argument('-ep', '--end_port', help='End port for scanning')
-    parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
-    parser.add_argument('-info', action='store_true',
-                        help='Gather information')
-    parser.add_argument('-comment', action='store_true',
-                        help='Finding comments')
-    parser.add_argument('-email', action='store_true', help='Finding emails')
-    parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
-    parser.add_argument('-ip', '--ip', help='IP address for port scanning')
-    parser.add_argument('-t', '--threads', help='Number of threads to use')
-    parser.add_argument('-i', '--interface',
-                        help='Networking Interface to use')
-    parser.add_argument('-source_port', help='Source port for sending packets')
-    parser.add_argument('-fin', action='store_true', help='Perform FIN Scan')
-    parser.add_argument('-null', action='store_true', help='Perform NULL Scan')
-    parser.add_argument('-ack', action='store_true',
-                        help='Perform TCP ACK Scan')
-    parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
-    parser.add_argument('-os_scan', action='store_true',
-                        help='Perform OS Scan')
-    parser.add_argument('-xss', action='store_true',
-                        help='Scan for XSS vulnerabilities')
-    parser.add_argument('-this', action='store_true',
-                        help='Only scan the given URL, do not crawl')
-    parser.add_argument('-ping_sweep', action='store_true',
-                        help='ICMP ECHO request')
-    parser.add_argument('-arp', action='store_true', help='ARP Scan')
-    parser.add_argument('-ip_start_range', help='Start range for scanning IP')
-    parser.add_argument('-ip_end_range', help='End range for scanning IP')
-    parser.add_argument('-lfi', action='store_true',
-                        help='Scan for LFI vulnerabilities')
-    parser.add_argument('-whois', action='store_true',
-                        help='perform a whois lookup of a given IP')
-    parser.add_argument('-o', '--output', help='Output all data')
-    parser.add_argument('-d', '--dork', help='Perform google dorking')
-    parser.add_argument('-ddos', action='store_true',
-                        help='Perform DDoS attack')
-    parser.add_argument('-mac_flood', action='store_true',
-                        help='Perform MAC Flooding attack')
-    parser.add_argument('-interval', help='Interval time for sending packets')
-    parser.add_argument('-cr', action='store_true',
-                        help='For extracting links from a web page')
-    parser.add_argument('-cri', action='store_true',
-                        help='For extracting images from a Web page')
-    parser.add_argument('-all', action='store_true', help='Run all scans')
-    parser.add_argument('-exclude', help='Scans to exclude')
-    parser.add_argument('-admin', action='store_true',
-                        help='Find admin panel on a given domain')
-    parser.add_argument('-orv', action='store_true',
-                        help='Test for open redirection Vulnerability')
-    parser.add_argument('-keylogger', action='store_true',
-                        help='Capture keystrokes and send them by email')
-    parser.add_argument('-host', help='SMTP Host to use')
-    parser.add_argument('-username', help='Username to login')
-    parser.add_argument('-password', help='Password to login')
-    parser.add_argument('-sender', help='Email to send from')
-    parser.add_argument('-destination', help='Email to send to')
-    parser.add_argument('-arp_spoof', action='store_true', help='ARP Spoofing')
-    parser.add_argument('-jquery', action='store_true',
-                        help='Check jQuery version and get vulnerabilities')
-    parser.add_argument('-ping_death', action='store_true',
-                        help='Perform ping of death attack')
-    parser.add_argument('-bruteforce', action='store_true',
-                        help='Perform brute force attack through Authorization'
-                             'headers')
-    parser.add_argument('-hash', action='store_true', help='Start hash scan')
-    parser.add_argument('-md5', action='store_true', help='Scan MD5')
-    parser.add_argument('-sha1', action='store_true', help='Scan SHA1')
-    parser.add_argument('-sha224', action='store_true', help='Scan SHA224')
-    parser.add_argument('-sha256', action='store_true', help='Scan SHA256')
-    parser.add_argument('-sha512', action='store_true', help='Scan SHA512')
-    parser.add_argument('-dir', help='Directory to scan')
-    parser.add_argument('-detect_cms', action='store_true',
-                        help='Perform CMS Detection')
-    parser.add_argument('-change_mac', action='store_true',
-                        help='Chnage MAC address')
-    parser.add_argument('-mac', help='New MAC address')
-    parser.add_argument('-honey', action='store_true', help='Detect honeypot')
-    parser.add_argument('-target_bssid', help='Target BSSID')
-    parser.add_argument('-deauth', action='store_true', help='De-authentication attack')
+        colors.info("Please Check log file for information about any errors")
 
-    colors.info("Please Check log file for information about any errors")
+        # Print help message if no arguments are supplied
+        if len(sys.argv) == 1:
+            parser.print_help(sys.stderr)
+            sys.exit(1)
 
-    # Print help message if no arguments are supplied
-    if len(sys.argv) == 1:
-        parser.print_help(sys.stderr)
-        sys.exit(1)
+        args = parser.parse_args()
 
-    args = parser.parse_args()
-
-    if args.url:
-        args.url = check_url(args.url)
-
-    if args.ip:
-        args.ip = check_ip(args.ip)
-
-    if args.ip_start_range and args.ip_end_range:
-        args.ip_start_range, args.ip_end_range = \
-            check_ip_range(args.ip_start_range, args.ip_end_range)
-    elif args.ip_start_range or args.ip_end_range:
-        colors.error('Please enter an IP start range and an IP end range')
-        LOGGER.error('[-] Please enter an IP start range and an IP end range')
-        sys.exit(1)
-
-    if args.all:
         if args.url:
-            ssl(args)
-            info(args)
-            fuzz(args)
-            comment(args)
-            email(args)
-            xss(args)
-            lfi(args)
-            admin_panel(args)
-            open_redirect(args)
+            args.url = check_url(args.url)
 
         if args.ip:
-            whois(args)
-            ping_sweep(args)
+            args.ip = check_ip(args.ip)
+
+        if args.ip_start_range and args.ip_end_range:
+            args.ip_start_range, args.ip_end_range = \
+                check_ip_range(args.ip_start_range, args.ip_end_range)
+        elif args.ip_start_range or args.ip_end_range:
+            colors.error('Please enter an IP start range and an IP end range')
+            LOGGER.error('[-] Please enter an IP start range and an IP end range')
+            sys.exit(1)
+
+        if args.all:
+            if args.url:
+                ssl(args)
+                info(args)
+                fuzz(args)
+                comment(args)
+                email(args)
+                xss(args)
+                lfi(args)
+                admin_panel(args)
+                open_redirect(args)
+
+            if args.ip:
+                whois(args)
+                ping_sweep(args)
+                detect_honeypot(args)
+
+                if check_root():
+                    xmas(args)
+                    fin(args)
+                    null(args)
+                    ack(args)
+
+        if args.honey:
             detect_honeypot(args)
 
-            if check_root():
-                xmas(args)
-                fin(args)
-                null(args)
-                ack(args)
+        if args.admin:
+            admin_panel(args)
 
-    if args.honey:
-        detect_honeypot(args)
+        if args.orv:
+            open_redirect(args)
 
-    if args.admin:
-        admin_panel(args)
+        if args.port:
+            args.start_port = args.port
+            args.end_port = args.port
 
-    if args.orv:
-        open_redirect(args)
+        if args.whois:
+            whois(args)
 
-    if args.port:
-        args.start_port = args.port
-        args.end_port = args.port
+        if args.ssl:
+            ssl(args)
 
-    if args.whois:
-        whois(args)
+        if args.info:
+            info(args)
 
-    if args.ssl:
-        ssl(args)
+        if args.fuzz:
+            fuzz(args)
 
-    if args.info:
-        info(args)
+        if args.comment:
+            comment(args)
 
-    if args.fuzz:
-        fuzz(args)
+        if args.email:
+            email(args)
 
-    if args.comment:
-        comment(args)
+        if args.fin and check_root():
+            fin(args)
 
-    if args.email:
-        email(args)
+        if args.null and check_root():
+            null(args)
 
-    if args.fin and check_root():
-        fin(args)
+        if args.ack and check_root():
+            ack(args)
 
-    if args.null and check_root():
-        null(args)
+        if args.xmas and check_root():
+            xmas(args)
 
-    if args.ack and check_root():
-        ack(args)
+        if args.xss:
+            xss(args)
 
-    if args.xmas and check_root():
-        xmas(args)
+        if args.ping_sweep:
+            ping_sweep(args)
 
-    if args.xss:
-        xss(args)
+        if args.os_scan:
+            os_scan(args)
 
-    if args.ping_sweep:
-        ping_sweep(args)
+        if args.lfi:
+            lfi(args)
 
-    if args.os_scan:
-        os_scan(args)
+        if args.ddos:
+            ddos(args)
 
-    if args.lfi:
-        lfi(args)
+        if args.mac_flood:
+            mac_flood(args)
 
-    if args.ddos:
-        ddos(args)
+        if args.cr:
+            crawl(args)
 
-    if args.mac_flood:
-        mac_flood(args)
+        if args.cri:
+            scrap(args)
 
-    if args.cr:
-        crawl(args)
+        if args.dork:
+            dork(args)
 
-    if args.cri:
-        scrap(args)
+        if args.arp:
+            arp_scan(args)
 
-    if args.dork:
-        dork(args)
+        if args.keylogger:
+            keylogger(args)
 
-    if args.arp:
-        arp_scan(args)
+        if args.arp_spoof:
+            arp_spoof(args)
 
-    if args.keylogger:
-        keylogger(args)
+        if args.jquery:
+            jquery(args)
 
-    if args.arp_spoof:
-        arp_spoof(args)
+        if args.ping_death:
+            ping_death(args)
 
-    if args.jquery:
-        jquery(args)
+        if args.bruteforce:
+            bruteforce(args)
 
-    if args.ping_death:
-        ping_death(args)
+        if args.hash:
+            hash_scan(args)
 
-    if args.bruteforce:
-        bruteforce(args)
+        if args.detect_cms:
+            detect_cms(args)
 
-    if args.hash:
-        hash_scan(args)
+        if args.change_mac:
+            mac_changer(args)
 
-    if args.detect_cms:
-        detect_cms(args)
-
-    if args.change_mac:
-        mac_changer(args)
-
-    if args.deauth:
-        deauth(args)
+        if args.deauth:
+            deauth(args)
+    except KeyboardInterrupt:
+        sys.stderr = open('err.txt','w')
+        print('\nProcess stopped by user.')
