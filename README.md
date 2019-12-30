@@ -1,5 +1,5 @@
 # VAULT
-#### swiss army knife for hackers
+#### Swiss army knife for hackers
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/740204dd950c4e49841c94f2c32af78a)](https://app.codacy.com/app/abhisharma404/vault_scanner?utm_source=github.com&utm_medium=referral&utm_content=abhisharma404/vault_scanner&utm_campaign=Badge_Grade_Dashboard)
 [![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner)
@@ -195,10 +195,10 @@ Example Usage : `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
 ![](logo/Initial_Setup.png)
 
 ## Contributing
-Any and all contributions, issues, features and tips are welcome.
-Please refer to `CONTRIBUTING.md` for more details.
+Any and all contributions, [new-issues](https://github.com/abhisharma404/vault/issues/new/choose), [features](https://github.com/abhisharma404/vault/issues/new?template=feature_request.md) and tips are welcome.
+Please refer to [`CONTRIBUTING.md`](https://github.com/abhisharma404/vault/blob/master/CONTRIBUTING.md) for more details.
 
 ## License
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault_scanner)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/abhisharma404/vault/blob/master/LICENSE.txt)
 
 ### This project is currently a part of IIT KWoC 2018.
