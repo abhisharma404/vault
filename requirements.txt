@@ -1,5 +1,5 @@
 bs4==0.0.1
-requests==2.20.1
+requests==2.31.0
 HTMLParser==0.0.2
 ipwhois
 scapy==2.4.0
