@@ -2,6 +2,6 @@ bs4==0.0.1
 requests==2.20.1
 HTMLParser==0.0.2
 ipwhois
-scapy==2.4.0
+scapy==2.4.1
 python-nmap
 pynput
