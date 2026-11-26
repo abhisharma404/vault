@@ -2,14 +2,10 @@ from urllib.parse import unquote
 import colors
 import requests
 from bs4 import BeautifulSoup
-import logger
 import logging
-import os
 
 
-log_file_name = os.path.join(os.getcwd(), "vault.log")
-logger.Logger.create_logger(log_file_name, __package__)
-LOGGER = logging.getLogger(__name__)
+LOGGER = logging.getLogger("vault")
 
 
 def modifyLINK(url):

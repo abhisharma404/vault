@@ -1,13 +1,13 @@
 #! /usr/bin/python
 
 import requests
-from urllib.parse import urljoin
 import time
 import threading
 import multiprocessing
 import os
 import sys
 import colors
+from vault_cli import lib
 
 
 class Fuzzer(object):
@@ -19,7 +19,7 @@ class Fuzzer(object):
         self.m = multiprocessing.Manager()
         self.base_url = base_url
         try:
-            self.fuzz_file_path = os.getcwd() + '/payloads/fuzz_url.txt'
+            self.fuzz_file_path = lib.payload_path('fuzz_url.txt')
             if not os.path.exists(self.fuzz_file_path):
                 raise Exception('Directory does not exist')
         except Exception as e:
@@ -38,7 +38,9 @@ class Fuzzer(object):
     def readFromFile(self):
         with open(self.fuzz_file_path) as file:
             for fuzz_text in file.readlines():
-                self.fuzz_queue.put(fuzz_text)
+                fuzz_text = fuzz_text.strip()
+                if fuzz_text:
+                    self.fuzz_queue.put(fuzz_text)
 
     def send_request(self, url):
         resp = requests.get(url)
@@ -50,7 +52,14 @@ class Fuzzer(object):
             return 0
 
     def generate_url(self, fuzz_text):
-        return urljoin(self.base_url, fuzz_text)
+        # Concatenate instead of urljoin: payloads such as "Trace.axd::$DATA"
+        # are mis-parsed by urljoin as having scheme "Trace.axd", which makes
+        # requests raise "No connection adapters were found".
+        base = self.base_url.rstrip('/')
+        text = fuzz_text.strip().lstrip('/')
+        if text:
+            return '{}/{}'.format(base, text)
+        return base + '/'
 
     def start_engine(self):
         while not self.fuzz_queue.empty():

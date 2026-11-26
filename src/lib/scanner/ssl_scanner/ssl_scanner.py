@@ -2,6 +2,8 @@
 
 import requests
 import time
+import ipaddress
+from urllib.parse import urlparse
 import colors
 
 
@@ -19,28 +21,63 @@ analyze_payload = {
 
 
 def request_api(url, payload):
-    resp = requests.get(url, params=payload)
+    resp = requests.get(url, params=payload, timeout=30)
     return resp.json()
+
+
+def _format_errors(resp):
+    errors = resp.get('errors') or []
+    if errors:
+        messages = [e.get('message', str(e)) for e in errors
+                    if isinstance(e, dict)]
+        return '; '.join(messages)
+    return resp.get('statusMessage') or str(resp)
 
 
 def analyze(url):
     global analyze_payload
 
+    host = urlparse(url).hostname
+    if not host:
+        host = url
+
+    # SSL Labs rejects IP addresses; fail fast with a clear message.
+    try:
+        ipaddress.ip_address(host)
+        raise RuntimeError('SSL Labs cannot scan IP address "{}"; '
+                           'provide a hostname.'.format(host))
+    except ValueError:
+        pass
+
     colors.success('Scanning')
-    analyze_payload['host'] = url
+    analyze_payload['host'] = host
     resp = request_api(API_URL, analyze_payload)
     analyze_payload.pop('startNew')
+
+    if 'status' not in resp:
+        raise RuntimeError('SSL Labs API error: ' + _format_errors(resp))
 
     while resp['status'] != 'READY' and resp['status'] != 'ERROR':
         time.sleep(30)
         resp = request_api(API_URL, analyze_payload)
+        if 'status' not in resp:
+            raise RuntimeError('SSL Labs API error: ' + _format_errors(resp))
+
+    if resp['status'] == 'ERROR':
+        raise RuntimeError('SSL Labs API error: ' + _format_errors(resp))
 
     return resp
 
 
 def vulnerability_parser(data):
 
-    base_data = data['endpoints'][0]['details']
+    endpoints = data.get('endpoints') or []
+    if not endpoints:
+        raise RuntimeError('SSL Labs returned no endpoints to analyze.')
+
+    base_data = endpoints[0].get('details')
+    if base_data is None:
+        raise RuntimeError('SSL Labs returned no details for the endpoint.')
 
     vuln_dict = {
 

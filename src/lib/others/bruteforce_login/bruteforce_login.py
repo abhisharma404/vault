@@ -8,6 +8,7 @@ import time
 import colors
 import threading
 import multiprocessing
+from vault_cli import lib
 
 
 class BruteforceLogin(object):
@@ -47,8 +48,8 @@ class BruteforceLogin(object):
 
     def read_dictionary(self):
         try:
-            self.dictionary_path = os.getcwd() +\
-                                   '/payloads/10k-most-common-passwords.txt'
+            self.dictionary_path = lib.payload_path(
+                '10k-most-common-passwords.txt')
             if not os.path.exists(self.dictionary_path):
                 raise Exception("Dictionary does not exist")
         except Exception as e:
@@ -63,16 +64,22 @@ class BruteforceLogin(object):
         while not self.passwords_queue.empty() and\
               self.found_password is not True:
             password = self.passwords_queue.get()
-            req = requests.get(self.url, auth=HTTPBasicAuth(self.username,
-                                                            password))
+            try:
+                req = requests.get(self.url, auth=HTTPBasicAuth(self.username,
+                                                               password),
+                                   timeout=10)
+            except requests.exceptions.RequestException:
+                colors.error("Error occurred with password {}"
+                             .format(password))
+                continue
             if req.status_code == 401:
                 print("Testing password: {} Failed!".format(password))
             elif req.status_code == 200:
                 self.password = password
                 self.found_password = True
             else:
-                console.error("Error occurred with password {}"
-                              .format(password))
+                colors.error("Error occurred with password {}"
+                             .format(password))
 
     def startAttack(self):
         self.read_dictionary()
@@ -92,8 +99,12 @@ class BruteforceLogin(object):
 
         t2 = time.time()
 
-        colors.success("Login successful using {} as username "
-                       "and {} as password".format(self.username,
-                                                   self.password))
+        if self.found_password:
+            colors.success("Login successful using {} as username "
+                           "and {} as password".format(self.username,
+                                                       self.password))
+        else:
+            colors.error("Password not found in dictionary for user {}"
+                         .format(self.username))
 
         colors.info('Successfully completed in : {} seconds.'.format(t2-t1))

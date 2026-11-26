@@ -16,7 +16,7 @@ class Scanner:
 
     def extract_forms(self, url):
         response = requests.get(url)
-        soup_obj = BeautifulSoup(response.text, 'lxml')
+        soup_obj = BeautifulSoup(response.text, 'html.parser')
         list_forms = soup_obj.findAll('form')
         return list_forms
 
@@ -39,10 +39,10 @@ class Scanner:
                 for task in list_of_tasks:
                     task.join()
         else:
-            list_forms = self.extract_forms(self.target_url[0])
+            url = self.target_url[0]
+            list_forms = self.extract_forms(url)
             if len(list_forms) == 0:
-                colors.error('No form found for : {}'
-                             .format(self.target_url[0]))
+                colors.error('No form found for : {}'.format(url))
             list_of_tasks = []
 
             for form in list_forms:

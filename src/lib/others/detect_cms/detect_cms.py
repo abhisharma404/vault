@@ -10,6 +10,7 @@ import os
 import json
 import colors
 import operator
+from vault_cli import lib
 
 
 class DetectCMS(object):
@@ -23,7 +24,7 @@ class DetectCMS(object):
 
     def read_payloads(self):
         try:
-            payloads_path = os.getcwd() + "/payloads/detect_cms/"
+            payloads_path = lib.payload_path('detect_cms')
             if not os.path.exists(payloads_path):
                 raise Exception("Payloads folder does not exists")
         except Exception as e:
@@ -32,7 +33,7 @@ class DetectCMS(object):
 
         for file in os.listdir(payloads_path):
             if file.endswith(".json"):
-                file = payloads_path + file
+                file = os.path.join(payloads_path, file)
                 with open(file) as payload_file:
                     self.payloads.append(json.load(payload_file))
 
@@ -104,6 +105,11 @@ class DetectCMS(object):
         self.read_payloads()
         colors.info("Detecting CMS...")
         self.detect_cms()
+
+        if not self.scores:
+            colors.warning('No CMS signatures matched; framework could not '
+                           'be determined.')
+            return
 
         colors.success("Detected framework: {}"
                        .format(max(self.scores.items(),

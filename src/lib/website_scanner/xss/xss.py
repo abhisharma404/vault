@@ -1,8 +1,8 @@
 #! /usr/bin/python
 
-import scanner
+from . import scanner
 import colors
-from crawler import Crawl
+from .crawler import Crawl
 
 
 class XSS(object):

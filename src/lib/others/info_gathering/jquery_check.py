@@ -35,9 +35,14 @@ class JqueryCheck(object):
 
     @staticmethod
     def search_vulnerabilities():
-        response = requests.get("https://www.cvedetails.com/json-feed.php"
-                                "?vendor_id=6538&orderby=3")
-        response = response.json()
+        try:
+            response = requests.get("https://www.cvedetails.com/json-feed.php"
+                                    "?vendor_id=6538&orderby=3")
+            response = response.json()
+        except (requests.exceptions.RequestException, ValueError):
+            colors.warning('Could not fetch the jQuery vulnerability feed; '
+                           'CVE details are unavailable.')
+            return
 
         colors.success("Possible vulnerabilities:")
         for i in response:

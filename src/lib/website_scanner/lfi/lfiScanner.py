@@ -59,6 +59,18 @@ class Scanner(object):
             print(e)
             return False
 
+    def get(self, scan_url):
+        """Perform a request, returning the response body text or None.
+
+        Connection errors (e.g. a server dropping a request with a NULL-byte
+        suffix) are skipped rather than aborting the whole scan.
+        """
+        try:
+            res = requests.get(scan_url, headers=self.scan_headers, timeout=10)
+            return res.text
+        except requests.exceptions.RequestException:
+            return None
+
     def scan(self):
         null_byte = "%00"
         success_count = 0
@@ -73,18 +85,20 @@ class Scanner(object):
             for _prefix in _prefixs:
                 urls.append(url+_prefix)
 
-            # Now Sart Scanning
+            # Now Start Scanning
             for _url in urls:
                 for _payload in _payloads:
                     scan_url = _url+_payload
-                    res = requests.get(scan_url, headers=self.scan_headers)
+                    res = self.get(scan_url)
+                    if res is None:
+                        continue
 
                     for _match in _matches[_payload]:
-                        if _match in res.text:
+                        if _match in res:
                             colors.success("LFI Detected!: {}"
                                            .format(scan_url))
                             success_count += 1
-                        if "syntax error" in res.text:
+                        if "syntax error" in res:
                             colors.error("Syntax Parse Error: {}"
                                          .format(scan_url))
 
@@ -94,14 +108,16 @@ class Scanner(object):
                 for _url in urls:
                     for _payload in _payloads:
                         scan_url = _url+_payload+null_byte
-                        res = requests.get(scan_url, headers=self.scan_headers)
+                        res = self.get(scan_url)
+                        if res is None:
+                            continue
 
                         for _match in _matches[_payload]:
-                            if _match in res.text:
+                            if _match in res:
                                 colors.success("LFI Detected! : {}"
                                                .format(scan_url))
                                 success_count += 1
-                            if "syntax error" in res.text:
+                            if "syntax error" in res:
                                 colors.error("Syntax Parse Error:{}"
                                              .format(scan_url))
 

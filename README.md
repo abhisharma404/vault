@@ -11,6 +11,7 @@
 
 ## Table of contents
 - [Getting Started](#getting-started)
+- [Repository layout](#repository-layout)
 - [Features](#features)
 - [Usage](#usage)
 - [Screenshot](#screenshot)
@@ -44,8 +45,9 @@ Or with conda:
 1. `cd src`
 2. `python3 vault.py`
 
-Run Vault from the `src/` directory: feature modules load payloads relative to
-the current working directory (`payloads/...`).
+Payloads and the error log are resolved relative to the source location (via
+`src/vault_cli/lib.py`), not the current working directory. The installed
+`vault` command still runs from `src/` for consistency.
 
 #### Installing the `vault` command (macOS/Linux) :
 
@@ -62,6 +64,50 @@ vault -u http://example.com -info
 Re-run `./install.sh` if you move the repository, and use `./install.sh
 --uninstall` to remove it. Options: `--prefix DIR`, `--name CMD`,
 `--python PATH`.
+
+## Repository layout
+
+Vault uses a layered structure under `src/` to separate the CLI, feature
+handlers, shared helpers, and low-level implementations:
+
+```
+Vault/
+├── ai/                      # AI/agent instruction files (see ai/AGENTS.md)
+├── docs/                    # Sphinx documentation source
+├── log/                     # per-session error logs (gitignored)
+├── logo/                    # branding
+├── src/
+│   ├── vault.py             # thin entrypoint
+│   ├── vault_cli/           # CLI + feature-handler layer
+│   │   ├── cli.py           # argparse + flag → handler dispatch
+│   │   ├── config.py        # banner + logger wiring
+│   │   ├── lib.py           # path resolution (payloads, log dir)
+│   │   ├── errors.py        # centralized error reporting
+│   │   ├── logging_setup.py # per-session error log handler
+│   │   ├── colors.py        # console output helpers
+│   │   ├── validation.py    # input validation
+│   │   └── features/        # one module per feature group
+│   ├── lib/                 # low-level implementation packages
+│   ├── colors.py            # compatibility shim
+│   ├── logger.py            # compatibility shim
+│   └── payloads/            # scan payloads
+├── opencode.json            # loads the ai/ instruction files
+├── install.sh               # installs the `vault` command
+├── requirements.txt
+└── README.md
+```
+
+Layer rules:
+
+- **`src/vault_cli/cli.py`** owns argument parsing and dispatch. Add a flag in
+  `build_parser()` and dispatch it in `run()`.
+- **`src/vault_cli/features/*.py`** are thin handlers that wrap `lib/`; add a
+  feature to the matching group (`attacks`, `scanners`, `web`, `others`,
+  `crawler`, `utilities`).
+- **`src/lib/*`** holds the implementation and stays independent of the CLI.
+- **Errors** go through `errors.report_error()` (console **and** `log/`).
+- **Warnings** use `colors.warning()` (console only, never logged).
+- **Paths** come from `vault_cli.lib` — never `os.getcwd()`.
 
 ## Features
 * #### Scan website for the following vulnerabilities
