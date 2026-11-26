@@ -9,13 +9,20 @@ cd src && /opt/anaconda3/envs/VaultENV/bin/python -m compileall -q .
 # Import sweep over src/lib and src/vault_cli
 cd src && /opt/anaconda3/envs/VaultENV/bin/python - <<'PY'
 import importlib, os
-for root, dirs, files in os.walk('.'):
-    if '__pycache__' in root: continue
-    for f in files:
-        if f.endswith('.py') and f != '__init__.py':
-            m = os.path.join(root, f)[:-3].replace(os.sep, '.')
-            try: importlib.import_module(m)
-            except Exception as e: print('FAIL', m, e)
+fail = 0
+for top in ('lib', 'vault_cli'):
+    for root, dirs, files in os.walk(top):
+        if '__pycache__' in root:
+            continue
+        for f in files:
+            if f.endswith('.py') and f != '__init__.py':
+                m = os.path.join(root, f)[:-3].replace(os.sep, '.')
+                try:
+                    importlib.import_module(m)
+                except Exception as e:
+                    fail += 1
+                    print('FAIL', m, e)
+print('IMPORT FAILURES:', fail)
 PY
 ```
 

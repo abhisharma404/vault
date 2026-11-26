@@ -7,7 +7,8 @@ from vault_cli import colors, errors
 
 def crawl(args):
     if args.url is None:
-        errors.report_error('Please provide either an URL to perform Crawling')
+        errors.report_error('Please provide either an URL to perform Crawling',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     else:
         try:
@@ -21,7 +22,8 @@ def crawl(args):
             else:
                 return C.start(return_set=True)
         except ImportError:
-            errors.report_error('Could not import the required module')
+            errors.report_error('Could not import the required module',
+                            code='E6001')
         except Exception as e:
             errors.report_error(str(e), exc=e)
             sys.exit(1)
@@ -29,7 +31,8 @@ def crawl(args):
 
 def scrap(args):
     if args.url is None:
-        errors.report_error('Please provide URL to perform Scraping')
+        errors.report_error('Please provide URL to perform Scraping',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     else:
         try:
@@ -39,7 +42,8 @@ def scrap(args):
             print('[X]Scraping completed')
 
         except ImportError:
-            errors.report_error('Could not import the required module')
+            errors.report_error('Could not import the required module',
+                            code='E6001')
         except Exception as e:
             errors.report_error(str(e), exc=e)
             sys.exit(1)

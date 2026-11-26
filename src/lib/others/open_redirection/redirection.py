@@ -1,5 +1,6 @@
 import sys
 import requests
+from vault_cli import errors
 
 FILE = "payloads/ORV_payload.txt"
 
@@ -10,7 +11,8 @@ def load_payload():
             content = wlf.read().splitlines()
         return content
     except FileNotFoundError:
-        sys.exit("Couldn't find wordlist file!")
+        errors.report_error("Couldn't find wordlist file!", code='E6002')
+        sys.exit(1)
 
 
 def ORVT(domain):

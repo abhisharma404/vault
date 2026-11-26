@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import colors
+from vault_cli import errors
 import subprocess
 import re
 import os
@@ -45,6 +46,8 @@ class Deauth(object):
 
         if os.geteuid() != 0:
             colors.error('Please run as root')
+            errors.report_error('Please run as root', code='E5001',
+                                hint='Run with sudo/root.')
             sys.exit(1)
         else:
             colors.success('Running as root')
@@ -215,7 +218,7 @@ class Deauth(object):
         except KeyboardInterrupt:
             self.restore()
         except Exception as e:
-            print(e)
+            errors.report_error(str(e), exc=e)
             sys.exit(1)
         finally:
             t2 = time.time()

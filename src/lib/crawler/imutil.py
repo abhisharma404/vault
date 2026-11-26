@@ -4,6 +4,7 @@ import requests
 import shutil
 import os
 import urllib
+from vault_cli import errors
 
 
 def image_download(url, name):
@@ -56,7 +57,7 @@ def get_domain_name(url):
         results = get_sub_domain_name(url).split('.')
         return results[-2] + '.' + results[-1]
     except Exception as e:
-        print(str(e))
+        errors.report_error(str(e), exc=e)
         return ''
 
 
@@ -64,5 +65,5 @@ def get_sub_domain_name(url):
     try:
         return urllib.parse.urlparse(url).netloc
     except Exception as e:
-        print(str(e))
+        errors.report_error(str(e), exc=e)
         print('[-]Not a valid url.')

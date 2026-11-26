@@ -1,11 +1,7 @@
 from urllib.parse import unquote
-import colors
 import requests
 from bs4 import BeautifulSoup
-import logging
-
-
-LOGGER = logging.getLogger("vault")
+from vault_cli import errors
 
 
 def modifyLINK(url):
@@ -29,14 +25,17 @@ def start_dorking(search, page_count):
         m_search = str(m_search)
         search_url = "https://google.com/search?q=" + m_search + "&start=" +\
                      count
-        requested_page = requests.get(search_url).text
+        try:
+            requested_page = requests.get(search_url).text
+        except requests.exceptions.RequestException as e:
+            errors.report_error(str(e), exc=e, code='E4001')
+            break
         soup = BeautifulSoup(requested_page, 'html.parser')
         count = int(count)
         if "Our systems have detected unusual traffic from your computer"\
            "network" in soup.get_text():
-            colors.error("Google has detected the script. Try after some "
-                         "time.")
-            LOGGER.error('[-] script blocked by google. wait for some minutes')
+            errors.report_error("Google has detected the script. Try after "
+                                "some time.", code='E4002')
             break
         h3_tags = soup.findAll("h3")
         for h3 in h3_tags:

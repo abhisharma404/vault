@@ -4,6 +4,7 @@ import subprocess
 import os
 import re
 import colors
+from vault_cli import errors
 import sys
 import time
 import scapy.all as scapy
@@ -45,6 +46,8 @@ class ARPSpoof(object):
 
         if os.geteuid() != 0:
             colors.error('Please run as root')
+            errors.report_error('Please run as root', code='E5001',
+                                hint='Run with sudo/root.')
             sys.exit(1)
         else:
             colors.success('Running as root')
@@ -189,7 +192,7 @@ class ARPSpoof(object):
             except ImportError:
                 colors.error('Could not import the required module.')
             except Exception as e:
-                print(e)
+                errors.report_error(str(e), exc=e)
         else:
             colors.error('Please enter a valid IP address...')
             self.networkScan()
@@ -258,7 +261,7 @@ class ARPSpoof(object):
             colors.info('Stopping ARP spoof')
 
         except Exception as e:
-            print(e)
+            errors.report_error(str(e), exc=e)
 
         finally:
             self.restore()

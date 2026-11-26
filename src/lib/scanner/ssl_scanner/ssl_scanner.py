@@ -5,6 +5,7 @@ import time
 import ipaddress
 from urllib.parse import urlparse
 import colors
+from vault_cli import errors
 
 
 API_URL = "https://api.ssllabs.com/api/v3/analyze/"
@@ -81,19 +82,19 @@ def vulnerability_parser(data):
 
     vuln_dict = {
 
-        'beastAttack': base_data['vulnBeast'],
-        'poodle': base_data['poodle'],
-        'poodleTls': base_data['poodleTls'],
-        'rc4': base_data['rc4Only'],
-        'heartbeat': base_data['heartbeat'],
-        'heartbleed': base_data['heartbleed'],
-        'ticketbleed': base_data['ticketbleed'],
-        'openSSL_CCS': base_data['openSslCcs'],
-        'openSSL_padding': base_data['openSSLLuckyMinus20'],
-        'robot': base_data['bleichenbacher'],
-        'freak': base_data['freak'],
-        'logjam': base_data['logjam'],
-        'drown_attack': base_data['drownVulnerable'],
+        'beastAttack': base_data.get('vulnBeast'),
+        'poodle': base_data.get('poodle'),
+        'poodleTls': base_data.get('poodleTls'),
+        'rc4': base_data.get('rc4Only'),
+        'heartbeat': base_data.get('heartbeat'),
+        'heartbleed': base_data.get('heartbleed'),
+        'ticketbleed': base_data.get('ticketbleed'),
+        'openSSL_CCS': base_data.get('openSslCcs'),
+        'openSSL_padding': base_data.get('openSSLLuckyMinus20'),
+        'robot': base_data.get('bleichenbacher'),
+        'freak': base_data.get('freak'),
+        'logjam': base_data.get('logjam'),
+        'drown_attack': base_data.get('drownVulnerable'),
 
     }
     print_data(vuln_dict)
@@ -151,8 +152,11 @@ def get_value(key, value):
         }
     }
 
+    if value is None:
+        return 'unknown'
+
     value = str(value)
-    return main_dict[key][value]
+    return main_dict.get(key, {}).get(value, 'unknown')
 
 
 def print_data(dict_value):

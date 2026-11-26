@@ -7,10 +7,25 @@ from vault_cli import colors, config, validation
 from vault_cli.features import (attacks, crawler, others, scanners, utilities,
                                 web)
 
+# Flag attribute names that trigger real work in run().  Modifier flags such
+# as -this and the -md5/-sha* hash selectors are intentionally excluded
+# because they do nothing on their own.
+ACTION_FLAGS = {
+    'ssl', 'info', 'comment', 'email', 'fuzz', 'fin', 'null', 'ack', 'xmas',
+    'os_scan', 'xss', 'ping_sweep', 'arp', 'lfi', 'whois', 'dork', 'ddos',
+    'mac_flood', 'cr', 'cri', 'all', 'admin', 'orv', 'keylogger',
+    'arp_spoof', 'jquery', 'ping_death', 'bruteforce', 'hash', 'detect_cms',
+    'change_mac', 'honey', 'deauth',
+}
+
 
 def build_parser():
     parser = argparse.ArgumentParser(description="VAULT")
 
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='show tracebacks on errors')
+    parser.add_argument('--debug', action='store_true',
+                        help='enable debug output')
     parser.add_argument('-u', '--url', help='URL for scanning')
     parser.add_argument('-p', '--port', help='Single port for scanning')
     parser.add_argument('-sp', '--start_port', help='Start port for scanning')
@@ -233,13 +248,14 @@ def main():
 
     parser = build_parser()
 
-    colors.info("Please check the 'log' directory for error details")
-
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
-        sys.exit(1)
+        sys.exit(2)
 
     args = parser.parse_args()
+
+    from vault_cli import errors
+    errors.set_verbosity(args.verbose, args.debug)
 
     if args.url:
         args.url = validation.check_url(args.url)
@@ -251,9 +267,29 @@ def main():
         args.ip_start_range, args.ip_end_range = \
             validation.check_ip_range(args.ip_start_range, args.ip_end_range)
     elif args.ip_start_range or args.ip_end_range:
-        from vault_cli import errors
         errors.report_error('Please enter an IP start range and an IP end '
                             'range')
-        sys.exit(1)
+        sys.exit(2)
+
+    if not any(getattr(args, flag) for flag in ACTION_FLAGS):
+        errors.report_error('No action specified. Provide at least one scan '
+                            'flag (e.g. -info, -ssl, -xss) or -all.',
+                            code='E1006',
+                            hint="Run 'vault --help' to list available "
+                                 'options.')
+        sys.exit(2)
+
+    if args.all and not (args.url or args.ip):
+        errors.report_error('-all requires a target: provide -u/--url or '
+                            '-ip/--ip.',
+                            code='E1006',
+                            hint="Run 'vault --help' to list available "
+                                 'options.')
+        sys.exit(2)
 
     run(args)
+
+    if errors.had_errors():
+        from vault_cli import logging_setup
+        colors.info('Errors were logged to: {}'.format(
+            logging_setup.get_current_path()))

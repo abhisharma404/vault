@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import colors
+from vault_cli import errors
 
 
 class HeaderVuln(object):
@@ -15,8 +16,9 @@ class HeaderVuln(object):
         try:
             resp = requests.get(self.url)
             return resp
-        except _:
-            colors.error('Error in network connection')
+        except requests.exceptions.RequestException as e:
+            errors.report_error('Error in network connection', exc=e,
+                                code='E2001')
 
     def gather_header(self):
         try:
@@ -27,7 +29,7 @@ class HeaderVuln(object):
                 colors.success(' {} : {} '.format(key, value))
             return headers_dict
         except Exception as e:
-            colors.error(e)
+            errors.report_error(str(e), exc=e)
 
     def find_insecure_headers(self):
         headers_dict = self.gather_header()
@@ -41,31 +43,31 @@ class HeaderVuln(object):
                     colors.error('X-XSS-Protection not set propely')
                 else:
                     colors.success('X-XSS-Protection set properly.')
-            except _:
+            except KeyError:
                 colors.info('Escaping')
 
             try:
                 contenttype = headers_dict['X-Content-Type-Options']
                 if contenttype != 'nosniff':
                     colors.error('X-Content-Type-Options not set properly.')
-            except _:
+            except KeyError:
                 colors.info('Escaping')
 
             try:
                 hsts = headers_dict['Strict-Transport-Security']
-            except _:
+            except KeyError:
                 colors.error('HSTS not set properly.')
 
             try:
                 csp = headers_dict['Content-Security-Policy']
                 colors.success('CSP set properly.')
-            except _:
+            except KeyError:
                 colors.error('CSP missing')
 
             try:
                 xframe = headers_dict['x-frame-options']
                 colors.success('Likely to be safe from X-Frame')
-            except _:
+            except KeyError:
                 colors.error('X-Frame Missing')
 
     def insecure_cookies(self):

@@ -3,6 +3,7 @@ import sys
 import os
 import nmap
 import colors
+from vault_cli import errors
 from urllib.parse import urlparse
 
 
@@ -15,9 +16,11 @@ class OSScan(object):
             self.nm = nmap.PortScanner()
         except nmap.PortScanner:
             colors.error('Nmap not found')
+            errors.report_error('Nmap not found', code='E6001',
+                                hint='Install nmap and ensure it is on PATH.')
             sys.exit(1)
         except Exception as e:
-            print(e)
+            errors.report_error(str(e), exc=e)
             sys.exit(1)
 
         if url is not None and ip is not None:
@@ -39,6 +42,8 @@ class OSScan(object):
 
         if os.geteuid() != 0:
             colors.error('Please run as root')
+            errors.report_error('Please run as root', code='E5001',
+                                hint='Run with sudo/root.')
             sys.exit(1)
         else:
             colors.success('Running as root')

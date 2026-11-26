@@ -7,7 +7,8 @@ from vault_cli import colors, errors, lib
 
 def xss(args):
     if not args.url:
-        errors.report_error('Please enter an URL for XSS Scanning')
+        errors.report_error('Please enter an URL for XSS Scanning',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
 
     links = []
@@ -24,7 +25,8 @@ def xss(args):
             crawlObj = Crawl(url=args.url)
             links = crawlObj.getList()
         except ImportError:
-            errors.report_error('Could not import the required module.')
+            errors.report_error('Could not import the required module.',
+                            code='E6001')
         except Exception as e:
             errors.report_error(str(e), exc=e)
 
@@ -36,7 +38,8 @@ def xss(args):
                                         'xss_payloads.txt'))
         xssScanObj.initiateEngine()
     except ImportError:
-        errors.report_error('Could not import the required module')
+        errors.report_error('Could not import the required module',
+                            code='E6001')
         sys.exit(1)
     except Exception as e:
         errors.report_error(str(e), exc=e)
@@ -44,7 +47,8 @@ def xss(args):
 
 def lfi(args):
     if not args.url:
-        errors.report_error('Please enter an URL for scanning')
+        errors.report_error('Please enter an URL for scanning',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         colors.info('Initiating LFI Scan')
@@ -56,7 +60,8 @@ def lfi(args):
         lfiscanObj.startScanner()
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
         sys.exit(1)
     except Exception as e:
         errors.report_error(str(e), exc=e)

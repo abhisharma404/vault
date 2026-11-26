@@ -51,14 +51,16 @@ def hash_scan(args):
                     f.write(str(key) + ' : ' + str(item) + os.linesep)
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
 
 def ack(args):
     if not args.ip:
-        errors.report_error('Please enter an IP address for scanning')
+        errors.report_error('Please enter an IP address for scanning',
+                            code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
     try:
         colors.info('Initiating TCP ACK Scan')
@@ -72,14 +74,16 @@ def ack(args):
                                                source_port=args.source_port)
         portScanObj.tcp_ack_scan()
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
 
 def fin(args):
     if not args.ip:
-        errors.report_error('Please enter an IP address for scanning')
+        errors.report_error('Please enter an IP address for scanning',
+                            code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
     try:
         colors.info('Initiating FIN Scan')
@@ -93,7 +97,8 @@ def fin(args):
                                                source_port=args.source_port)
         portScanObj.fin_scan()
     except ImportError:
-        errors.report_error('Could not import the required module')
+        errors.report_error('Could not import the required module',
+                            code='E6001')
         sys.exit(1)
     except Exception as e:
         errors.report_error(str(e), exc=e)
@@ -101,7 +106,8 @@ def fin(args):
 
 def null(args):
     if not args.ip:
-        errors.report_error('Please enter an IP address for scanning')
+        errors.report_error('Please enter an IP address for scanning',
+                            code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
     try:
         colors.info('Initiating NULL Scan')
@@ -115,7 +121,8 @@ def null(args):
                                                source_port=args.source_port)
         portScanObj.null_scan()
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
         sys.exit(1)
     except Exception as e:
         errors.report_error(str(e), exc=e)
@@ -123,7 +130,8 @@ def null(args):
 
 def xmas(args):
     if not args.ip:
-        errors.report_error('Please enter an IP address for scanning')
+        errors.report_error('Please enter an IP address for scanning',
+                            code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
     try:
         colors.info('Initiating XMAS Scan')
@@ -137,7 +145,8 @@ def xmas(args):
                                                source_port=args.source_port)
         portScanObj.xmas_scan()
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
         sys.exit(1)
     except Exception as e:
         errors.report_error(str(e), exc=e)
@@ -145,7 +154,8 @@ def xmas(args):
 
 def ping_sweep(args):
     if not args.ip:
-        errors.report_error('Please enter an IP address for scanning')
+        errors.report_error('Please enter an IP address for scanning',
+                            code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
     else:
         try:
@@ -159,14 +169,16 @@ def ping_sweep(args):
                                                 threads=args.threads)
             pingSweepObj.threadingScan()
         except ImportError:
-            errors.report_error('Could not import the required module.')
+            errors.report_error('Could not import the required module.',
+                            code='E6001')
         except Exception as e:
             errors.report_error(str(e), exc=e)
 
 
 def arp_scan(args):
     if not args.ip:
-        errors.report_error('Please enter an IP address for scanning')
+        errors.report_error('Please enter an IP address for scanning',
+                            code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
     else:
         try:
@@ -180,14 +192,16 @@ def arp_scan(args):
                                              threads=args.threads)
             arpScanObj.threadingScan()
         except ImportError:
-            errors.report_error('Could not import the required module.')
+            errors.report_error('Could not import the required module.',
+                            code='E6001')
         except Exception as e:
             errors.report_error(str(e), exc=e)
 
 
 def ssl(args):
     if not args.url:
-        errors.report_error('Please enter an URL for SSL scanning')
+        errors.report_error('Please enter an URL for SSL scanning',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         from lib.scanner.ssl_scanner import ssl_scanner
@@ -210,15 +224,17 @@ def ssl(args):
             colors.success('File has been saved successfully')
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
-        errors.report_error(str(e), exc=e)
+        errors.report_error(str(e), exc=e, code='E4001')
 
 
 def os_scan(args):
     if args.url is None and args.ip is None:
         errors.report_error('Please provide either an IP address or an URL to '
-                            'perform OS Scan')
+                            'perform OS Scan',
+                            hint='Provide -u <url> or -ip <ip>.')
         sys.exit(1)
     try:
         colors.info('OS Scan using Nmap')
@@ -229,6 +245,7 @@ def os_scan(args):
         os_scanObj.os_scan()
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)

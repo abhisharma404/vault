@@ -5,6 +5,7 @@ import urllib.request
 import urllib.response
 import urllib.parse
 import urllib.error
+from vault_cli import errors
 
 
 class Linkfinder(HTMLParser):
@@ -59,11 +60,13 @@ class Imagefinder(HTMLParser):
                 html_string = con.read().decode("utf-8")
                 self.feed(html_string)
 
-        except urllib.error.URLError as e:
+        except urllib.error.HTTPError as e:
             print("Was not able to open the URL.")
             print(str(e.reason))
+        except urllib.error.URLError as e:
+            errors.report_error(str(e), exc=e, code='E2001')
         except Exception as e:
-            print(str(e))
+            errors.report_error(str(e), exc=e)
         return ''
 
 
@@ -80,7 +83,8 @@ def initiate(list_url, path):
         print('[X]Returning..')
 
     except ImportError as e:
-        print('Could not import the required module')
+        errors.report_error('Could not import the required module', exc=e,
+                            code='E6001')
 
     except Exception as e:
-        print(str(e))
+        errors.report_error(str(e), exc=e)

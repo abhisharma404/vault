@@ -7,7 +7,7 @@ import multiprocessing
 import os
 import sys
 import colors
-from vault_cli import lib
+from vault_cli import lib, errors
 
 
 class Fuzzer(object):
@@ -23,7 +23,7 @@ class Fuzzer(object):
             if not os.path.exists(self.fuzz_file_path):
                 raise Exception('Directory does not exist')
         except Exception as e:
-            colors.error(e)
+            errors.report_error(str(e), exc=e, code='E6002')
             sys.exit(1)
         if thread_num is None:
             self.thread_num = 1
@@ -76,7 +76,7 @@ class Fuzzer(object):
                     colors.info('Redirection Detected -> {}'.format(fuzz_url))
                     self.redirected_url.append(fuzz_url)
             except Exception as e:
-                colors.error(e)
+                errors.report_error(str(e), exc=e, code='E2001')
 
     def initiate(self):
         self.readFromFile()

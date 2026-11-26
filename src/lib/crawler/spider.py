@@ -7,6 +7,7 @@ import urllib.error
 from . import finder as fobj
 from . import imutil as imu
 import time
+from vault_cli import errors
 
 
 class Spider:
@@ -61,8 +62,12 @@ class Spider:
                 obj.feed(html_string)
                 return obj.links_obtained()
 
-        except urllib.error.URLError as e:
+        except urllib.error.HTTPError as e:
             print("Exception Occured!!!\n" + str(e))
+            return ''
+
+        except urllib.error.URLError as e:
+            errors.report_error(str(e), exc=e, code='E2001')
             return ''
 
     @staticmethod

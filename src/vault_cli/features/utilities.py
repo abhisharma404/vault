@@ -20,7 +20,8 @@ def keylogger(args):
         keyloggerObj.start_keylogger()
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
         sys.exit(1)
     except Exception as e:
         errors.report_error(str(e), exc=e)
@@ -37,7 +38,8 @@ def mac_changer(args):
         macObj.startProcess()
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
         sys.exit(1)
     except Exception as e:
         errors.report_error(str(e), exc=e)

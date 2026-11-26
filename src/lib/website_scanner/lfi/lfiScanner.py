@@ -3,6 +3,7 @@
 import random
 import requests
 import colors
+from vault_cli import errors
 
 
 class Scanner(object):
@@ -56,7 +57,7 @@ class Scanner(object):
             else:
                 return False
         except Exception as e:
-            print(e)
+            errors.report_error(str(e), exc=e, code='E2001')
             return False
 
     def get(self, scan_url):
@@ -125,5 +126,5 @@ class Scanner(object):
                 colors.error('No LFI Detected')
 
         else:
-            colors.error('An error occured, make sure provided URL is valid '
-                         'and accessible.')
+            errors.report_error('An error occured, make sure provided URL is '
+                                'valid and accessible.', code='E3001')

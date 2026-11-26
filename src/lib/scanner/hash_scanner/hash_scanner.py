@@ -7,6 +7,7 @@ from concurrent.futures import ThreadPoolExecutor
 import sys
 import time
 import colors
+from vault_cli import errors
 
 
 class HashScanner(object):
@@ -149,7 +150,7 @@ class HashScanner(object):
             colors.error('Stopping the process...')
 
         except Exception as e:
-            print(e)
+            errors.report_error(str(e), exc=e)
 
         t2 = time.time()
         colors.success('Completed in {}'.format(t2-t1))

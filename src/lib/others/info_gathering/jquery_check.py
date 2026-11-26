@@ -40,6 +40,8 @@ class JqueryCheck(object):
                                     "?vendor_id=6538&orderby=3")
             response = response.json()
         except (requests.exceptions.RequestException, ValueError):
+            # Benign: the version check already succeeded; only the optional
+            # CVE lookup failed, so warn on the console without logging.
             colors.warning('Could not fetch the jQuery vulnerability feed; '
                            'CVE details are unavailable.')
             return

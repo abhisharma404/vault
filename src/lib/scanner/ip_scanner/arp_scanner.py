@@ -5,6 +5,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from scapy.all import *
 import colors
+from vault_cli import errors
 import os
 
 
@@ -52,6 +53,8 @@ class ARPScan(object):
 
         if os.geteuid() != 0:
             colors.error('Please run as root')
+            errors.report_error('Please run as root', code='E5001',
+                                hint='Run with sudo/root.')
             sys.exit(1)
         else:
             colors.success('Running as root')

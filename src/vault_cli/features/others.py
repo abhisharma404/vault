@@ -8,7 +8,8 @@ from vault_cli import colors, errors
 
 def info(args):
     if not args.url:
-        errors.report_error('Please enter an URL for information gathering')
+        errors.report_error('Please enter an URL for information gathering',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         from lib.others.info_gathering import header_vuln
@@ -48,14 +49,16 @@ def info(args):
             colors.success('File has been saved successfully')
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
 
 def comment(args):
     if not args.url:
-        errors.report_error('Please enter an URL for finding comments')
+        errors.report_error('Please enter an URL for finding comments',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         from lib.others.info_gathering.finder import finding_comment
@@ -77,14 +80,16 @@ def comment(args):
             colors.success('File has been saved successfully')
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
 
 def email(args):
     if not args.url:
-        errors.report_error('Please enter an URL for finding emails')
+        errors.report_error('Please enter an URL for finding emails',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         from lib.others.info_gathering.finder import finding_email
@@ -106,14 +111,16 @@ def email(args):
             colors.success('File has been saved successfully')
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
 
 def jquery(args):
     if not args.url:
-        errors.report_error('Please enter an URL for jquery checking')
+        errors.report_error('Please enter an URL for jquery checking',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         from lib.others.info_gathering import jquery_check
@@ -122,14 +129,16 @@ def jquery(args):
         jquery_checkObj.start_engine()
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
-        errors.report_error(str(e), exc=e)
+        errors.report_error(str(e), exc=e, code='E4001')
 
 
 def fuzz(args):
     if not args.url:
-        errors.report_error('Please enter an URL for fuzzing')
+        errors.report_error('Please enter an URL for fuzzing',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         from lib.others.fuzzer import fuzzer
@@ -138,7 +147,8 @@ def fuzz(args):
         fuzzObj.initiate()
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
@@ -166,7 +176,8 @@ def dork(args):
 
 def whois(args):
     if not args.ip:
-        errors.report_error('Please enter an IP for Whois lookup')
+        errors.report_error('Please enter an IP for Whois lookup',
+                            code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
     try:
         from lib.others.whois_lookup import lookup
@@ -190,7 +201,8 @@ def whois(args):
             colors.success('File has been saved successfully')
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
@@ -198,7 +210,7 @@ def whois(args):
 def admin_panel(args):
     if args.url is None:
         errors.report_error('Please provide either an URL for finding admin '
-                            'panel')
+                            'panel', code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     else:
         try:
@@ -206,7 +218,8 @@ def admin_panel(args):
 
             admin_panel.find_admin_panel(args.url)
         except ImportError:
-            errors.report_error('Could not import the required module')
+            errors.report_error('Could not import the required module',
+                            code='E6001')
         except Exception as e:
             errors.report_error(str(e), exc=e)
             sys.exit(1)
@@ -214,7 +227,8 @@ def admin_panel(args):
 
 def bruteforce(args):
     if not args.url:
-        errors.report_error('Please enter an URL for bruteforce')
+        errors.report_error('Please enter an URL for bruteforce',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         from lib.others.bruteforce_login import bruteforce_login
@@ -225,14 +239,16 @@ def bruteforce(args):
         bruteforceObj.startAttack()
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
 
 def detect_cms(args):
     if not args.url:
-        errors.report_error('Please enter an URL for CMS detecting')
+        errors.report_error('Please enter an URL for CMS detecting',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     try:
         from lib.others.detect_cms import detect_cms
@@ -241,14 +257,16 @@ def detect_cms(args):
         detect_cmsObj.start_engine()
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
     except Exception as e:
         errors.report_error(str(e), exc=e)
 
 
 def open_redirect(args):
     if not args.url:
-        errors.report_error('Please enter an URL for scanning')
+        errors.report_error('Please enter an URL for scanning',
+                            code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
     else:
         try:
@@ -258,7 +276,8 @@ def open_redirect(args):
             redirection.ORVT(args.url)
 
         except ImportError:
-            errors.report_error('Could not import the required module')
+            errors.report_error('Could not import the required module',
+                            code='E6001')
         except Exception as e:
             errors.report_error(str(e), exc=e)
             sys.exit(1)
@@ -266,7 +285,8 @@ def open_redirect(args):
 
 def detect_honeypot(args):
     if not args.ip:
-        errors.report_error('Please enter an IP address for scanning')
+        errors.report_error('Please enter an IP address for scanning',
+                            code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
     try:
         colors.info('Detecting honeypot: ')
@@ -276,7 +296,8 @@ def detect_honeypot(args):
         honeypots.honeypot(args.ip)
 
     except ImportError:
-        errors.report_error('Could not import the required module.')
+        errors.report_error('Could not import the required module.',
+                            code='E6001')
         sys.exit(1)
     except Exception as e:
-        errors.report_error(str(e), exc=e)
+        errors.report_error(str(e), exc=e, code='E4001')

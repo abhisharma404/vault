@@ -8,7 +8,7 @@ import time
 import colors
 import threading
 import multiprocessing
-from vault_cli import lib
+from vault_cli import lib, errors
 
 
 class BruteforceLogin(object):
@@ -53,7 +53,7 @@ class BruteforceLogin(object):
             if not os.path.exists(self.dictionary_path):
                 raise Exception("Dictionary does not exist")
         except Exception as e:
-            colors.error(e)
+            errors.report_error(str(e), exc=e, code='E6002')
             sys.exit(1)
 
         with open(self.dictionary_path) as file:
@@ -68,9 +68,13 @@ class BruteforceLogin(object):
                 req = requests.get(self.url, auth=HTTPBasicAuth(self.username,
                                                                password),
                                    timeout=10)
-            except requests.exceptions.RequestException:
-                colors.error("Error occurred with password {}"
-                             .format(password))
+            except requests.exceptions.Timeout as e:
+                errors.report_error("Error occurred with password {}"
+                                    .format(password), exc=e, code='E2002')
+                continue
+            except requests.exceptions.RequestException as e:
+                errors.report_error("Error occurred with password {}"
+                                    .format(password), exc=e, code='E2001')
                 continue
             if req.status_code == 401:
                 print("Testing password: {} Failed!".format(password))

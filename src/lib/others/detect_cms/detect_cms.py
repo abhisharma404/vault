@@ -10,7 +10,7 @@ import os
 import json
 import colors
 import operator
-from vault_cli import lib
+from vault_cli import lib, errors
 
 
 class DetectCMS(object):
@@ -28,7 +28,7 @@ class DetectCMS(object):
             if not os.path.exists(payloads_path):
                 raise Exception("Payloads folder does not exists")
         except Exception as e:
-            colors.error(e)
+            errors.report_error(str(e), exc=e, code='E6002')
             sys.exit(1)
 
         for file in os.listdir(payloads_path):
