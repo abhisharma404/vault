@@ -3,18 +3,25 @@
 from scapy.all import *
 import sys
 import colors
+from vault_cli import errors
 import time
 
 
 class MACFlood(object):
 
     def __init__(self, interface):
-        self.target_ip = RandIP("*.*.*.*")
+        if interface is None:
+            errors.report_error('A network interface is required',
+                                code='E1008',
+                                hint='Provide -i <interface>.')
+            sys.exit(1)
+        self.interface = interface
 
-        if interface is not None:
-            self.interface = interface
-        else:
-            colors.error('Please provide interface from which attack...')
+        try:
+            self.target_ip = RandIP()
+        except Exception as e:
+            errors.report_error('Could not generate the target IP for the '
+                                'MAC flood attack', exc=e)
             sys.exit(1)
 
         self.packet_list = []
@@ -42,7 +49,13 @@ class MACFlood(object):
         """
         Sends the generated packets to the destination
         """
-        s = conf.L2socket(iface=self.interface)
+        try:
+            s = conf.L2socket(iface=self.interface)
+        except Exception as e:
+            errors.report_error('Could not use interface: {}'
+                                .format(self.interface), exc=e, code='E1008',
+                                hint='Provide -i <interface>.')
+            sys.exit(1)
         print('[+] Sending 9999 packets')
         for pkt in self.packet_list:
             s.send(pkt)

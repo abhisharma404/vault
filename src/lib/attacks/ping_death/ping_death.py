@@ -3,6 +3,7 @@
 from scapy.all import *
 import sys
 import colors
+from vault_cli import errors
 import time
 
 
@@ -16,9 +17,17 @@ class pingDeath(object):
         if ip is not None:
             self.target_ip = ip
         elif url is not None:
-            self.target_ip = self.getIP(url)
+            try:
+                self.target_ip = self.getIP(url)
+            except Exception as e:
+                errors.report_error('Could not resolve URL to IP', exc=e,
+                                    code='E2003')
+                sys.exit(1)
         else:
-            colors.error('Please provide URL or the IP address to attack...')
+            errors.report_error('Please provide URL or the IP address to '
+                                'attack...', code='E1003',
+                                hint='Provide -u <url> or -ip <ip>.')
+            sys.exit(1)
 
     @staticmethod
     def getIP(url):

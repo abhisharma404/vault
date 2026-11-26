@@ -7,28 +7,33 @@ import time
 import random
 import colors
 import os
+from vault_cli import errors
 
 
 class MACChanger(object):
 
     def __init__(self, mac_addr=None, interface=None):
+        self.ready = False
+
+        if mac_addr is None or interface is None:
+            errors.report_error('A MAC address and interface are required',
+                                code='E1008',
+                                hint='Provide -mac <addr> and -i <interface>.')
+            return
 
         self.is_root()
 
-        if mac_addr is None:
-            self.newMAC = self.generateMAC()
-        elif self.validateMAC(mac_addr):
+        if self.validateMAC(mac_addr):
             self.newMAC = mac_addr
         else:
-            colors.error('Please provide a valid MAC address...')
-            sys.exit(1)
+            errors.report_error('Please provide a valid MAC address: {}'
+                                .format(mac_addr), code='E1008',
+                                hint='MAC must look like aa:bb:cc:dd:ee:ff.')
+            return
 
         colors.info('MAC address will be changed to : {}'.format(self.newMAC))
 
-        if interface is None:
-            self.interface = self.getInterface()
-        else:
-            self.interface = interface
+        self.interface = interface
 
         self.origMAC = self.interfaceMAC()
 
@@ -38,7 +43,9 @@ class MACChanger(object):
            self.newMAC is None or \
            self.origMAC is None:
             colors.error('Error! could not change the MAC')
-            sys.exit(1)
+            return
+
+        self.ready = True
 
     @staticmethod
     def validateMAC(mac):
@@ -109,8 +116,13 @@ class MACChanger(object):
 
         intf = -1
         while intf > total_index or intf < 0:
-            intf = int(input('\n>> Enter the index of the interface : ')
-                       .strip())
+            try:
+                intf = int(input('\n>> Enter the index of the interface : ')
+                           .strip())
+            except ValueError as e:
+                errors.report_error('Invalid interface index entered',
+                                    exc=e, code='E1008')
+                intf = -1
 
         colors.info('Selected interface is : {}'.format(interfaces[intf]))
         return interfaces[intf]
@@ -133,6 +145,11 @@ class MACChanger(object):
         output = output.decode('utf-8')
 
         mac_addr = re.findall(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w", output)
+        if not mac_addr:
+            errors.report_error('Could not determine the current MAC address '
+                                'of interface {}'.format(self.interface),
+                                code='E3001')
+            return None
         return mac_addr[0]
 
     def changeMAC(self, mac):
@@ -170,6 +187,8 @@ class MACChanger(object):
         """
         Change the MAC address of the interface
         """
+        if not self.ready:
+            return
 
         self.changeMAC(self.newMAC)
 

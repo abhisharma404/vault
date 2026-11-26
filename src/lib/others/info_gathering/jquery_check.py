@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import *
 import sys
 import colors
+from vault_cli import errors
 
 
 class JqueryCheck(object):
@@ -14,13 +15,23 @@ class JqueryCheck(object):
         self.url = url
 
     def get_jquery_version(self):
-        response = requests.get(self.url)
+        try:
+            response = requests.get(self.url)
+        except requests.exceptions.RequestException as e:
+            errors.report_error('Failed to fetch page for jQuery version '
+                                'check', exc=e, code='E2001')
+            return
         soup_obj = BeautifulSoup(response.text, "html.parser")
         scripts = []
 
         for line in soup_obj.find_all('script'):
             if "jquery" in str(line.get('src')).lower():
-                response = requests.get(urljoin(self.url, line.get('src')))
+                try:
+                    response = requests.get(urljoin(self.url, line.get('src')))
+                except requests.exceptions.RequestException as e:
+                    errors.report_error('Failed to fetch jQuery script',
+                                        exc=e, code='E2001')
+                    continue
                 versions = re.findall(r'(?<=\s)v[0-9]+(?:\.[0-9]+)*'
                                       r'(?:[a-z](?:\d)?)?(?:-alpha\d)?'
                                       r'(?:-beta\d)?(?:-rc\d)?(?:-rc.\d)?',
@@ -37,7 +48,7 @@ class JqueryCheck(object):
     def search_vulnerabilities():
         try:
             response = requests.get("https://www.cvedetails.com/json-feed.php"
-                                    "?vendor_id=6538&orderby=3")
+                                    "?vendor_id=6538&orderby=3", timeout=10)
             response = response.json()
         except (requests.exceptions.RequestException, ValueError):
             # Benign: the version check already succeeded; only the optional

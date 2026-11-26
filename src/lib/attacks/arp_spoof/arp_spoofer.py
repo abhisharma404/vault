@@ -101,6 +101,11 @@ class ARPSpoof(object):
         ip_candidates = re.findall(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b",
                                    output)
 
+        if len(ip_candidates) < 2:
+            errors.report_error('Could not determine the router IP address',
+                                hint='Enter the router IP manually.')
+            sys.exit(1)
+
         colors.success('Router IP found is : {}'.format(ip_candidates[1]))
         val = str(input('>> Continue with this IP address(Y/y)'
                         'or enter a different IP address : ')).strip()
@@ -142,9 +147,13 @@ class ARPSpoof(object):
         arp_broadcast = broadcast/arp_packet
         broadcast = scapy.srp(arp_broadcast, timeout=1, verbose=False)[0]
         mac_addr_str = self.capture_output(broadcast)
-        mac_addr = re.findall(r'\w\w:\w\w:\w\w:\w\w:\w\w:\w\w',
-                              mac_addr_str)[0]
-        mac_addr = str(mac_addr).strip()
+        mac_addr_list = re.findall(r'\w\w:\w\w:\w\w:\w\w:\w\w:\w\w',
+                                   mac_addr_str)
+        if not mac_addr_list:
+            errors.report_error('Could not resolve MAC address for {} : {}'
+                                .format(name, IP), code='E3001')
+            sys.exit(1)
+        mac_addr = str(mac_addr_list[0]).strip()
 
         colors.success('Found MAC address for {} : {} is : {}'
                        .format(name, IP, mac_addr))

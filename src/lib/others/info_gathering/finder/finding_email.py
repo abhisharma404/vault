@@ -3,6 +3,7 @@
 import requests
 import re
 import colors
+from vault_cli import errors
 
 
 class FindingEmails(object):
@@ -12,7 +13,12 @@ class FindingEmails(object):
         self.found_emails = []
 
     def get_source_code(self):
-        resp_text = requests.get(self.url).text
+        try:
+            resp_text = requests.get(self.url).text
+        except requests.exceptions.RequestException as e:
+            errors.report_error('Failed to fetch page for email extraction',
+                                exc=e, code='E2001')
+            return ''
         return resp_text
 
     def find_email(self):

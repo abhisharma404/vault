@@ -27,26 +27,31 @@ def start_dorking(search, page_count):
                      count
         try:
             requested_page = requests.get(search_url).text
+            soup = BeautifulSoup(requested_page, 'html.parser')
+            if "Our systems have detected unusual traffic from your computer"\
+               "network" in soup.get_text():
+                errors.report_error("Google has detected the script. Try "
+                                    "after some time.", code='E4002')
+                break
+            h3_tags = soup.findAll("h3")
+            for h3 in h3_tags:
+                a_tag = h3.find("a")
+                link = a_tag.get("href")
+                link = link[7:]
+                if link.startswith("http"):
+                    searchlink = modifyLINK(link)
+                    res = unquote(searchlink)
+                    web_list.append(res)
+                    print("\033[1;37m--> \033[1;32m", res, end=" \n")
         except requests.exceptions.RequestException as e:
-            errors.report_error(str(e), exc=e, code='E4001')
+            errors.report_error('Google dorking request failed', exc=e,
+                                code='E4001')
             break
-        soup = BeautifulSoup(requested_page, 'html.parser')
+        except Exception as e:
+            errors.report_error('Google dorking page parsing failed', exc=e,
+                                code='E4001')
+            break
         count = int(count)
-        if "Our systems have detected unusual traffic from your computer"\
-           "network" in soup.get_text():
-            errors.report_error("Google has detected the script. Try after "
-                                "some time.", code='E4002')
-            break
-        h3_tags = soup.findAll("h3")
-        for h3 in h3_tags:
-            a_tag = h3.find("a")
-            link = a_tag.get("href")
-            link = link[7:]
-            if link.startswith("http"):
-                searchlink = modifyLINK(link)
-                res = unquote(searchlink)
-                web_list.append(res)
-                print("\033[1;37m--> \033[1;32m", res, end=" \n")
         count += 10
 
     return web_list

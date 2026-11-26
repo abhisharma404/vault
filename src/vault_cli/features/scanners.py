@@ -6,6 +6,19 @@ import sys
 from vault_cli import colors, errors
 
 
+def _validate_threads(args):
+    """Warn and ignore a non-integer/non-positive -t/--threads value."""
+    if args.threads is None:
+        return
+    try:
+        if int(args.threads) > 0:
+            return
+    except (TypeError, ValueError):
+        pass
+    colors.warning('Invalid thread count ignored; using defaults.')
+    args.threads = None
+
+
 def hash_scan(args):
     LIST_OF_SCANS = []
 
@@ -29,7 +42,14 @@ def hash_scan(args):
             for mode in to_ignore:
                 LIST_OF_SCANS.remove(mode)
         except Exception as e:
-            print(e)
+            colors.warning('Ignored unknown hash mode in --exclude: {}'
+                           .format(e))
+
+    if not LIST_OF_SCANS:
+        errors.report_error('No hash modes selected', code='E1006',
+                            hint='Use -md5, -sha1, -sha224, -sha256, '
+                                 '-sha512 or -all.')
+        return
 
     try:
         from lib.scanner.hash_scanner import hash_scanner
@@ -62,6 +82,7 @@ def ack(args):
         errors.report_error('Please enter an IP address for scanning',
                             code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
+    _validate_threads(args)
     try:
         colors.info('Initiating TCP ACK Scan')
 
@@ -85,6 +106,7 @@ def fin(args):
         errors.report_error('Please enter an IP address for scanning',
                             code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
+    _validate_threads(args)
     try:
         colors.info('Initiating FIN Scan')
 
@@ -109,6 +131,7 @@ def null(args):
         errors.report_error('Please enter an IP address for scanning',
                             code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
+    _validate_threads(args)
     try:
         colors.info('Initiating NULL Scan')
 
@@ -133,6 +156,7 @@ def xmas(args):
         errors.report_error('Please enter an IP address for scanning',
                             code='E1004', hint='Provide -ip <ip>.')
         sys.exit(1)
+    _validate_threads(args)
     try:
         colors.info('Initiating XMAS Scan')
 
@@ -236,6 +260,7 @@ def os_scan(args):
                             'perform OS Scan',
                             hint='Provide -u <url> or -ip <ip>.')
         sys.exit(1)
+    _validate_threads(args)
     try:
         colors.info('OS Scan using Nmap')
 

@@ -7,11 +7,15 @@
 # so payloads and the log file resolve correctly regardless of where you call
 # `vault` from.
 #
+# Also installs the man page (docs/vault.1) under PREFIX/share/man unless
+# --no-man is given.
+#
 # Usage:
 #   ./install.sh                    # install to ~/.local/bin as `vault`
 #   PREFIX=/usr/local ./install.sh  # install to /usr/local/bin
 #   ./install.sh --prefix ~/bin --name vault-scan
-#   ./install.sh --uninstall        # remove the installed launcher
+#   ./install.sh --no-man           # install without the man page
+#   ./install.sh --uninstall        # remove the installed launcher + man page
 #
 # Overrides (env or args): --prefix/--name/--python
 
@@ -31,6 +35,7 @@ NAME="${VAULT_NAME:-vault}"
 PREFIX="${VAULT_PREFIX:-}"
 PYTHON="${VAULT_PYTHON:-}"
 UNINSTALL=0
+NO_MAN=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -38,8 +43,9 @@ while [[ $# -gt 0 ]]; do
         --prefix)     PREFIX="$2"; shift 2 ;;
         --python)     PYTHON="$2"; shift 2 ;;
         --uninstall)  UNINSTALL=1; shift ;;
+        --no-man)     NO_MAN=1; shift ;;
         -h|--help)
-            sed -n '3,16p' "$0" | sed 's/^# \{0,1\}//'
+            sed -n '3,20p' "$0" | sed 's/^# \{0,1\}//'
             exit 0 ;;
         *) echo "unknown option: $1" >&2; exit 2 ;;
     esac
@@ -55,6 +61,9 @@ if [[ -z "$PREFIX" ]]; then
 fi
 BIN_DIR="$PREFIX/bin"
 TARGET="$BIN_DIR/$NAME"
+MAN_ROOT="$PREFIX/share/man"
+MAN_DIR="$MAN_ROOT/man1"
+MAN_TARGET="$MAN_DIR/$NAME.1"
 
 if [[ "$UNINSTALL" -eq 1 ]]; then
     if [[ -e "$TARGET" ]]; then
@@ -63,6 +72,10 @@ if [[ "$UNINSTALL" -eq 1 ]]; then
     else
         echo "$TARGET not installed" >&2
         exit 1
+    fi
+    if [[ -e "$MAN_TARGET" ]]; then
+        rm -f "$MAN_TARGET"
+        echo "Removed $MAN_TARGET"
     fi
     exit 0
 fi
@@ -112,10 +125,38 @@ exec $PYTHON_Q $VAULT_PY_Q "\$@"
 EOF
 chmod +x "$TARGET"
 
+# --- Install the man page ---------------------------------------------------
+MAN_INSTALLED=0
+if [[ "$NO_MAN" -eq 0 ]]; then
+    MAN_SRC="$REPO_DIR/docs/vault.1"
+    if [[ ! -f "$MAN_SRC" ]]; then
+        echo "warning: man page not found at $MAN_SRC; skipping." >&2
+    else
+        mkdir -p "$MAN_DIR"
+        if [[ "$NAME" == "vault" ]]; then
+            cp "$MAN_SRC" "$MAN_TARGET"
+        else
+            # Rename the .TH header to match the chosen command name.
+            # (tr instead of ${NAME^^}: macOS ships bash 3.2, no ^^ expansion)
+            NAME_UPPER="$(printf '%s' "$NAME" | tr '[:lower:]' '[:upper:]')"
+            sed "1s/^\.TH VAULT/.TH $NAME_UPPER/" "$MAN_SRC" > "$MAN_TARGET"
+        fi
+        MAN_INSTALLED=1
+    fi
+fi
+
 # --- Report ----------------------------------------------------------------
 echo "Installed: $TARGET"
 echo "  Python:  $PYTHON"
 echo "  Source:  $SRC_DIR/vault.py"
+if [[ "$MAN_INSTALLED" -eq 1 ]]; then
+    echo "  Man page: $MAN_TARGET"
+    case ":${MANPATH:-}:" in
+        *":$MAN_ROOT:"*) ;;
+        *) echo "  hint: $MAN_ROOT is not on your MANPATH."
+           echo "        export MANPATH=\"$MAN_ROOT:\$MANPATH\"" ;;
+    esac
+fi
 
 case ":$PATH:" in
     *":$BIN_DIR:"*) ;;

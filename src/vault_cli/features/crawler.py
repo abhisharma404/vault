@@ -20,7 +20,10 @@ def crawl(args):
                 C.start(return_set=False)
                 return ''
             else:
-                return C.start(return_set=True)
+                links = C.start(return_set=True)
+                if not links:
+                    colors.warning('No links were collected.')
+                return links
         except ImportError:
             errors.report_error('Could not import the required module',
                             code='E6001')
@@ -38,6 +41,8 @@ def scrap(args):
         try:
             from lib.crawler import finder
             links, path = crawl(args)
+            if not links:
+                colors.warning('No links were collected.')
             finder.initiate(links, path)
             print('[X]Scraping completed')
 

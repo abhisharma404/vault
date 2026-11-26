@@ -12,6 +12,8 @@ def ddos(args):
                             hint='Provide -u <url> or -ip <ip>.')
         sys.exit(1)
     else:
+        if not args.port or not args.interval:
+            colors.warning('Using default ports/interval for DDoS.')
         try:
             from lib.attacks.ddos import ddos
 

@@ -5,6 +5,7 @@ import urllib.request
 import urllib.response
 import urllib.parse
 import urllib.error
+import colors
 from vault_cli import errors
 
 
@@ -56,17 +57,27 @@ class Imagefinder(HTMLParser):
                self.url.lower().startswith('file:/'):
                 req = urllib.request.\
                       Request(self.url, headers={'User-Agent': 'Mozilla/5.0'})
-                con = urllib.request.urlopen(req)
+                con = urllib.request.urlopen(req, timeout=15)
                 html_string = con.read().decode("utf-8")
                 self.feed(html_string)
 
         except urllib.error.HTTPError as e:
+            # Per-page status errors (404, ...) are benign; keep as prints.
             print("Was not able to open the URL.")
             print(str(e.reason))
         except urllib.error.URLError as e:
-            errors.report_error(str(e), exc=e, code='E2001')
+            if isinstance(e.reason, TimeoutError):
+                errors.report_error('Request timed out while opening: ' +
+                                    self.url, exc=e, code='E2002')
+            else:
+                errors.report_error('Request failed while opening: ' +
+                                    self.url, exc=e, code='E2001')
+        except TimeoutError as e:
+            errors.report_error('Request timed out while opening: ' +
+                                self.url, exc=e, code='E2002')
         except Exception as e:
-            errors.report_error(str(e), exc=e)
+            errors.report_error('Failed to open ' + self.url + ': ' +
+                                str(e), exc=e)
         return ''
 
 
@@ -80,6 +91,8 @@ def initiate(list_url, path):
             for i in I.img_links_obtained():
                 imu.image_download(i, path + '/'+str(c))
                 c = c+1
+        if c == 0:
+            colors.warning('No images were collected from the crawled URLs.')
         print('[X]Returning..')
 
     except ImportError as e:

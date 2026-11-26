@@ -19,6 +19,10 @@ E1004 IP required
 E1005 root privileges required
 E1006 no action specified
 E1007 start/end IP range both required
+E1008 interface required
+E1009 invalid port range
+E1010 username required
+E1011 threads must be a positive integer
 E2001 request failed
 E2002 request timed out
 E2003 DNS/connection failure

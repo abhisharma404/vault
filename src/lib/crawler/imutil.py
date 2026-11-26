@@ -8,14 +8,25 @@ from vault_cli import errors
 
 
 def image_download(url, name):
-    r = requests.get(url, stream=True, headers={'User-agent': 'Mozilla/5.0'})
-    if r.status_code == 200:
-        with open(name + '.png', 'wb') as f:
-            r.raw.decode_content = True
-            shutil.copyfileobj(r.raw, f)
-            print(url + ' [Downloaded]')
-    else:
-        print('Download for ' + name + ' Failed.')
+    try:
+        r = requests.get(url, stream=True, timeout=15,
+                         headers={'User-agent': 'Mozilla/5.0'})
+        if r.status_code == 200:
+            with open(name + '.png', 'wb') as f:
+                r.raw.decode_content = True
+                shutil.copyfileobj(r.raw, f)
+                print(url + ' [Downloaded]')
+        else:
+            print('Download for ' + name + ' Failed.')
+    except requests.exceptions.Timeout as e:
+        errors.report_error('Timed out downloading image from: ' + url,
+                            exc=e, code='E2002')
+    except requests.exceptions.RequestException as e:
+        errors.report_error('Failed to download image from: ' + url,
+                            exc=e, code='E2001')
+    except OSError as e:
+        errors.report_error('Failed to save downloaded image to: ' +
+                            name + '.png', exc=e)
 
 
 def create_project_dir(directory):

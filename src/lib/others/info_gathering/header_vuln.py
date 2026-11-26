@@ -23,13 +23,15 @@ class HeaderVuln(object):
     def gather_header(self):
         try:
             r = self.get_response()
+            if r is None:
+                return None
             headers_dict = r.headers
             colors.info('Header Details')
             for key, value in headers_dict.items():
                 colors.success(' {} : {} '.format(key, value))
             return headers_dict
         except Exception as e:
-            errors.report_error(str(e), exc=e)
+            errors.report_error(str(e), exc=e, code='E2001')
 
     def find_insecure_headers(self):
         headers_dict = self.gather_header()
@@ -72,6 +74,8 @@ class HeaderVuln(object):
 
     def insecure_cookies(self):
         response = self.get_response()
+        if response is None:
+            return []
         cookies = response.cookies
 
         colors.info('Testing Insecure Cookies')
@@ -118,7 +122,12 @@ class HeaderVuln(object):
         method_data = []
 
         for mode in modes_list:
-            r = requests.request(mode, self.url)
+            try:
+                r = requests.request(mode, self.url)
+            except requests.exceptions.RequestException as e:
+                errors.report_error('HTTP method test failed for {}'
+                                    .format(mode), exc=e, code='E2001')
+                continue
             colors.success(' {} {} {}'.format(mode, r.status_code, r.reason))
             method_data.append(mode)
             method_data.append(r.status_code)

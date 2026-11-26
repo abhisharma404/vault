@@ -3,6 +3,7 @@
 from . import scanner
 import colors
 from .crawler import Crawl
+from vault_cli import errors
 
 
 class XSS(object):
@@ -15,10 +16,14 @@ class XSS(object):
     def processPayload(self):
         """This function process payload from file"""
 
-        with open(self.payload) as file:
-            for line in file.readlines():
-                line = line.strip()
-                yield line
+        try:
+            with open(self.payload) as file:
+                for line in file.readlines():
+                    line = line.strip()
+                    yield line
+        except OSError as e:
+            errors.report_error('Could not read XSS payload file: ' +
+                                str(self.payload), exc=e, code='E6002')
 
     def listPayloads(self):
         for payload in self.processPayload():

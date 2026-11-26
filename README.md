@@ -52,18 +52,21 @@ Payloads and the error log are resolved relative to the source location (via
 #### Installing the `vault` command (macOS/Linux) :
 
 Run `./install.sh` to place a `vault` launcher on your PATH (defaults to
-`~/.local/bin`). It always runs the VaultENV interpreter from the `src/`
-directory, so you can invoke it from anywhere:
+`~/.local/bin`) and install the man page from `docs/vault.1` (`man vault`).
+It always runs the VaultENV interpreter from the `src/` directory, so you can
+invoke it from anywhere:
 
 ```
 ./install.sh
 vault -h
 vault -u http://example.com -info
+man vault
 ```
 
 Re-run `./install.sh` if you move the repository, and use `./install.sh
 --uninstall` to remove it. Options: `--prefix DIR`, `--name CMD`,
-`--python PATH`.
+`--python PATH`, `--no-man` (skip the man page). Running `vault` without an
+action flag prints the help hint and exits with a usage error (exit code 2).
 
 ## Repository layout
 
@@ -73,7 +76,7 @@ handlers, shared helpers, and low-level implementations:
 ```
 Vault/
 ├── ai/                      # AI/agent instruction files (see ai/AGENTS.md)
-├── docs/                    # Sphinx documentation source
+├── docs/                    # Sphinx docs + vault.1 man page
 ├── log/                     # per-session error logs (gitignored)
 ├── logo/                    # branding
 ├── src/
@@ -105,7 +108,8 @@ Layer rules:
   feature to the matching group (`attacks`, `scanners`, `web`, `others`,
   `crawler`, `utilities`).
 - **`src/lib/*`** holds the implementation and stays independent of the CLI.
-- **Errors** go through `errors.report_error()` (console **and** `log/`).
+- **Errors** go through `errors.report_error()` (console **and** `log/`, as a
+  `vault-error-*.log` file with a `.jsonl` sidecar).
 - **Warnings** use `colors.warning()` (console only, never logged).
 - **Paths** come from `vault_cli.lib` — never `os.getcwd()`.
 
@@ -173,7 +177,8 @@ Layer rules:
 ## Usage
 
 ```
-usage: vault.py [-h] [-u URL] [-p PORT] [-sp START_PORT] [-ep END_PORT] [-ssl]
+usage: vault.py [-h] [-v] [--debug] [--version] [-u URL] [-p PORT]
+                [-sp START_PORT] [-ep END_PORT] [-ssl]
                 [-info] [-comment] [-email] [-fuzz] [-ip IP] [-t THREADS]
                 [-i INTERFACE] [-source_port SOURCE_PORT] [-fin] [-null]
                 [-ack] [-xmas] [-os_scan] [-xss] [-this] [-ping_sweep] [-arp]
@@ -191,6 +196,9 @@ VAULT
 
 optional arguments:
   -h, --help            show this help message and exit
+  -v, --verbose         show tracebacks on errors
+  --debug               enable debug output
+  --version             show program's version number and exit
   -u URL, --url URL     URL for scanning
   -p PORT, --port PORT  Single port for scanning
   -sp START_PORT, --start_port START_PORT
@@ -263,6 +271,13 @@ optional arguments:
                         Target BSSID
   -deauth               De-authentication attack
 ```
+
+Exit codes: `0` success, `1` runtime error, `2` usage error (unknown flag,
+bad input, or no action flag given).
+
+Logging: errors are written to `log/vault-error-<timestamp>-<pid>.log` plus a
+machine-readable `.jsonl` sidecar, one pair per session and only when errors
+occur. Warnings appear on the console only and are never logged.
 
 Example Usage : `python3 vault.py -u 'http://url' -info -comment -ssl -fuzz`
 

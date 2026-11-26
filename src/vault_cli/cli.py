@@ -20,94 +20,136 @@ ACTION_FLAGS = {
 
 
 def build_parser():
-    parser = argparse.ArgumentParser(description="VAULT")
+    parser = argparse.ArgumentParser(
+        prog='vault',
+        description='VAULT — Swiss army knife for hackers. A multi-purpose '
+                    'security scanner for websites and networks.',
+        epilog='''examples:
+  vault -u http://example.com -info -comment -ssl -fuzz
+  vault -u http://example.com -xss
+  vault -ip 192.168.1.1 -p 80 -t 50
+  vault -all -u http://example.com -exclude "lfi xss"
+  vault -hash -md5 -dir /path/to/files''',
+        formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='show tracebacks on errors')
-    parser.add_argument('--debug', action='store_true',
-                        help='enable debug output')
-    parser.add_argument('-u', '--url', help='URL for scanning')
-    parser.add_argument('-p', '--port', help='Single port for scanning')
-    parser.add_argument('-sp', '--start_port', help='Start port for scanning')
-    parser.add_argument('-ep', '--end_port', help='End port for scanning')
-    parser.add_argument('-ssl', action='store_true', help='perform SSL scan')
-    parser.add_argument('-info', action='store_true', help='Gather information')
-    parser.add_argument('-comment', action='store_true', help='Finding comments')
-    parser.add_argument('-email', action='store_true', help='Finding emails')
-    parser.add_argument('-fuzz', action='store_true', help='Fuzzing URL')
-    parser.add_argument('-ip', '--ip', help='IP address for port scanning')
-    parser.add_argument('-t', '--threads', help='Number of threads to use')
-    parser.add_argument('-i', '--interface',
-                        help='Networking Interface to use')
-    parser.add_argument('-source_port', help='Source port for sending packets')
-    parser.add_argument('-fin', action='store_true', help='Perform FIN Scan')
-    parser.add_argument('-null', action='store_true', help='Perform NULL Scan')
-    parser.add_argument('-ack', action='store_true',
-                        help='Perform TCP ACK Scan')
-    parser.add_argument('-xmas', action='store_true', help='Perform XMAS Scan')
-    parser.add_argument('-os_scan', action='store_true',
-                        help='Perform OS Scan')
-    parser.add_argument('-xss', action='store_true',
-                        help='Scan for XSS vulnerabilities')
-    parser.add_argument('-this', action='store_true',
-                        help='Only scan the given URL, do not crawl')
-    parser.add_argument('-ping_sweep', action='store_true',
-                        help='ICMP ECHO request')
-    parser.add_argument('-arp', action='store_true', help='ARP Scan')
-    parser.add_argument('-ip_start_range', help='Start range for scanning IP')
-    parser.add_argument('-ip_end_range', help='End range for scanning IP')
-    parser.add_argument('-lfi', action='store_true',
-                        help='Scan for LFI vulnerabilities')
-    parser.add_argument('-whois', action='store_true',
-                        help='perform a whois lookup of a given IP')
-    parser.add_argument('-o', '--output', help='Output all data')
-    parser.add_argument('-d', '--dork', help='Perform google dorking')
-    parser.add_argument('-ddos', action='store_true',
+    target = parser.add_argument_group('target options')
+    target.add_argument('-u', '--url', help='URL to scan')
+    target.add_argument('-ip', '--ip', help='IP address for port scanning')
+    target.add_argument('-p', '--port', help='Single port for scanning')
+    target.add_argument('-sp', '--start_port',
+                        help='Start port for scanning')
+    target.add_argument('-ep', '--end_port', help='End port for scanning')
+    target.add_argument('-i', '--interface',
+                        help='Network interface to use')
+    target.add_argument('-source_port',
+                        help='Source port for sending packets')
+    target.add_argument('-dir', help='Directory to scan')
+    target.add_argument('-target_bssid',
+                        help='Target BSSID for deauthentication')
+
+    scans = parser.add_argument_group('scan modes')
+    scans.add_argument('-ssl', action='store_true', help='Perform SSL scan')
+    scans.add_argument('-info', action='store_true',
+                       help='Gather information about the target')
+    scans.add_argument('-comment', action='store_true',
+                       help='Find HTML comments')
+    scans.add_argument('-email', action='store_true',
+                       help='Find email addresses')
+    scans.add_argument('-fuzz', action='store_true',
+                       help='Fuzz URLs for hidden resources')
+    scans.add_argument('-xss', action='store_true',
+                       help='Scan for XSS vulnerabilities')
+    scans.add_argument('-this', action='store_true',
+                       help='Only scan the given URL, do not crawl')
+    scans.add_argument('-lfi', action='store_true',
+                       help='Scan for LFI vulnerabilities')
+    scans.add_argument('-detect_cms', action='store_true',
+                       help='Perform CMS detection')
+    scans.add_argument('-jquery', action='store_true',
+                       help='Check jQuery version and get vulnerabilities')
+    scans.add_argument('-admin', action='store_true',
+                       help='Find admin panel on a given domain')
+    scans.add_argument('-orv', action='store_true',
+                       help='Test for open redirection vulnerability')
+    scans.add_argument('-honey', action='store_true',
+                       help='Detect honeypot')
+    scans.add_argument('-whois', action='store_true',
+                       help='Perform a whois lookup of a given IP')
+    scans.add_argument('-d', '--dork', help='Perform Google dorking')
+    scans.add_argument('-bruteforce', action='store_true',
+                       help='Perform brute force attack through '
+                            'Authorization headers')
+    scans.add_argument('-username', help='Username to login')
+    scans.add_argument('-hash', action='store_true',
+                       help='Start hash scan')
+    scans.add_argument('-md5', action='store_true', help='Scan MD5 hashes')
+    scans.add_argument('-sha1', action='store_true', help='Scan SHA1 hashes')
+    scans.add_argument('-sha224', action='store_true',
+                       help='Scan SHA224 hashes')
+    scans.add_argument('-sha256', action='store_true',
+                       help='Scan SHA256 hashes')
+    scans.add_argument('-sha512', action='store_true',
+                       help='Scan SHA512 hashes')
+    scans.add_argument('-ping_sweep', action='store_true',
+                       help='Perform ICMP echo sweep')
+    scans.add_argument('-arp', action='store_true', help='Perform ARP scan')
+    scans.add_argument('-ip_start_range',
+                       help='Start IP of range for scanning')
+    scans.add_argument('-ip_end_range',
+                       help='End IP of range for scanning')
+    scans.add_argument('-fin', action='store_true', help='Perform FIN scan')
+    scans.add_argument('-null', action='store_true',
+                       help='Perform NULL scan')
+    scans.add_argument('-ack', action='store_true',
+                       help='Perform TCP ACK scan')
+    scans.add_argument('-xmas', action='store_true',
+                       help='Perform XMAS scan')
+    scans.add_argument('-os_scan', action='store_true',
+                       help='Perform OS detection')
+    scans.add_argument('-cr', action='store_true',
+                       help='Extract links from a web page')
+    scans.add_argument('-cri', action='store_true',
+                       help='Extract images from a web page')
+    scans.add_argument('-all', action='store_true', help='Run all scans')
+    scans.add_argument('-exclude',
+                       help='Scans to exclude (space-separated)')
+
+    attack = parser.add_argument_group('attacks')
+    attack.add_argument('-ddos', action='store_true',
                         help='Perform DDoS attack')
-    parser.add_argument('-mac_flood', action='store_true',
-                        help='Perform MAC Flooding attack')
-    parser.add_argument('-interval', help='Interval time for sending packets')
-    parser.add_argument('-cr', action='store_true',
-                        help='For extracting links from a web page')
-    parser.add_argument('-cri', action='store_true',
-                        help='For extracting images from a Web page')
-    parser.add_argument('-all', action='store_true', help='Run all scans')
-    parser.add_argument('-exclude', help='Scans to exclude')
-    parser.add_argument('-admin', action='store_true',
-                        help='Find admin panel on a given domain')
-    parser.add_argument('-orv', action='store_true',
-                        help='Test for open redirection Vulnerability')
-    parser.add_argument('-keylogger', action='store_true',
-                        help='Capture keystrokes and send them by email')
-    parser.add_argument('-host', help='SMTP Host to use')
-    parser.add_argument('-username', help='Username to login')
-    parser.add_argument('-password', help='Password to login')
-    parser.add_argument('-sender', help='Email to send from')
-    parser.add_argument('-destination', help='Email to send to')
-    parser.add_argument('-arp_spoof', action='store_true', help='ARP Spoofing')
-    parser.add_argument('-jquery', action='store_true',
-                        help='Check jQuery version and get vulnerabilities')
-    parser.add_argument('-ping_death', action='store_true',
+    attack.add_argument('-mac_flood', action='store_true',
+                        help='Perform MAC flooding attack')
+    attack.add_argument('-arp_spoof', action='store_true',
+                        help='Perform ARP spoofing attack')
+    attack.add_argument('-ping_death', action='store_true',
                         help='Perform ping of death attack')
-    parser.add_argument('-bruteforce', action='store_true',
-                        help='Perform brute force attack through Authorization'
-                             'headers')
-    parser.add_argument('-hash', action='store_true', help='Start hash scan')
-    parser.add_argument('-md5', action='store_true', help='Scan MD5')
-    parser.add_argument('-sha1', action='store_true', help='Scan SHA1')
-    parser.add_argument('-sha224', action='store_true', help='Scan SHA224')
-    parser.add_argument('-sha256', action='store_true', help='Scan SHA256')
-    parser.add_argument('-sha512', action='store_true', help='Scan SHA512')
-    parser.add_argument('-dir', help='Directory to scan')
-    parser.add_argument('-detect_cms', action='store_true',
-                        help='Perform CMS Detection')
-    parser.add_argument('-change_mac', action='store_true',
-                        help='Change MAC address')
-    parser.add_argument('-mac', help='New MAC address')
-    parser.add_argument('-honey', action='store_true', help='Detect honeypot')
-    parser.add_argument('-target_bssid', help='Target BSSID')
-    parser.add_argument('-deauth', action='store_true',
-                        help='De-authentication attack')
+    attack.add_argument('-deauth', action='store_true',
+                        help='Perform deauthentication attack')
+    attack.add_argument('-interval',
+                        help='Interval time for sending packets')
+
+    utility = parser.add_argument_group('utility')
+    utility.add_argument('-keylogger', action='store_true',
+                         help='Capture keystrokes and send them by email')
+    utility.add_argument('-host', help='SMTP host to use')
+    utility.add_argument('-password', help='Password to login')
+    utility.add_argument('-sender', help='Email to send from')
+    utility.add_argument('-destination', help='Email to send to')
+    utility.add_argument('-change_mac', action='store_true',
+                         help='Change MAC address')
+    utility.add_argument('-mac', help='New MAC address')
+
+    output = parser.add_argument_group('output options')
+    output.add_argument('-o', '--output', help='Output all data to a file')
+    output.add_argument('-t', '--threads', help='Number of threads to use')
+
+    general = parser.add_argument_group('general')
+    general.add_argument('-v', '--verbose', action='store_true',
+                         help='Show tracebacks on errors')
+    general.add_argument('--debug', action='store_true',
+                         help='Enable debug output')
+    general.add_argument('--version', action='version',
+                         version='%(prog)s {}'.format(config.VERSION))
 
     return parser
 
@@ -241,9 +283,6 @@ def run(args):
 def main():
     validation.install_signal_handlers()
 
-    print(config.BANNER)
-    print("\nWelcome to Vault...!\n")
-
     config.setup_logging()
 
     parser = build_parser()
@@ -253,6 +292,11 @@ def main():
         sys.exit(2)
 
     args = parser.parse_args()
+
+    # Print the banner after parse_args so that --help/--version output
+    # stays clean.
+    print(config.BANNER)
+    print("\nWelcome to Vault...!\n")
 
     from vault_cli import errors
     errors.set_verbosity(args.verbose, args.debug)

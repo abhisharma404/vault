@@ -155,23 +155,41 @@ def fuzz(args):
 
 def dork(args):
     if args.dork:
-        from lib.others.google_dork import dorker
-        dorks = args.dork
-        page = int(input("\nNumber of Pages to scrap :: \033[1;37m"))
-        print('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
-        web_lists = dorker.start_dorking(dorks, page)
+        try:
+            from lib.others.google_dork import dorker
 
-        if args.output:
-            if args.output.endswith('.txt'):
-                file = args.output
-            else:
-                file = args.output + '.txt'
+            dorks = args.dork
+            try:
+                page = int(input("\nNumber of Pages to scrap :: \033[1;37m"))
+            except ValueError:
+                errors.report_error('Invalid page count', code='E1002',
+                                    hint='Enter an integer page count.')
+                sys.exit(2)
 
-            with open(file, 'w') as f:
-                f.write('Google Dorks results: \n\n')
-                for k in web_lists:
-                    f.write(str(k) + os.linesep)
-            colors.success('File has been saved successfully')
+            print('\n\033[1;37m[>]Searching ...\033[1;37m  \n')
+            try:
+                web_lists = dorker.start_dorking(dorks, page)
+            except Exception as e:
+                errors.report_error(str(e), exc=e, code='E4001')
+                return
+
+            if args.output:
+                if args.output.endswith('.txt'):
+                    file = args.output
+                else:
+                    file = args.output + '.txt'
+
+                with open(file, 'w') as f:
+                    f.write('Google Dorks results: \n\n')
+                    for k in web_lists:
+                        f.write(str(k) + os.linesep)
+                colors.success('File has been saved successfully')
+
+        except ImportError:
+            errors.report_error('Could not import the required module.',
+                                code='E6001')
+        except Exception as e:
+            errors.report_error(str(e), exc=e, code='E4001')
 
 
 def whois(args):
@@ -204,7 +222,9 @@ def whois(args):
         errors.report_error('Could not import the required module.',
                             code='E6001')
     except Exception as e:
-        errors.report_error(str(e), exc=e)
+        errors.report_error(str(e), exc=e,
+                            hint='The WHOIS service may be unreachable; check '
+                                 'connectivity and retry.')
 
 
 def admin_panel(args):
@@ -230,6 +250,10 @@ def bruteforce(args):
         errors.report_error('Please enter an URL for bruteforce',
                             code='E1003', hint='Provide -u <url>.')
         sys.exit(1)
+    if not args.username:
+        errors.report_error('A username is required for brute force',
+                            code='E1010', hint='Provide -username <user>.')
+        sys.exit(2)
     try:
         from lib.others.bruteforce_login import bruteforce_login
         colors.info('Performing bruteforce on : {}'.format(args.url))

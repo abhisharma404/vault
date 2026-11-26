@@ -31,7 +31,13 @@ class HashScanner(object):
             sys.exit(1)
 
         if threads is not None:
-            threads = int(threads)
+            try:
+                threads = int(threads)
+            except ValueError:
+                errors.report_error('Invalid number of threads',
+                                    code='E1011',
+                                    hint='Provide a numeric thread count.')
+                sys.exit(1)
             self.threadValidator(threads)
         else:
             self.threads = 10
@@ -57,8 +63,12 @@ class HashScanner(object):
         Extracts and returns bytes of the file
         """
 
-        with open(file_path, 'rb') as file:
-            file_bytes = file.read()
+        try:
+            with open(file_path, 'rb') as file:
+                file_bytes = file.read()
+        except Exception as e:
+            errors.report_error('Could not read file', exc=e, code='E3001')
+            return None
 
         return file_bytes
 
@@ -104,6 +114,8 @@ class HashScanner(object):
         """
 
         file_bytes = self.extractBytes(file_path)
+        if file_bytes is None:
+            return
         temp_name = str(file_path) + ' -> ' + str(mode)
         temp_dict = {temp_name: eval('hashlib.{}(file_bytes)'
                                      .format(mode)).hexdigest()}

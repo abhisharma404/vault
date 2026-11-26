@@ -45,17 +45,23 @@ lint/format config.
 
 - Only ERROR-level records are logged. Warnings are console-only.
 - Logs are written to `<repo>/log/`, one `vault-error-<timestamp>-<pid>.log`
-  per session, created lazily on the first error (session header + traceback).
-  A session with no errors creates no file.
+  per session plus a machine-readable `.jsonl` sidecar (one JSON object per
+  error), created lazily on the first error (session header + traceback).
+  A session with no errors creates no files.
 - Report failures through `errors.report_error(message, exc=...)`. Use
   `colors.warning(...)` for non-fatal conditions (never logged).
+- `-v`/`--verbose` prints tracebacks to the console; `--debug` enables debug
+  output.
+- Exit codes: `0` success, `1` runtime error, `2` usage error (unknown flag,
+  bad input, or no action flag).
 
 ## CLI / installer
 
 - `./install.sh` writes a `vault` launcher to `~/.local/bin` (default; use
-  `--prefix DIR` or `VAULT_PREFIX` to change it). The launcher runs the
-  VaultENV python against `src/vault.py` and `cd`s into `src/` first, so the
-  command works from any directory.
+  `--prefix DIR` or `VAULT_PREFIX` to change it) and installs the man page
+  from `docs/vault.1` (`man vault`); pass `--no-man` to skip it. The launcher
+  runs the VaultENV python against `src/vault.py` and `cd`s into `src/`
+  first, so the command works from any directory.
 - Re-run `./install.sh` after moving the repo (paths are baked in).
   `./install.sh --uninstall` removes it. Overrides: `--name`, `--prefix`,
   `--python` (or `VAULT_NAME` / `VAULT_PREFIX` / `VAULT_PYTHON`).

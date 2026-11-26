@@ -60,7 +60,17 @@ class OSScan(object):
     def os_scan(self):
         colors.info('OS Scan running on: {}'.format(self.target))
 
-        self.nm.scan(self.target, arguments="-O")
+        try:
+            self.nm.scan(self.target, arguments="-O")
+        except Exception as e:
+            errors.report_error('OS scan failed', exc=e, code='E3001')
+            sys.exit(1)
+
+        if not self.nm.all_hosts():
+            colors.info('No hosts found for OS scan of {}'
+                        .format(self.target))
+            return
+
         if len(self.nm[self.nm.all_hosts()[0]]["osmatch"]) != 0:
             colors.success('OS Scan results of: {}'.
                            format(self.nm.all_hosts()[0]))

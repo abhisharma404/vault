@@ -28,7 +28,13 @@ class Fuzzer(object):
         if thread_num is None:
             self.thread_num = 1
         else:
-            self.thread_num = int(thread_num)
+            try:
+                self.thread_num = int(thread_num)
+            except (TypeError, ValueError) as e:
+                errors.report_error('Invalid thread count: {}'
+                                    .format(thread_num), exc=e,
+                                    code='E1011')
+                self.thread_num = 1
         self.fuzz_queue = self.m.Queue()
         self.discovered_url = []
         self.redirected_url = []
@@ -75,8 +81,10 @@ class Fuzzer(object):
                 elif status == 2:
                     colors.info('Redirection Detected -> {}'.format(fuzz_url))
                     self.redirected_url.append(fuzz_url)
-            except Exception as e:
-                errors.report_error(str(e), exc=e, code='E2001')
+            except Exception:
+                # Per-URL failures are expected while fuzzing; keep them
+                # console-only so they do not flood the error log.
+                colors.warning('Request failed for: {}'.format(fuzz_url))
 
     def initiate(self):
         self.readFromFile()

@@ -30,6 +30,11 @@ def xss(args):
         except Exception as e:
             errors.report_error(str(e), exc=e)
 
+        if not links:
+            colors.warning('Crawling found no links; scanning the base URL '
+                           'only.')
+            links = [args.url]
+
     try:
         from lib.website_scanner.xss import xss as xss_module
 

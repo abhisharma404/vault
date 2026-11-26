@@ -7,6 +7,7 @@ import socket
 import sys
 from urllib.parse import urlparse
 import colors
+from vault_cli import errors
 import time
 
 
@@ -22,41 +23,93 @@ class DDoS(object):
         if ip is not None:
             self.target_ip = ip
         elif url is not None:
-            self.target_ip = self.getIP(url)
+            try:
+                self.target_ip = self.getIP(url)
+            except Exception as e:
+                errors.report_error('Could not resolve URL to IP', exc=e,
+                                    code='E2003')
+                sys.exit(1)
         else:
-            colors.error('Please provide URL or the IP address to attack...')
+            errors.report_error('Please provide URL or the IP address to '
+                                'attack...', code='E1003',
+                                hint='Provide -u <url> or -ip <ip>.')
+            sys.exit(1)
 
         if start_port is not None:
+            try:
+                start_port = int(start_port)
+            except ValueError:
+                errors.report_error('Invalid port range', code='E1009',
+                                    hint='Provide a numeric start port.')
+                sys.exit(1)
             if start_port > 0 and start_port < 65355:
-                self.start_port = int(start_port)
+                self.start_port = start_port
+            else:
+                errors.report_error('Invalid port range', code='E1009',
+                                    hint='Start port must be between 1 and '
+                                         '65354.')
+                sys.exit(1)
         else:
             self.start_port = random.randint(1, 100)
 
         if end_port is not None:
+            try:
+                end_port = int(end_port)
+            except ValueError:
+                errors.report_error('Invalid port range', code='E1009',
+                                    hint='Provide a numeric end port.')
+                sys.exit(1)
             if end_port > 1 and end_port < 65356:
-                self.end_port = int(end_port)
+                self.end_port = end_port
+            else:
+                errors.report_error('Invalid port range', code='E1009',
+                                    hint='End port must be between 2 and '
+                                         '65355.')
+                sys.exit(1)
         else:
             self.end_port = random.randint(1000, 65355)
 
         if dport is None:
             self.dport = 80
         else:
+            try:
+                dport = int(dport)
+            except ValueError:
+                errors.report_error('Please provide a valid destination port',
+                                    code='E1009')
+                sys.exit(1)
             if dport < 65356 and dport > 0:
-                self.dport = int(dport)
+                self.dport = dport
             else:
-                colors.error('Please provide a valid destination port')
+                errors.report_error('Please provide a valid destination port',
+                                    code='E1009')
                 sys.exit(1)
 
         if interval is not None:
-            self.INTER = int(interval)
+            try:
+                self.INTER = int(interval)
+            except ValueError:
+                errors.report_error('Invalid interval value',
+                                    hint='Provide a numeric interval.')
+                sys.exit(1)
         else:
             self.INTER = 0.0001
+            colors.warning('No interval set, hence using {}s.'
+                           .format(self.INTER))
 
         if threads is not None:
-            threads = int(threads)
+            try:
+                threads = int(threads)
+            except ValueError:
+                errors.report_error('Invalid number of threads',
+                                    code='E1011',
+                                    hint='Provide a numeric thread count.')
+                sys.exit(1)
             self.threadValidator(threads)
         else:
             self.threads = 1
+            colors.warning('No threads set, hence using {} thread.'
+                           .format(self.threads))
 
         self.number_of_packets = 0
 

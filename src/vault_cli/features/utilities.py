@@ -29,6 +29,9 @@ def keylogger(args):
 
 def mac_changer(args):
     try:
+        if args.mac is None:
+            colors.warning('No MAC address provided; a random MAC will be '
+                           'generated.')
         colors.info('Loading MAC Changer...')
 
         from lib.utilities.mac_changer import mac_changer

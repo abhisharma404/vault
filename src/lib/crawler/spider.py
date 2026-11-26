@@ -56,18 +56,35 @@ class Spider:
                 time.sleep(1)
                 req = urllib.request.\
                     Request(page_url, headers={'User-Agent': 'Mozilla/5.0'})
-                con = urllib.request.urlopen(req)
+                con = urllib.request.urlopen(req, timeout=15)
                 html_string = con.read().decode("utf-8")
                 obj = fobj.Linkfinder(Spider.base_url)
                 obj.feed(html_string)
                 return obj.links_obtained()
 
         except urllib.error.HTTPError as e:
+            # Per-page status errors (404, 403, ...) are benign; keep as
+            # a plain print.
             print("Exception Occured!!!\n" + str(e))
             return ''
 
         except urllib.error.URLError as e:
-            errors.report_error(str(e), exc=e, code='E2001')
+            if isinstance(e.reason, TimeoutError):
+                errors.report_error('Request timed out while crawling: ' +
+                                    page_url, exc=e, code='E2002')
+            else:
+                errors.report_error('Request failed while crawling: ' +
+                                    page_url, exc=e, code='E2001')
+            return ''
+
+        except TimeoutError as e:
+            errors.report_error('Request timed out while crawling: ' +
+                                page_url, exc=e, code='E2002')
+            return ''
+
+        except Exception as e:
+            errors.report_error('Failed to crawl ' + page_url + ': ' +
+                                str(e), exc=e)
             return ''
 
     @staticmethod

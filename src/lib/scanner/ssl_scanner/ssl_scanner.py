@@ -60,9 +60,15 @@ def analyze(url):
 
     while resp['status'] != 'READY' and resp['status'] != 'ERROR':
         time.sleep(30)
-        resp = request_api(API_URL, analyze_payload)
-        if 'status' not in resp:
-            raise RuntimeError('SSL Labs API error: ' + _format_errors(resp))
+        try:
+            resp = request_api(API_URL, analyze_payload)
+        except Exception as e:
+            colors.warning('SSL Labs poll failed ({})'.format(e))
+            continue
+        if not isinstance(resp, dict) or 'status' not in resp:
+            colors.warning('SSL Labs returned an unexpected response, '
+                           'polling again...')
+            continue
 
     if resp['status'] == 'ERROR':
         raise RuntimeError('SSL Labs API error: ' + _format_errors(resp))

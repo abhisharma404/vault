@@ -2,6 +2,8 @@
 
 from vault_cli import logging_setup
 
+VERSION = '1.0.0'
+
 BANNER = r""" ____   _________   ____ ___.____  ___________
 \   \ /   /  _  \ |    |   \    | \__    ___/
  \   Y   /  /_\  \|    |   /    |   |    |

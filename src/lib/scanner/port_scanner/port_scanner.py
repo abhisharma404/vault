@@ -2,7 +2,10 @@
 
 from scapy.all import *
 from concurrent.futures import ThreadPoolExecutor
+import sys
 import time
+import colors
+from vault_cli import errors
 
 
 class PortScanner(object):
@@ -18,12 +21,31 @@ class PortScanner(object):
         if start_port is None:
             self.start_port = 0
         else:
-            self.start_port = int(start_port)
+            try:
+                self.start_port = int(start_port)
+            except (ValueError, TypeError):
+                errors.report_error('Invalid port range', code='E1009',
+                                    hint='Provide a numeric start port.')
+                sys.exit(1)
 
         if end_port is None:
             self.end_port = 65535
         else:
-            self.end_port = int(end_port)
+            try:
+                self.end_port = int(end_port)
+            except (ValueError, TypeError):
+                errors.report_error('Invalid port range', code='E1009',
+                                    hint='Provide a numeric end port.')
+                sys.exit(1)
+
+        if (self.start_port < 0 or self.start_port > 65535 or
+                self.end_port < 0 or self.end_port > 65535 or
+                self.end_port < self.start_port):
+            errors.report_error('Invalid port range', code='E1009',
+                                hint='Ports must be between 0 and 65535 and '
+                                     'the start port must be lower than the '
+                                     'end port.')
+            sys.exit(1)
 
         if ip is None:
             print('[!] IP is empty, please specify an IP address...')
@@ -33,12 +55,23 @@ class PortScanner(object):
         if source_port is None:
             self.sport = 1024
         else:
-            self.sport = int(source_port)
+            try:
+                self.sport = int(source_port)
+            except (ValueError, TypeError):
+                errors.report_error('Invalid source port', code='E1009',
+                                    hint='Provide a numeric source port.')
+                sys.exit(1)
 
         if threads is None:
             self.threads = 1
         else:
-            self.threads = int(threads)
+            try:
+                self.threads = int(threads)
+            except (ValueError, TypeError):
+                errors.report_error('Invalid number of threads',
+                                    code='E1011',
+                                    hint='Provide a numeric thread count.')
+                sys.exit(1)
 
     def port_name(port):
         with open('port_names.json', 'r') as f:

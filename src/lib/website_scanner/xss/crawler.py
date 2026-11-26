@@ -4,6 +4,7 @@ import re
 from urllib.parse import *
 import requests
 import colors
+from vault_cli import errors
 
 
 class Crawl(object):
@@ -14,8 +15,17 @@ class Crawl(object):
         self.session = requests.Session()
 
     def extract_links_from(self):
-        response = self.session.get(self.url)
-        return re.findall('(?:href=")(.*?)"', response.text)
+        try:
+            response = self.session.get(self.url, timeout=15)
+            return re.findall('(?:href=")(.*?)"', response.text)
+        except requests.exceptions.Timeout as e:
+            errors.report_error('Request timed out while crawling: ' +
+                                self.url, exc=e, code='E2002')
+            return []
+        except requests.exceptions.RequestException as e:
+            errors.report_error('Request failed while crawling: ' +
+                                self.url, exc=e, code='E2001')
+            return []
 
     def crawl(self, url=None):
         if url is None:

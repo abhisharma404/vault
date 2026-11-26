@@ -1,0 +1,196 @@
+.TH VAULT 1 "November 2026" "Vault 1.0.0" "Vault Manual"
+.SH NAME
+vault \- Swiss army knife for hackers
+.SH SYNOPSIS
+\fBvault\fR [\fIoptions\fR]
+.PP
+\fBvault\fR \fB\-u\fR \fIURL\fR \fB\-info\fR
+.PP
+\fBvault\fR \fB\-ip\fR \fIIP\fR \fB\-sp\fR \fIPORT1\fR \fB\-ep\fR \fIPORT2\fR \fB\-t\fR \fIN\fR
+.PP
+\fBvault\fR \fB\-all\fR \fB\-u\fR \fIURL\fR \fB\-exclude\fR \fISCANS\fR
+.SH DESCRIPTION
+\fBvault\fR is a Python 3 command\-line security scanner and penetration
+testing toolkit: information gathering, web application scanning (XSS, LFI,
+open redirects, CMS detection), network and port scanning, hash cracking and
+various attacks.
+.PP
+Every invocation must select at least one action flag (e.g. \fB\-info\fR,
+\fB\-ssl\fR or \fB\-xss\fR) or \fB\-all\fR. Running \fBvault\fR without an
+action flag prints the help text and is a usage error (exit status 2).
+.SH OPTIONS
+.SS TARGET OPTIONS
+.IP "\fB\-u\fR, \fB\-\-url\fR \fIURL\fR" 24
+URL for scanning.
+.IP "\fB\-ip\fR, \fB\-\-ip\fR \fIIP\fR" 24
+IP address for port scanning.
+.IP "\fB\-p\fR, \fB\-\-port\fR \fIPORT\fR" 24
+Single port for scanning (shorthand for \fB\-sp\fR/\fB\-ep\fR with the same
+value).
+.IP "\fB\-sp\fR, \fB\-\-start_port\fR and \fB\-ep\fR, \fB\-\-end_port\fR \fIPORT\fR" 24
+Start and end port of the scan range.
+.IP "\fB\-ip_start_range\fR, \fB\-ip_end_range\fR \fIIP\fR" 24
+Start and end of the IP range to scan; both must be given together.
+.IP "\fB\-dir\fR \fIDIR\fR" 24
+Directory to scan (used by \fB\-bruteforce\fR).
+.IP "\fB\-target_bssid\fR \fIBSSID\fR" 24
+Target BSSID (used with \fB\-deauth\fR).
+.IP "\fB\-i\fR, \fB\-\-interface\fR \fIIFACE\fR" 24
+Networking interface to use.
+.IP "\fB\-source_port\fR \fIPORT\fR" 24
+Source port for sending packets.
+.IP "\fB\-d\fR, \fB\-\-dork\fR \fIQUERY\fR" 24
+Perform Google dorking with the given query.
+.SS SCAN MODES
+.IP "\fB\-ssl\fR" 24
+Perform an SSL scan.
+.IP "\fB\-info\fR" 24
+Gather information about the target.
+.IP "\fB\-comment\fR, \fB\-email\fR" 24
+Find HTML comments or email addresses.
+.IP "\fB\-fuzz\fR" 24
+Fuzz the target URL.
+.IP "\fB\-xss\fR" 24
+Scan for XSS vulnerabilities.
+.IP "\fB\-this\fR" 24
+Only scan the given URL, do not crawl.
+.IP "\fB\-lfi\fR" 24
+Scan for LFI vulnerabilities.
+.IP "\fB\-detect_cms\fR" 24
+Perform CMS detection.
+.IP "\fB\-jquery\fR" 24
+Check the jQuery version and get its vulnerabilities.
+.IP "\fB\-admin\fR" 24
+Find the admin panel on a given domain.
+.IP "\fB\-orv\fR" 24
+Test for open redirection vulnerability.
+.IP "\fB\-honey\fR" 24
+Detect a honeypot.
+.IP "\fB\-whois\fR" 24
+Perform a whois lookup of a given IP.
+.IP "\fB\-ping_sweep\fR, \fB\-arp\fR" 24
+ICMP echo sweep or ARP scan.
+.IP "\fB\-fin\fR, \fB\-null\fR, \fB\-ack\fR, \fB\-xmas\fR" 24
+Perform TCP FIN, NULL, ACK and XMAS scans (require root).
+.IP "\fB\-os_scan\fR" 24
+Perform an OS scan (requires the \fBnmap\fR(1) binary on \fBPATH\fR).
+.IP "\fB\-cr\fR, \fB\-cri\fR" 24
+Extract links or images from a web page.
+.IP "\fB\-all\fR" 24
+Run all scans that apply to the given target; requires \fB\-u\fR or
+\fB\-ip\fR.
+.IP "\fB\-exclude\fR \fISCANS\fR" 24
+Comma\-separated scans to exclude when running \fB\-all\fR.
+.IP "\fB\-hash\fR" 24
+Start a hash scan.
+.IP "\fB\-md5\fR, \fB\-sha1\fR, \fB\-sha224\fR, \fB\-sha256\fR, \fB\-sha512\fR" 24
+Scan MD5, SHA1, SHA224, SHA256 and SHA512 hashes.
+.SS ATTACKS
+.IP "\fB\-ddos\fR" 24
+Perform a DDoS attack.
+.IP "\fB\-mac_flood\fR" 24
+Perform a MAC flooding attack.
+.IP "\fB\-arp_spoof\fR" 24
+Perform ARP spoofing.
+.IP "\fB\-ping_death\fR" 24
+Perform a ping of death attack.
+.IP "\fB\-deauth\fR" 24
+Perform a de\-authentication attack (WiFi).
+.IP "\fB\-bruteforce\fR" 24
+Perform a brute force attack through Authorization headers.
+.IP "\fB\-keylogger\fR" 24
+Capture keystrokes and send them by email (requires accessibility
+permission).
+.IP "\fB\-interval\fR \fISECONDS\fR" 24
+Interval time for sending packets.
+.SS UTILITY
+.IP "\fB\-change_mac\fR, \fB\-mac\fR \fIMAC\fR" 24
+Change the MAC address to \fIMAC\fR.
+.IP "\fB\-host\fR \fIHOST\fR, \fB\-username\fR \fIUSER\fR, \fB\-password\fR \fIPASS\fR" 24
+SMTP host, login and password for \fB\-keylogger\fR.
+.IP "\fB\-sender\fR \fIEMAIL\fR, \fB\-destination\fR \fIEMAIL\fR" 24
+From and to addresses for \fB\-keylogger\fR emails.
+.SS OUTPUT OPTIONS
+.IP "\fB\-o\fR, \fB\-\-output\fR \fIFILE\fR" 24
+Output all data to \fIFILE\fR.
+.IP "\fB\-t\fR, \fB\-\-threads\fR \fIN\fR" 24
+Number of threads to use.
+.IP "\fB\-v\fR, \fB\-\-verbose\fR" 24
+Show tracebacks on errors.
+.IP "\fB\-\-debug\fR" 24
+Enable debug output.
+.SS GENERAL
+.IP "\fB\-h\fR, \fB\-\-help\fR" 24
+Show the help message and exit.
+.IP "\fB\-\-version\fR" 24
+Show the version and exit.
+.SH EXIT STATUS
+.IP "0" 4
+Successful completion.
+.IP "1" 4
+Runtime error (failed scan, unreachable target, bad external service
+response, and so on).
+.IP "2" 4
+Usage error (unknown option, missing action flag, invalid URL/IP/range,
+\fB\-all\fR without a target).
+.SH FILES
+.TP
+\fI<repo>/log/vault\-error\-<timestamp>\-<pid>.log\fR
+Per\-session error log, created lazily on the first error of a session.
+Only ERROR\-level records are written; a session with no errors creates no
+files. Contains a session header (time, pid, python, platform, cwd, argv)
+followed by one block per error (time, code, feature, message, optional
+hint and traceback).
+.TP
+\fI<repo>/log/vault\-error\-<timestamp>\-<pid>.jsonl\fR
+Machine\-readable sidecar of the error log: one JSON object per line (a
+session header object first, then one object per error). If the log
+directory cannot be created, both files fall back to the system temporary
+directory.
+.TP
+\fI<repo>/src/payloads/\fR
+Data files (payload lists, wordlists) used by the scanners.
+.SH ENVIRONMENT
+.TP
+\fBVAULT_LOG_DIR\fR
+Override the directory for the per\-session error logs (default:
+\fI<repo>/log\fR).
+.TP
+\fBVAULT_NAME\fR, \fBVAULT_PREFIX\fR, \fBVAULT_PYTHON\fR
+Launcher name, install directory and Python interpreter used by
+\fIinstall.sh\fR (defaults: \fBvault\fR, \fI~/.local/bin\fR, the project's
+conda environment).
+.SH EXAMPLES
+.TP
+\fBvault \-u http://example.com/ \-info\fR
+Gather information about the site.
+.TP
+\fBvault \-u http://example.com/ \-xss \-this\fR
+Scan only that page for XSS vulnerabilities, without crawling.
+.TP
+\fBvault \-ip 192.168.1.1 \-sp 1 \-ep 1000 \-t 50\fR
+Port scan the target with 50 threads.
+.TP
+\fBvault \-all \-u http://example.com/ \-exclude ddos,keylogger\fR
+Run every applicable scan except DDoS and the keylogger.
+.TP
+\fBvault \-hash \-md5 \-dir payloads/\fR
+Scan MD5 hashes against the wordlist directory.
+.TP
+\fBvault \-ssl \-u example.com \-o ssl\-report.txt\fR
+Run an SSL scan and write the results to a file.
+.SH SEE ALSO
+The project README (\fIREADME.md\fR) and the Sphinx documentation in
+\fIdocs/\fR.
+.SH BUGS
+Raw\-socket scans (\fB\-fin\fR, \fB\-null\fR, \fB\-ack\fR, \fB\-xmas\fR,
+\fB\-os_scan\fR) and attacks (\fB\-ddos\fR, \fB\-mac_flood\fR,
+\fB\-arp_spoof\fR, \fB\-ping_death\fR, \fB\-deauth\fR) require root and
+often fail on macOS and in sandboxed environments.
+.PP
+Features backed by third\-party services (\fB\-ssl\fR via SSL Labs,
+\fB\-honey\fR via Shodan, \fB\-d\fR via Google, \fB\-jquery\fR via a CVE
+feed) are network\-dependent and can be rate\-limited or blocked. SSL Labs
+rejects IP addresses and some hostnames. The keylogger
+(\fB\-keylogger\fR) needs macOS Accessibility permission and will not run
+unattended.

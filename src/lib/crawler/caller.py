@@ -2,6 +2,7 @@
 
 import threading
 from queue import Queue
+import colors
 from . import imutil as imu
 from .spider import Spider
 
@@ -46,6 +47,8 @@ class Crawler:
         if len(qlinks) > 0:
             print(str(len(qlinks)) + ' Left to be Crawled.')
             self.create_jobs()
+        else:
+            colors.warning('No links were collected; nothing to crawl.')
 
     def start(self, return_set: bool):
         self.create_spider()

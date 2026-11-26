@@ -25,6 +25,12 @@ class Deauth(object):
         else:
             self.interface = interface
 
+        if not self.interface:
+            errors.report_error('A network interface is required',
+                                code='E1008',
+                                hint='Provide -i <interface>.')
+            sys.exit(1)
+
         self.BSSID, self.ESSID = self.monitorWifi(self.interface)
 
         if target_bssid is None:
@@ -66,11 +72,20 @@ class Deauth(object):
         output, error = p.communicate()
 
         if error:
-            print(error.decode('utf-8'))
+            errors.report_error('Could not list network interfaces: {}'
+                                .format(error.decode('utf-8')),
+                                code='E1008',
+                                hint='Provide -i <interface>.')
             sys.exit(1)
 
         output = output.decode('utf-8')
         interfaces = re.findall('(.*): ', output)
+
+        if not interfaces:
+            errors.report_error('A network interface is required',
+                                code='E1008',
+                                hint='Provide -i <interface>.')
+            sys.exit(1)
 
         total_index = 0
 
@@ -185,10 +200,19 @@ class Deauth(object):
         new monitor interface
         """
 
-        with open(self.DEV_FILE_PATH) as file:
-            data = file.read()
-            mon_intf = re.findall(r'(mon[0-9]+|prism[0-9]+|\b([a-zA-Z0-9]+)mon)', data)
-            return mon_intf[0][0]
+        try:
+            with open(self.DEV_FILE_PATH) as file:
+                data = file.read()
+        except Exception as e:
+            errors.report_error('Could not determine monitor interface',
+                                exc=e, code='E3001')
+            sys.exit(1)
+        mon_intf = re.findall(r'(mon[0-9]+|prism[0-9]+|\b([a-zA-Z0-9]+)mon)', data)
+        if not mon_intf:
+            errors.report_error('Could not determine monitor interface',
+                                code='E3001')
+            sys.exit(1)
+        return mon_intf[0][0]
 
     def startProcess(self):
         """

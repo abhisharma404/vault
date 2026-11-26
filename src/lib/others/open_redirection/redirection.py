@@ -20,11 +20,19 @@ def ORVT(domain):
         :domain: URL to Perform the ORV test
     """
     payloads = load_payload()
+    reported = False
 
     for payload in payloads:
         url = domain + payload
         print(url)
-        response = requests.get(url, verify=True)
+        try:
+            response = requests.get(url, verify=True)
+        except requests.exceptions.RequestException as e:
+            if not reported:
+                errors.report_error('Open redirect scan request failed',
+                                    exc=e, code='E2001')
+                reported = True
+            continue
         if response.history:
             print("Request was redirected")
             print("Maybe vulnerable to following payload: %s" % payload)

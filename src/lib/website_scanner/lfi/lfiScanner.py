@@ -46,7 +46,7 @@ class Scanner(object):
 
         colors.info('Checking the URL if it is live')
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers, timeout=15)
             response_code = response.status_code
             colors.info('Got a respose for the URL with status code:{}'
                         .format(response_code))
@@ -56,6 +56,13 @@ class Scanner(object):
                 return True
             else:
                 return False
+        except requests.exceptions.Timeout as e:
+            errors.report_error('Request timed out while checking URL: ' +
+                                url, exc=e, code='E2002')
+            return False
+        except requests.exceptions.RequestException as e:
+            errors.report_error(str(e), exc=e, code='E2001')
+            return False
         except Exception as e:
             errors.report_error(str(e), exc=e, code='E2001')
             return False
@@ -63,8 +70,9 @@ class Scanner(object):
     def get(self, scan_url):
         """Perform a request, returning the response body text or None.
 
-        Connection errors (e.g. a server dropping a request with a NULL-byte
-        suffix) are skipped rather than aborting the whole scan.
+        Per-payload connection errors (e.g. a server dropping a request with
+        a NULL-byte suffix) are expected during a scan and are skipped
+        silently rather than reported or aborting the scan.
         """
         try:
             res = requests.get(scan_url, headers=self.scan_headers, timeout=10)
@@ -76,6 +84,10 @@ class Scanner(object):
         null_byte = "%00"
         success_count = 0
         url = self.url
+        if not self.payload_data.get('linux') or \
+           not self.payload_data.get('linuxPrefix'):
+            colors.warning('LFI payload data is missing; nothing to scan.')
+            return
         ck = self.check_url(url)
         if ck:
             _matches = self.payload_data["linux"]

@@ -24,7 +24,12 @@ class BruteforceLogin(object):
         self.found_password = False
 
         if threads is not None:
-            threads = int(threads)
+            try:
+                threads = int(threads)
+            except (TypeError, ValueError) as e:
+                errors.report_error('Invalid thread count: {}'
+                                    .format(threads), exc=e, code='E1011')
+                threads = 1
             self.threadValidator(threads)
         else:
             self.threads = 1
@@ -38,8 +43,14 @@ class BruteforceLogin(object):
                            'This can slow down your system.(Y/N)'
                            .format(threads))
             if choice == 'N' or choice == 'n':
-                threads = int(input('>> Please enter the number of threads'
-                                    ' you want to use...'))
+                try:
+                    threads = int(input('>> Please enter the number of threads'
+                                        ' you want to use...'))
+                except (TypeError, ValueError) as e:
+                    errors.report_error('Invalid thread count entered',
+                                        exc=e, code='E1011')
+                    self.threads = 1
+                    return
                 self.threadValidator(threads)
             else:
                 self.threads = threads
@@ -68,13 +79,13 @@ class BruteforceLogin(object):
                 req = requests.get(self.url, auth=HTTPBasicAuth(self.username,
                                                                password),
                                    timeout=10)
-            except requests.exceptions.Timeout as e:
-                errors.report_error("Error occurred with password {}"
-                                    .format(password), exc=e, code='E2002')
+            except requests.exceptions.Timeout:
+                colors.warning('Password {}: request timed out'
+                               .format(password))
                 continue
-            except requests.exceptions.RequestException as e:
-                errors.report_error("Error occurred with password {}"
-                                    .format(password), exc=e, code='E2001')
+            except requests.exceptions.RequestException:
+                colors.warning('Password {}: request failed'
+                               .format(password))
                 continue
             if req.status_code == 401:
                 print("Testing password: {} Failed!".format(password))

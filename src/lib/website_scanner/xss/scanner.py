@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor
 import threading
 import colors
 import time
+from vault_cli import errors
 
 
 class Scanner:
@@ -15,7 +16,12 @@ class Scanner:
         self.payload = payload
 
     def extract_forms(self, url):
-        response = requests.get(url)
+        try:
+            response = requests.get(url, timeout=15)
+        except requests.exceptions.RequestException as e:
+            errors.report_error('Request failed while fetching forms from: ' +
+                                url, exc=e, code='E2001')
+            return []
         soup_obj = BeautifulSoup(response.text, 'html.parser')
         list_forms = soup_obj.findAll('form')
         return list_forms
@@ -23,6 +29,9 @@ class Scanner:
     def inject_payload(self):
 
         t1 = time.time()
+        if not self.payload:
+            colors.warning('Payload list is empty; nothing to inject.')
+            return
         if len(self.target_url) > 1:
             for url in self.target_url:
                 list_forms = self.extract_forms(url)
@@ -71,7 +80,14 @@ class Scanner:
 
                 post_data[box_name] = input_value
 
-            result = requests.post(url, data=post_data)
+            try:
+                result = requests.post(url, data=post_data, timeout=15)
+            except requests.exceptions.RequestException:
+                # Per-payload failures are expected during injection tests;
+                # keep them console-only so they do not flood the error log.
+                colors.warning('Request failed while injecting payload into: '
+                               + url)
+                continue
 
             if self.payload[i] in result.text:
                 colors.info('VULNERABILITY DETECTED!--> {}'
