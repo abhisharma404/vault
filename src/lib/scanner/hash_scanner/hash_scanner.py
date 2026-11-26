@@ -56,9 +56,8 @@ class HashScanner(object):
         Extracts and returns bytes of the file
         """
 
-        with open(file_path) as file:
+        with open(file_path, 'rb') as file:
             file_bytes = file.read()
-            file_bytes = file_bytes.encode()
 
         return file_bytes
 
@@ -152,11 +151,10 @@ class HashScanner(object):
         except Exception as e:
             print(e)
 
-        finally:
-            t2 = time.time()
-            colors.success('Completed in {}'.format(t2-t1))
-            resultDict = self.parseResult()
-            return resultDict
+        t2 = time.time()
+        colors.success('Completed in {}'.format(t2-t1))
+        resultDict = self.parseResult()
+        return resultDict
 
     def parseResult(self):
         """

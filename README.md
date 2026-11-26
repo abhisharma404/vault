@@ -19,20 +19,49 @@
 
 ## Getting Started
 
+#### Requirements :
+
+* Python 3.9 or newer (tested with Python 3.15)
+* `nmap` installed and available on `PATH` (used by the OS scanner)
+* Root privileges for raw socket scans and attacks
+
 #### Steps to setup :
 
 1. `git clone <your-fork-url>`
-2. `cd vault`
-3. `sudo apt-get install python3-pip`
-4. `sudo pip3 install virtualenv`
-5. `virtualenv venv`
-6. `source venv/bin/activate`
-7. `pip3 install -r requirements.txt`
+2. `cd Vault`
+3. `python3 -m venv venv`
+4. `source venv/bin/activate`
+5. `pip3 install -r requirements.txt`
+
+Or with conda:
+
+1. `conda create -n VaultENV python=3.15 -y`
+2. `conda activate VaultENV`
+3. `pip install -r requirements.txt`
 
 #### Starting Vault :
 
-1. `cd vault/src`
+1. `cd src`
 2. `python3 vault.py`
+
+Run Vault from the `src/` directory: feature modules load payloads relative to
+the current working directory (`payloads/...`).
+
+#### Installing the `vault` command (macOS/Linux) :
+
+Run `./install.sh` to place a `vault` launcher on your PATH (defaults to
+`~/.local/bin`). It always runs the VaultENV interpreter from the `src/`
+directory, so you can invoke it from anywhere:
+
+```
+./install.sh
+vault -h
+vault -u http://example.com -info
+```
+
+Re-run `./install.sh` if you move the repository, and use `./install.sh
+--uninstall` to remove it. Options: `--prefix DIR`, `--name CMD`,
+`--python PATH`.
 
 ## Features
 * #### Scan website for the following vulnerabilities

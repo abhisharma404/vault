@@ -22,8 +22,8 @@ class JqueryCheck(object):
             if "jquery" in str(line.get('src')).lower():
                 response = requests.get(urljoin(self.url, line.get('src')))
                 versions = re.findall(r'(?<=\s)v[0-9]+(?:\.[0-9]+)*'
-                                      '(?:[a-z](?:\d)?)?(?:-alpha\d)?'
-                                      '(?:-beta\d)?(?:-rc\d)?(?:-rc.\d)?',
+                                      r'(?:[a-z](?:\d)?)?(?:-alpha\d)?'
+                                      r'(?:-beta\d)?(?:-rc\d)?(?:-rc.\d)?',
                                       response.text)
                 scripts.append((urljoin(self.url, line.get('src'))
                                .rsplit('/', 1)[-1], versions))

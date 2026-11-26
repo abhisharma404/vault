@@ -56,7 +56,7 @@ class ARPSpoof(object):
         """
 
         if re.match(r'^(?:(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])'
-                    '(\.(?!$)|$)){4}$', ip):
+                    r'(\.(?!$)|$)){4}$', ip):
             return True
 
     @staticmethod

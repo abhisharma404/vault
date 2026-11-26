@@ -31,7 +31,7 @@ def check_ip(ip: str):
     Check whether the input IP is valid or not
     """
     if re.match(r'^(?:(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])'
-                '(\.(?!$)|$)){4}$', ip):
+                r'(\.(?!$)|$)){4}$', ip):
         return ip
     else:
         colors.error('Please enter a valid IP address')
@@ -989,7 +989,7 @@ def detect_honeypot(args):
 
 if __name__ == '__main__':
 
-    print(""" ____   _________   ____ ___.____  ___________
+    print(r""" ____   _________   ____ ___.____  ___________
 \   \ /   /  _  \ |    |   \    | \__    ___/
  \   Y   /  /_\  \|    |   /    |   |    |
   \     /    |    \    |  /|    |___|    |
